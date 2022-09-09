@@ -34,9 +34,17 @@ class TournoiSuisse:
     def appairage_des_joueurs(self):
         #Tri des joueurs
         if self.nombre_ronde == 1:
+            liste_triee = ""
             self.joueurs_tournoi.sort(key=lambda x: x.classement_elo, reverse=True)
-        elif self.nombre_ronde > 1:
+            for joueur in self.joueurs_tournoi:
+                liste_triee += joueur.nom+", "
+            print("le classement est : "+liste_triee)
+        elif int(self.nombre_ronde) > 1:
+            liste_triee = ""
             self.joueurs_tournoi.sort(key=lambda x: x.points_tournoi, reverse=True)
+            for joueur in self.joueurs_tournoi:
+                liste_triee += joueur.nom+", "
+            print("le classement est : "+liste_triee)
         else:
             print("erreur")
         #Creation des paires
