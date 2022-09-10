@@ -21,14 +21,15 @@ if __name__ == "__main__":
     player6 = joueurs.Joueur("Nom6", "prénom6", "11/5/11", "M", 1580)
     player7 = joueurs.Joueur("Nom7", "prénom7", "10/9/10", "F", 1415)
     player8 = joueurs.Joueur("Nom8", "prénom8", "9/4/9", "U", 1953)
-    liste_participant = [player1, player2, player3, player4, player5, player6, player7, player8]
+    # Création de la liste des objets de joueurs
+    tournoi_de_test_statique.participants = [player1, player2, player3, player4, player5, player6, player7, player8]
     print(tournoi_de_test_statique.nombre_de_tour_du_tournoi)
-    liste_de_ronde = []
+    # Boucle le déroulement d'une ronde X fois, X étant le nombre de ronde déterminé à la création du tournoi
     for numero_de_ronde in range(tournoi_de_test_statique.nombre_de_tour_du_tournoi):
-        instance_tournoi = run.TournoiSuisse(numero_de_ronde+1, liste_participant)
-        liste_de_ronde.append("round"+str(numero_de_ronde+1))
-        round_number = run.TournoiSuisse.appairage_des_joueurs(instance_tournoi)
-        for match in round_number.liste_matchs:
+        #
+        instance_tournoi = run.TournoiSuisse(numero_de_ronde+1, tournoi_de_test_statique.participants)
+        ronde_actuelle = run.TournoiSuisse.deroulement_d_une_ronde(instance_tournoi)
+        for match in ronde_actuelle.liste_matchs:
             print(match.joueur1.nom+" affronte "+match.joueur2.nom)
             vainqueur = random.choice([match.joueur1, match.joueur2,"nul"])
             if vainqueur == match.joueur1:
@@ -43,8 +44,12 @@ if __name__ == "__main__":
                 print("C'est un match nul")
                 match.joueur1.points_tournoi += 0.5
                 match.joueur2.points_tournoi += 0.5
-        for participant in liste_participant:
+        for participant in tournoi_de_test_statique.participants:
             print(participant.nom+" a maintenant "+str(participant.points_tournoi)+" point(s).")
+        tournoi_de_test_statique.rondes.append(ronde_actuelle)
+
+    print("le vainqueur est "+tournoi_de_test_statique.participants[0].prenom+" "+tournoi_de_test_statique.participants[0].nom)
+    print(tournoi_de_test_statique.rondes.__str__())
 
 
 
