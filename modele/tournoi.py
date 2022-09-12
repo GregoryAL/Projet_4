@@ -1,7 +1,9 @@
 class Tournoi:
     """ Contient les informations du tournoi """
-    def __init__(self,  nom_du_tournoi, lieu_du_tournoi, date_du_tournoi, type_de_controle_du_temps,
-                 nombre_de_participants, nombre_de_tour_du_tournoi=4, commentaire = ""):
+    def __init__(self,  nom_du_tournoi, lieu_du_tournoi,
+                 date_du_tournoi, type_de_controle_du_temps,
+                 nombre_de_participants, nombre_de_tour_du_tournoi=4,
+                 commentaire=""):
         self.nom_du_tournoi = nom_du_tournoi
         self.lieu_du_tournoi = lieu_du_tournoi
         self.date_du_tournoi = date_du_tournoi
@@ -11,4 +13,3 @@ class Tournoi:
         self.commentaire = commentaire
         self.participants = []
         self.rondes = []
-
