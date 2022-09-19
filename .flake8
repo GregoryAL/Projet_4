@@ -1,2 +1,3 @@
 [flake8]
 exclude = .idea/,venv/
+max-line-length = 119

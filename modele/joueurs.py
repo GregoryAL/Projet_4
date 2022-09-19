@@ -13,3 +13,6 @@ class Joueur:
         self.sexe = sexe
         self.classement_elo = classement_elo
         self.points_tournoi = points_tournoi
+
+    def __str__(self):
+        return self.prenom + " " + self.nom + " | nombre de point tournoi : " + str(self.points_tournoi)
