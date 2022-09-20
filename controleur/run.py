@@ -35,17 +35,23 @@ class Controleur:
         liste_joueurs = [player1, player2, player3, player4, player5, player6, player7, player8]
         return liste_joueurs
 
+    def classement_des_joueurs(self, liste_participant, facteur_tri):
+        if facteur_tri == "classement_elo":
+            liste_participant.sort(key=lambda x: x.classement_elo, reverse=True)
+        elif facteur_tri == "points_tournoi:":
+            liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
+        return liste_participant
+
+
     def creation_des_matchs_methode_suisse(self, numero_ronde, liste_participant):
         # Tri des joueurs
         if numero_ronde == 1:
-            liste_participant.sort(key=lambda x: x.classement_elo,
-                                   reverse=True)
+            liste_participant.sort(key=lambda x: x.classement_elo, reverse=True)
             print("le classement est : ")
             for joueur in liste_participant:
                 print(joueurs.Joueur.__str__(joueur))
         elif numero_ronde > 1:
-            liste_participant.sort(key=lambda x: x.points_tournoi,
-                                   reverse=True)
+            liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
             print("le classement est : ")
             for joueur in liste_participant:
                 print(joueurs.Joueur.__str__(joueur))
@@ -91,4 +97,5 @@ class Controleur:
             ronde_actuelle.resultat_matchs = match.Match.creation_tuple_matchs(match_de_ronde)
         # for participant in liste_de_joueur:
             # print(joueurs.Joueur.__str__(participant))
+
         return ronde_actuelle
