@@ -3,9 +3,21 @@
 
 class Vue:
     """ Vue du tournoi d'échec """
+
     def __init__(self):
         self.tournoi = {}
         self.liste_des_joueurs = {}
+        self.choix_utilisateur = ""
+
+    def menu(self):
+        """ Affichage du menu général"""
+        print("Menu pour la gestion d'un tournoi d'échec\n")
+        print(" [1] Création d'un tournoi\n")
+        print(" [2] Option 2\n")
+        print(" [3] option 3\n")
+        self.choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
+        return self.choix_utilisateur
+
 
     def recuperation_des_informations_du_tournoi(self):
         """ Creation du tournoi """
