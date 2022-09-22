@@ -7,12 +7,13 @@ from vue.vue import Vue
 
 if __name__ == "__main__":
     """ début du programme """
+    # Creation de l'objet Vue du tournoi
     vue_du_tournoi = Vue()
+    # Creation de l'objet Controleur
     controleur_du_tournoi = Controleur()
-    information_du_tournoi = Vue.recuperation_des_informations_du_tournoi(vue_du_tournoi)
-    print(information_du_tournoi)
-    information_des_joueur = Vue.recuperation_des_informations_des_joueurs(vue_du_tournoi)
-    print(information_des_joueur)
+    # Affichage du menu
+    Controleur.affichage_du_menu(controleur_du_tournoi)
+
 
     """gestion_du_tournoi = Controleur()
     instance_du_tournoi = Controleur.creation_du_tournoi(gestion_du_tournoi, information_du_tournoi)

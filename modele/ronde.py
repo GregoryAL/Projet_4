@@ -6,8 +6,8 @@ class Ronde:
         self.nom_de_la_ronde = nom
         self.date_heure_debut_du_match = date_heure_debut_du_match
         self.date_heure_fin_du_match = ""
-        self.liste_matchs = []
-        self.resultat_matchs = []
+        self.liste_matchs = {}
+        self.resultat_matchs = {}
 
     def __str__(self):
         match1, match2, match3, match4 = self.liste_matchs

@@ -10,7 +10,7 @@ class Match:
         self.joueur2 = joueur2
         self.resultat_joueur1 = ""
         self.resultat_joueur2 = ""
-        self.match = []
+        self.tuple_match = []
 
     def __str__(self):
         return self.joueur1, " a obtenu : ", self.resultat_joueur1, self.joueur2, " a obtenu : ", self.resultat_joueur2

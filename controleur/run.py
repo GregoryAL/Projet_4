@@ -5,15 +5,43 @@ from modele import ronde
 from modele import joueurs
 import datetime
 import random
+from vue.vue import Vue
+
 
 
 class Controleur:
     """ contrôleur general """
 
-    def __init__(self, type_de_tournoi="TournoiSuisse", vue=""):
-        """ A un type de déroulement du tournoi et une vue. """
-        self.type_de_tournoi = type_de_tournoi
-        self.vue = vue
+    def __init__(self):
+        """ initialise le controleur. """
+        self.liste_des_joueurs = ""
+        self.instance_de_tournoi = ""
+        self.vue_input = Vue
+
+    def affichage_du_menu(self):
+        """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
+        choix_utilisateur = int(Vue.menu(self.vue_input))
+        if choix_utilisateur == 1:
+            info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_input)
+            self.instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+        elif choix_utilisateur == 2:
+            self.instance_de_tournoi.rondes[-1].resultat_matchs = self.recuperation_des_scores(self.instance_de_tournoi.rondes[-1])
+
+
+
+
+    def recuperation_des_scores(self, ronde_en_cours):
+        """ Recuperation des scores de la vue pour chaque match d'une ronde """
+        for match_a_recupere in ronde_en_cours.liste_matchs:
+            match_a_recupere.resultat_joueur1 = Vue.recuperation_des_resultats_d_un_match(match_a_recupere.joueur1)
+            match_a_recupere.resultat_joueur2 = Vue.recuperation_des_resultats_d_un_match(match_a_recupere.joueur2)
+            match_a_recupere.tuple_match = ([match_a_recupere.joueur1, match_a_recupere.resultat_joueur1],
+                                            [match_a_recupere.joueur2, match_a_recupere.resultat_joueur2])
+            ronde_en_cours.resultat_matchs = match_a_recupere.tuple_match
+
+
+
+
 
     def creation_du_tournoi(self, info_tournoi):
         """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""
