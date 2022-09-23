@@ -1,4 +1,6 @@
 """ Point d'entrée du contrôleur"""
+import sys
+
 from modele import tournoi
 from modele import match
 from modele import ronde
@@ -14,9 +16,11 @@ class Controleur:
 
     def __init__(self):
         """ initialise le controleur. """
-        self.liste_des_joueurs = ""
+        self.liste_joueurs = {}
+        self.liste_joueurs = self.ajout_des_joueurs()
         self.instance_de_tournoi = ""
-        self.vue_input = Vue
+        self.vue_input = Vue()
+
 
     def affichage_du_menu(self):
         """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
@@ -24,8 +28,23 @@ class Controleur:
         if choix_utilisateur == 1:
             info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_input)
             self.instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+            return self.instance_de_tournoi
         elif choix_utilisateur == 2:
-            self.instance_de_tournoi.rondes[-1].resultat_matchs = self.recuperation_des_scores(self.instance_de_tournoi.rondes[-1])
+            print(self.instance_de_tournoi.nombre_de_tour_du_tournoi)
+            for numero_de_ronde in range(int(self.instance_de_tournoi.nombre_de_tour_du_tournoi)):
+                ronde_actuelle = Controleur.deroulement_d_une_ronde(numero_de_ronde,
+                                                                    self.instance_de_tournoi.participants)
+                self.instance_de_tournoi.rondes.append(ronde_actuelle)
+                print(self.instance_de_tournoi.rondes)
+            return self.instance_de_tournoi
+        elif choix_utilisateur == 3:
+            self.instance_de_tournoi.rondes[-1].resultat_matchs = \
+                self.recuperation_des_scores(self.instance_de_tournoi.rondes[-1])
+            return self.instance_de_tournoi
+        elif choix_utilisateur == 4:
+            print(self.instance_de_tournoi)
+        elif choix_utilisateur == 5:
+            return choix_utilisateur
 
 
 
@@ -38,6 +57,7 @@ class Controleur:
             match_a_recupere.tuple_match = ([match_a_recupere.joueur1, match_a_recupere.resultat_joueur1],
                                             [match_a_recupere.joueur2, match_a_recupere.resultat_joueur2])
             ronde_en_cours.resultat_matchs = match_a_recupere.tuple_match
+        return ronde_en_cours
 
 
 
@@ -45,23 +65,50 @@ class Controleur:
 
     def creation_du_tournoi(self, info_tournoi):
         """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""
-        # données d'un tournoi statique
-        instance_de_tournoi = tournoi.Tournoi(*info_tournoi)
-        return instance_de_tournoi
+        # Creation d'un objet tournoi avec les informations récupérées par la Vue
+        self.instance_de_tournoi = tournoi.Tournoi(info_tournoi["nom_du_tournoi"],
+                                                   info_tournoi["lieu_du_tournoi"],
+                                                   info_tournoi["date_de_tournoi"],
+                                                   info_tournoi["type_de_controle_du_temps"],
+                                                   info_tournoi["nombre_de_participant"],
+                                                   info_tournoi["nombre_de_tour"],
+                                                   info_tournoi["commentaires"])
+        # Récuperation de la liste des joueurs avec la Vue
+        print(self.instance_de_tournoi.nombre_de_participants)
+        for i in range(self.instance_de_tournoi.nombre_de_participants):
+            self.instance_de_tournoi.participants.append(random.choice(list(self.liste_joueurs.keys())))
+        print(self.instance_de_tournoi.participants)
+        return self.instance_de_tournoi
+
 
     def ajout_des_joueurs(self):
         """ Ajout des joueurs """
-        # Ajout des 8 joueurs statique
-        player1 = joueurs.Joueur("Nom1", "prénom1", "11/11/11", "M", 1650)
-        player2 = joueurs.Joueur("Nom2", "prénom2", "10/10/10", "F", 1435)
-        player3 = joueurs.Joueur("Nom3", "prénom3", "9/9/9", "U", 1983)
-        player4 = joueurs.Joueur("Nom4", "prénom4", "08/08/08", "M", 1945)
-        player5 = joueurs.Joueur("Nom5", "prénom5", "04/05/06", "F", 1345)
-        player6 = joueurs.Joueur("Nom6", "prénom6", "11/5/11", "M", 1580)
-        player7 = joueurs.Joueur("Nom7", "prénom7", "10/9/10", "F", 1415)
-        player8 = joueurs.Joueur("Nom8", "prénom8", "9/4/9", "U", 1953)
-        liste_joueurs = [player1, player2, player3, player4, player5, player6, player7, player8]
-        return liste_joueurs
+        # Pool de 24 joueurs statiques
+        self.liste_joueurs["player01"] = joueurs.Joueur("Nom1", "prénom1", "11/11/11", "M", 1650)
+        self.liste_joueurs["player02"] = joueurs.Joueur("Nom2", "prénom2", "10/10/10", "F", 1435)
+        self.liste_joueurs["player03"] = joueurs.Joueur("Nom3", "prénom3", "9/9/9", "U", 1983)
+        self.liste_joueurs["player04"] = joueurs.Joueur("Nom4", "prénom4", "08/08/08", "M", 1945)
+        self.liste_joueurs["player05"] = joueurs.Joueur("Nom5", "prénom5", "04/05/06", "F", 1345)
+        self.liste_joueurs["player06"] = joueurs.Joueur("Nom6", "prénom6", "11/5/11", "M", 1580)
+        self.liste_joueurs["player07"] = joueurs.Joueur("Nom7", "prénom7", "10/9/10", "F", 1415)
+        self.liste_joueurs["player08"] = joueurs.Joueur("Nom8", "prénom8", "9/4/9", "U", 1953)
+        self.liste_joueurs["player11"] = joueurs.Joueur("Nom11", "prénom11", "11/11/11", "M", 1450)
+        self.liste_joueurs["player12"] = joueurs.Joueur("Nom12", "prénom12", "10/10/10", "F", 1535)
+        self.liste_joueurs["player13"] = joueurs.Joueur("Nom13", "prénom13", "9/9/9", "U", 1783)
+        self.liste_joueurs["player14"] = joueurs.Joueur("Nom14", "prénom14", "08/08/08", "M", 1245)
+        self.liste_joueurs["player15"] = joueurs.Joueur("Nom15", "prénom15", "04/05/06", "F", 1545)
+        self.liste_joueurs["player16"] = joueurs.Joueur("Nom16", "prénom16", "11/5/11", "M", 1380)
+        self.liste_joueurs["player17"] = joueurs.Joueur("Nom17", "prénom17", "10/9/10", "F", 1615)
+        self.liste_joueurs["player18"] = joueurs.Joueur("Nom18", "prénom18", "9/4/9", "U", 1153)
+        self.liste_joueurs["player21"] = joueurs.Joueur("Nom21", "prénom21", "11/11/11", "M", 1250)
+        self.liste_joueurs["player22"] = joueurs.Joueur("Nom22", "prénom22", "10/10/10", "F", 1335)
+        self.liste_joueurs["player23"] = joueurs.Joueur("Nom23", "prénom23", "9/9/9", "U", 1483)
+        self.liste_joueurs["player24"] = joueurs.Joueur("Nom24", "prénom24", "08/08/08", "M", 1545)
+        self.liste_joueurs["player25"] = joueurs.Joueur("Nom25", "prénom25", "04/05/06", "F", 1645)
+        self.liste_joueurs["player26"] = joueurs.Joueur("Nom26", "prénom26", "11/5/11", "M", 1780)
+        self.liste_joueurs["player27"] = joueurs.Joueur("Nom27", "prénom27", "10/9/10", "F", 1815)
+        self.liste_joueurs["player28"] = joueurs.Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)
+        return self.liste_joueurs
 
     def classement_des_joueurs(self, liste_participant, facteur_tri):
         if facteur_tri == "classement_elo":

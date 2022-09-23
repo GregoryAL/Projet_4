@@ -13,3 +13,9 @@ class Tournoi:
         self.commentaire = commentaire
         self.participants = []
         self.rondes = []
+
+    def __str__(self):
+        print(" " + self.nom_du_tournoi + " " + self.lieu_du_tournoi + " " + self.date_du_tournoi + " " +
+              str(self.nombre_de_tour_du_tournoi) + " " + self.type_de_controle_du_temps + " " +
+              self.nombre_de_participants + " " + self.commentaire + " " + self.participants["joueur1"] + " " +
+              self.participants["joueur2"] + " " + self.rondes[0])

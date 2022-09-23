@@ -1,4 +1,6 @@
 """Entry point."""
+import sys
+
 from controleur.run import Controleur
 from modele.joueurs import Joueur
 from modele.ronde import Ronde
@@ -12,10 +14,13 @@ if __name__ == "__main__":
     # Creation de l'objet Controleur
     controleur_du_tournoi = Controleur()
     # Affichage du menu
-    Controleur.affichage_du_menu(controleur_du_tournoi)
+    while Controleur.affichage_du_menu(controleur_du_tournoi) != 5:
+        instance_de_tournoi = Controleur.affichage_du_menu(controleur_du_tournoi)
+    # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
+    sys.exit("Vous quittez la gestion du tournoi")
 
 
-    """gestion_du_tournoi = Controleur()
+"""gestion_du_tournoi = Controleur()
     instance_du_tournoi = Controleur.creation_du_tournoi(gestion_du_tournoi, information_du_tournoi)
     # ajout de la liste des joueurs dans l'objet de tournoi instancié
     instance_du_tournoi.participants = Controleur.ajout_des_joueurs(gestion_du_tournoi)
