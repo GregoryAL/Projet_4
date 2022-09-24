@@ -1,4 +1,6 @@
 """ Vue de base """
+from os import system
+from os import name
 
 
 class Vue:
@@ -11,8 +13,17 @@ class Vue:
         self.choix_utilisateur = ""
         self.resultat_joueur = ""
 
+    def clean_screen(self):
+        if name == "nt":
+            _ = system("cls")
+        else:
+            _ = system("clear")
+
     def menu(self):
         """ Affichage du menu général"""
+        # Vide l'écran
+        self.clean_screen()
+        # Affiche le menu
         print("Menu pour la gestion d'un tournoi d'échec\n")
         print(" [1] Création d'un tournoi\n")
         print(" [2] Lancement d'une ronde\n")
@@ -30,6 +41,8 @@ class Vue:
 
     def recuperation_des_informations_du_tournoi(self):
         """ Creation du tournoi """
+        # Vide l'écran
+        self.clean_screen()
         # Demande le nombre de participants au tournoi
         nombre_de_participant = input("Entrez le nombre de participants du tournoi à créer : \n")
         self.instance_de_tournoi["nombre_de_participant"] = int(nombre_de_participant)
@@ -60,6 +73,8 @@ class Vue:
         commentaires = input("Entrez des commentaires si nécessaire : \n")
         if commentaires != "":
             self.instance_de_tournoi["commentaires"] = commentaires
+        else:
+            self.instance_de_tournoi["commentaires"] = ""
         return self.instance_de_tournoi
 
     def recuperation_des_informations_des_joueurs(self):
