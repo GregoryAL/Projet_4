@@ -33,7 +33,7 @@ class Controleur:
             print(self.instance_de_tournoi.nombre_de_tour_du_tournoi)
             for numero_de_ronde in range(self.instance_de_tournoi.nombre_de_tour_du_tournoi):
                 print(numero_de_ronde)
-                ronde_actuelle = self.deroulement_d_une_ronde(numero_de_ronde+1)
+                ronde_actuelle = self.deroulement_d_une_ronde(numero_de_ronde)
                 self.instance_de_tournoi.rondes.append(ronde_actuelle)
                 print(self.instance_de_tournoi.rondes)
             return self.instance_de_tournoi
@@ -118,36 +118,11 @@ class Controleur:
             liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
         return liste_participant
 
-
-    def creation_des_matchs_methode_suisse(self, numero_ronde):
-        # Tri des joueurs
-        if numero_ronde == 1:
-            self.instance_de_tournoi.participants.sort(key=lambda x: x.classement_elo, reverse=True)
-            print("le classement est : ")
-            for joueur in self.instance_de_tournoi.participants:
-                print(joueurs.Joueur.__str__(joueur))
-        elif numero_ronde > 1:
-            self.instance_de_tournoi.participants.sort(key=lambda x: x.points_tournoi, reverse=True)
-            print("le classement est : ")
-            for joueur in self.instance_de_tournoi.participants:
-                print(joueurs.Joueur.__str__(joueur))
-        # Creation des paires
-        if len(self.instance_de_tournoi.participants)/2 is int:
-
-            match1 = match.Match(self.instance_de_tournoi.participants[0], self.instance_de_tournoi.participants[4])
-            match2 = match.Match(self.instance_de_tournoi.participants[1], self.instance_de_tournoi.participants[5])
-            match3 = match.Match(self.instance_de_tournoi.participants[2], self.instance_de_tournoi.participants[6])
-            match4 = match.Match(self.instance_de_tournoi.participants[3], self.instance_de_tournoi.participants[7])
-            ronde_actuelle = ronde.Ronde("round"+str(numero_ronde),
-                                         datetime.datetime.now())
-            ronde_actuelle.liste_matchs = [match1, match2, match3, match4]
-            # print(ronde_actuelle.__str__())
-            return ronde_actuelle
-
     def deroulement_d_une_ronde(self, numero_de_ronde):
         """ Mécanisme de fonctionnement d'une ronde"""
         # Creation de l'objet instancié tournoi nécessaire
-        ronde_actuelle = self.creation_des_matchs_methode_suisse(self, numero_de_ronde)
+        Methode_comptage = TypeDeTournoi("MethodeSuisse", numero_de_ronde, self.instance_de_tournoi)
+        ronde_actuelle = TypeDeTournoi.creation_des_matchs_methode_suisse(Methode_comptage)
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:
             # affiche le match en cours
@@ -176,3 +151,5 @@ class Controleur:
             # print(joueurs.Joueur.__str__(participant))
 
         return ronde_actuelle
+
+

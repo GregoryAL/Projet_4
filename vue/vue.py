@@ -29,7 +29,7 @@ class Vue:
         print(" [2] Lancement d'une ronde\n")
         print(" [3] Récupération des résultats d'une ronde\n")
         print(" [4] test print\n")
-        print(" [5] Sortir de la gestion du tournoi")
+        print(" [5] Sortir de la gestion du tournoi\n")
         self.choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
         return self.choix_utilisateur
 
