@@ -8,7 +8,7 @@ from modele import joueurs
 import datetime
 import random
 from vue.vue import Vue
-
+from controleur.type_de_tournoi import TypeDeTournoi
 
 
 class Controleur:
@@ -77,7 +77,10 @@ class Controleur:
         # Récuperation de la liste des joueurs avec la Vue
         print(self.instance_de_tournoi.nombre_de_participants)
         for i in range(self.instance_de_tournoi.nombre_de_participants):
-            self.instance_de_tournoi.participants.append(random.choice(list(self.liste_joueurs.keys())))
+            joueur_random_key = random.choice(list(self.liste_joueurs.keys()))
+            joueur_random = self.liste_joueurs[joueur_random_key]
+            self.instance_de_tournoi.participants.append(joueur_random)
+            self.liste_joueurs.pop(joueur_random_key)
         print(self.instance_de_tournoi.participants)
         return self.instance_de_tournoi
 
@@ -121,32 +124,49 @@ class Controleur:
     def deroulement_d_une_ronde(self, numero_de_ronde):
         """ Mécanisme de fonctionnement d'une ronde"""
         # Creation de l'objet instancié tournoi nécessaire
-        Methode_comptage = TypeDeTournoi("MethodeSuisse", numero_de_ronde, self.instance_de_tournoi)
-        ronde_actuelle = TypeDeTournoi.creation_des_matchs_methode_suisse(Methode_comptage)
+        methode_comptage = TypeDeTournoi("MethodeSuisse", numero_de_ronde, self.instance_de_tournoi)
+        print(methode_comptage)
+        ronde_actuelle = TypeDeTournoi.creation_des_matchs_methode_suisse(methode_comptage)
+        # print(ronde_actuelle)
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:
             # affiche le match en cours
-            print(match_de_ronde.joueur1.nom + " affronte " + match_de_ronde.joueur2.nom)
+            print(ronde_actuelle.liste_matchs[match_de_ronde].joueur1.nom + " affronte " +
+                  ronde_actuelle.liste_matchs[match_de_ronde].joueur2.nom)
+            print("le type de joueur1 est " + str(type(ronde_actuelle.liste_matchs[match_de_ronde].joueur1)))
             # determine un vainqueur
-            vainqueur = random.choice([match_de_ronde.joueur1, match_de_ronde.joueur2, "nul"])
+            liste_choix_vainqueur = [str(ronde_actuelle.liste_matchs[match_de_ronde].joueur1.nom),
+                                     str(ronde_actuelle.liste_matchs[match_de_ronde].joueur2.nom), "nul"]
+            vainqueur = random.choice(liste_choix_vainqueur)
             # modifie les points de tournoi de chaque joueur en fonction du resultat du match
-            if vainqueur == match_de_ronde.joueur1:
-                print(match_de_ronde.joueur1.nom + " a gagné contre " + match_de_ronde.joueur2.nom)
-                match_de_ronde.resultat_joueur1 = 1
-                match_de_ronde.resultat_joueur2 = 0
-            elif vainqueur == match_de_ronde.joueur2:
-                print(match_de_ronde.joueur2.nom + " a gagné contre " + match_de_ronde.joueur1.nom)
-                match_de_ronde.resultat_joueur1 = 0
-                match_de_ronde.resultat_joueur2 = 1
+            if vainqueur == str(ronde_actuelle.liste_matchs[match_de_ronde].joueur1.nom):
+                print(ronde_actuelle.liste_matchs[match_de_ronde].joueur1.nom + " a gagné contre " +
+                      ronde_actuelle.liste_matchs[match_de_ronde].joueur2.nom)
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1 = 1
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2 = 0
+            elif vainqueur == str(ronde_actuelle.liste_matchs[match_de_ronde].joueur2.nom):
+                print(ronde_actuelle.liste_matchs[match_de_ronde].joueur2.nom + " a gagné contre " +
+                      ronde_actuelle.liste_matchs[match_de_ronde].joueur1.nom)
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1 = 0
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2 = 1
             elif vainqueur == "nul":
                 print("C'est un match nul")
-                match_de_ronde.resultat_joueur1 = 0.5
-                match_de_ronde.resultat_joueur2 = 0.5
-            match_de_ronde.joueur1.points_tournoi += match_de_ronde.resultat_joueur1
-            match_de_ronde.joueur2.points_tournoi += match_de_ronde.resultat_joueur2
-            match_de_ronde.match = [[match_de_ronde.joueur1, match_de_ronde.resultat_joueur1],
-                                    [match_de_ronde.joueur2, match_de_ronde.resultat_joueur2]]
-            ronde_actuelle.resultat_matchs = match.Match.creation_tuple_matchs(match_de_ronde)
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1 = 0.5
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2 = 0.5
+            ronde_actuelle.liste_matchs[match_de_ronde].joueur1.points_tournoi += \
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1
+            ronde_actuelle.liste_matchs[match_de_ronde].joueur2.points_tournoi += \
+                ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2
+            ronde_actuelle.liste_matchs[match_de_ronde].match = [[ronde_actuelle.liste_matchs[match_de_ronde].joueur1,
+                                                                  ronde_actuelle.liste_matchs[match_de_ronde].
+                                                                  resultat_joueur1],
+                                                                 [ronde_actuelle.liste_matchs[match_de_ronde].joueur2,
+                                                                  ronde_actuelle.liste_matchs[match_de_ronde].
+                                                                  resultat_joueur2]]
+            ronde_actuelle.resultat_matchs = ([ronde_actuelle.liste_matchs[match_de_ronde].joueur1,
+                                               ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1],
+                                               [ronde_actuelle.liste_matchs[match_de_ronde].joueur2,
+                                               ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2])
         # for participant in liste_de_joueur:
             # print(joueurs.Joueur.__str__(participant))
 
