@@ -126,7 +126,7 @@ class Controleur:
         # Creation de l'objet instancié tournoi nécessaire
         methode_comptage = TypeDeTournoi("MethodeSuisse", numero_de_ronde, self.instance_de_tournoi)
         print(methode_comptage)
-        ronde_actuelle = TypeDeTournoi.creation_des_matchs_methode_suisse(methode_comptage)
+        ronde_actuelle = TypeDeTournoi.choix_type_tournoi(methode_comptage)
         # print(ronde_actuelle)
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:

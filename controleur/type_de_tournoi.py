@@ -14,6 +14,12 @@ class TypeDeTournoi:
         self.numero_de_ronde = numero_de_ronde
         self.instance_tournoi = instance_tournoi
 
+    def choix_type_tournoi(self):
+        if self.type_de_tournoi == "MethodeSuisse":
+            return self.creation_des_matchs_methode_suisse()
+        else:
+            print("Type de tournoi non pris en charge.")
+
     def creation_des_matchs_methode_suisse(self):
         # Tri des joueurs
         print("numero de ronde " + str(self.numero_de_ronde))
