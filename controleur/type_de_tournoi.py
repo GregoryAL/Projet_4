@@ -1,50 +1,35 @@
-from modele import joueurs
 from modele import ronde
 import datetime
-from modele import match
-from modele import tournoi
+from modele.match import Match
 
 
 
 class TypeDeTournoi:
     """ Classe gérant les types de tournoi"""
 
-    def __init__(self, type_de_tournoi, numero_de_ronde, instance_tournoi):
-        self.type_de_tournoi = type_de_tournoi
-        self.numero_de_ronde = numero_de_ronde
-        self.instance_tournoi = instance_tournoi
+    def __init__(self):
+        """ crée l'objet type de tournoi """
 
-    def choix_type_tournoi(self):
-        if self.type_de_tournoi == "MethodeSuisse":
-            return self.creation_des_matchs_methode_suisse()
+
+    def choix_type_tournoi(self, type_de_tournoi, numero_de_ronde, instance_tournoi):
+        if type_de_tournoi == "MethodeSuisse":
+            return self.creation_des_matchs_methode_suisse(numero_de_ronde, instance_tournoi)
         else:
             print("Type de tournoi non pris en charge.")
 
-    def creation_des_matchs_methode_suisse(self):
+    def creation_des_matchs_methode_suisse(self, numero_de_ronde, instance_tournoi):
         # Tri des joueurs
-        print("numero de ronde " + str(self.numero_de_ronde))
-        if self.numero_de_ronde == 1:
-            self.instance_tournoi.participants.sort(key=lambda x: x.classement_elo, reverse=True)
-            print("le classement est : ")
-            for joueur in self.instance_tournoi.participants:
-                print(joueurs.Joueur.__str__(joueur))
-        elif self.numero_de_ronde > 1:
-            self.instance_tournoi.participants.sort(key=lambda x: x.points_tournoi, reverse=True)
-            print("le classement est : ")
-            for joueur in self.instance_tournoi.participants:
-                print(joueurs.Joueur.__str__(joueur))
+        print("numero de ronde " + str(numero_de_ronde))
+        if numero_de_ronde == 1:
+            instance_tournoi.participants.sort(key=lambda x: x.classement_elo, reverse=True)
+        elif numero_de_ronde > 1:
+            instance_tournoi.participants.sort(key=lambda x: x.points_tournoi, reverse=True)
         # Creation des paires
-        print("le nombre de participants est " + str(self.instance_tournoi.nombre_de_participants))
-        moitie_des_participants = int(self.instance_tournoi.nombre_de_participants/2)
-        print("la moitié des participants est " + str(moitie_des_participants))
-        ronde_actuelle = ronde.Ronde("round" + str(self.numero_de_ronde), datetime.datetime.now())
+        moitie_des_participants = int(instance_tournoi.nombre_de_participants/2)
+        ronde_actuelle = ronde.Ronde("round" + str(numero_de_ronde), datetime.datetime.now())
         for i in range(moitie_des_participants):
-            print("i est " + str(i) + " et le joueur est " + self.instance_tournoi.participants[i].nom)
             id_joueur_2 = moitie_des_participants + i
-            print("id joueur2 est " + str(id_joueur_2) + " et le joueur est " +
-                  self.instance_tournoi.participants[id_joueur_2].nom)
-            match_pairing = match.Match(self.instance_tournoi.participants[i],
-                                        self.instance_tournoi.participants[id_joueur_2])
-            ronde_actuelle.liste_matchs["Match"+str(i+1)] = match_pairing
+            match_pairing = Match(instance_tournoi.participants[i],instance_tournoi.participants[id_joueur_2])
+            ronde_actuelle.liste_matchs.append(match_pairing)
             print(ronde_actuelle.liste_matchs)
         return ronde_actuelle

@@ -1,7 +1,7 @@
 """ Point d'entrée du contrôleur"""
 import sys
 
-from modele import tournoi
+from modele.tournoi import Tournoi
 from modele import match
 from modele import ronde
 from modele import joueurs
@@ -14,32 +14,37 @@ from controleur.type_de_tournoi import TypeDeTournoi
 class Controleur:
     """ contrôleur general """
 
-    def __init__(self):
+    def __init__(self, vue):
         """ initialise le controleur. """
         self.liste_joueurs = {}
         self.liste_joueurs = self.ajout_des_joueurs()
-        self.instance_de_tournoi = ""
-        self.vue_input = Vue()
-        self.numero_de_ronde_active = -1
+        self.vue_instance = vue
+
+
+    def execute(self):
+        while self.affichage_du_menu() != 5:
+            instance_de_tournoi = self.affichage_du_menu()
+        # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
+        sys.exit("Vous quittez la gestion du tournoi")
 
 
     def affichage_du_menu(self):
         """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
-        choix_utilisateur = int(Vue.menu(self.vue_input))
+        choix_utilisateur = int(Vue.menu(self.vue_instance))
         if choix_utilisateur == 1:
-            info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_input)
-            self.instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
-            return self.instance_de_tournoi
-        elif choix_utilisateur == 2:
-            self.numero_de_ronde_active += 1
-            print(self.instance_de_tournoi.nombre_de_tour_du_tournoi)
-            if numero_de_ronde < range(self.instance_de_tournoi.nombre_de_tour_du_tournoi-1):
-                print(numero_de_ronde)
-                ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde)
-                self.instance_de_tournoi.rondes.append(ronde_actuelle)
+            info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance)
+            instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+            numero_de_ronde_active = 0
+            while numero_de_ronde_active <= instance_de_tournoi.nombre_de_tour_du_tournoi:
+                numero_de_ronde_active += 1
+                print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
+                      str(instance_de_tournoi.nombre_de_tour_du_tournoi) + "rondes")
+                ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
+                                                                  "MethodeSuisse")
+                instance_de_tournoi.rondes.append(ronde_actuelle)
                 print(self.instance_de_tournoi.rondes)
 
-            return self.instance_de_tournoi
+
         elif choix_utilisateur == 3:
             self.numero_de_ronde_active = len(self.instance_de_tournoi.rondes)
             print(self.numero_de_ronde_active)
@@ -54,8 +59,44 @@ class Controleur:
         elif choix_utilisateur == 5:
             return choix_utilisateur
 
+    def creation_du_tournoi(self, info_tournoi):
+        """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""
+        # Creation d'un objet tournoi avec les informations récupérées par la Vue
+        self.instance_de_tournoi = Tournoi(info_tournoi["nom_du_tournoi"],
+                                                info_tournoi["lieu_du_tournoi"],
+                                                   info_tournoi["date_de_tournoi"],
+                                                   info_tournoi["type_de_controle_du_temps"],
+                                                   info_tournoi["nombre_de_participant"],
+                                                   info_tournoi["nombre_de_tour"],
+                                                   info_tournoi["commentaires"])
+        # Récuperation de la liste des joueurs avec la Vue
+        for i in range(self.instance_de_tournoi.nombre_de_participants):
+            joueur_random_key = random.choice(list(self.liste_joueurs.keys()))
+            joueur_random = self.liste_joueurs[joueur_random_key]
+            self.instance_de_tournoi.participants.append(joueur_random)
+            self.liste_joueurs.pop(joueur_random_key)
+        return self.instance_de_tournoi
 
+    def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, methode_de_comptage):
+        """ Mécanisme de fonctionnement d'une ronde"""
+        # Creation de l'objet instancié tournoi nécessaire
+        objet_type_de_tournoi = TypeDeTournoi()
+        ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, "MethodeSuisse", numero_de_ronde,
+                                                          instance_de_tournoi)
+        print(ronde_actuelle)
+        # pour chaque match de la liste des matchs de la ronde
+        for match_de_ronde in ronde_actuelle.liste_matchs:
+            self.affichage_des_matchs(match_de_ronde)
+        # ronde_actuelle.liste_matchs[match_de_ronde] = self.deroulement_d_un_match(
+            # ronde_actuelle.liste_matchs[match_de_ronde])
+        # ronde_actuelle.resultat_matchs = ([ronde_actuelle.liste_matchs[match_de_ronde].joueur1,
+                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1],
+                                          # [ronde_actuelle.liste_matchs[match_de_ronde].joueur2,
+                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2])
+        return ronde_actuelle
 
+    def affichage_des_matchs(self, instance_de_match):
+        Vue.affichage_des_matchs(self.vue_instance, instance_de_match)
 
     def recuperation_des_scores(self, numero_de_ronde):
         """ Recuperation des scores de la vue pour chaque match d'une ronde """
@@ -75,25 +116,6 @@ class Controleur:
 
 
 
-    def creation_du_tournoi(self, info_tournoi):
-        """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""
-        # Creation d'un objet tournoi avec les informations récupérées par la Vue
-        self.instance_de_tournoi = tournoi.Tournoi(info_tournoi["nom_du_tournoi"],
-                                                   info_tournoi["lieu_du_tournoi"],
-                                                   info_tournoi["date_de_tournoi"],
-                                                   info_tournoi["type_de_controle_du_temps"],
-                                                   info_tournoi["nombre_de_participant"],
-                                                   info_tournoi["nombre_de_tour"],
-                                                   info_tournoi["commentaires"])
-        # Récuperation de la liste des joueurs avec la Vue
-        print(self.instance_de_tournoi.nombre_de_participants)
-        for i in range(self.instance_de_tournoi.nombre_de_participants):
-            joueur_random_key = random.choice(list(self.liste_joueurs.keys()))
-            joueur_random = self.liste_joueurs[joueur_random_key]
-            self.instance_de_tournoi.participants.append(joueur_random)
-            self.liste_joueurs.pop(joueur_random_key)
-        print(self.instance_de_tournoi.participants)
-        return self.instance_de_tournoi
 
 
     def ajout_des_joueurs(self):
@@ -132,27 +154,9 @@ class Controleur:
             liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
         return liste_participant
 
-    def appairage_match_d_une_ronde(self, numero_de_ronde):
-        """ Mécanisme de fonctionnement d'une ronde"""
-        # Creation de l'objet instancié tournoi nécessaire
-        methode_comptage = TypeDeTournoi("MethodeSuisse", numero_de_ronde, self.instance_de_tournoi)
-        print(methode_comptage)
-        ronde_actuelle = TypeDeTournoi.choix_type_tournoi(methode_comptage)
-        # print(ronde_actuelle)
-        # pour chaque match de la liste des matchs de la ronde
-        for match_de_ronde in ronde_actuelle.liste_matchs:
-            self.affichage_des_matchs(ronde_actuelle.liste_matchs[match_de_ronde])
-        # ronde_actuelle.liste_matchs[match_de_ronde] = self.deroulement_d_un_match(
-            # ronde_actuelle.liste_matchs[match_de_ronde])
-        # ronde_actuelle.resultat_matchs = ([ronde_actuelle.liste_matchs[match_de_ronde].joueur1,
-                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1],
-                                          # [ronde_actuelle.liste_matchs[match_de_ronde].joueur2,
-                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2])
-        return ronde_actuelle
 
 
-    def affichage_des_matchs(self, instance_de_match):
-        print(instance_de_match.joueur1.nom + " affronte " + instance_de_match.joueur2.nom)
+
 
     def deroulement_d_un_match(self, instance_de_match):
         # affiche le match en cours

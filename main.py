@@ -4,6 +4,7 @@ import sys
 from controleur.run import Controleur
 from modele.joueurs import Joueur
 from modele.ronde import Ronde
+from controleur.type_de_tournoi import TypeDeTournoi
 from vue.vue import Vue
 
 
@@ -12,12 +13,10 @@ if __name__ == "__main__":
     # Creation de l'objet Vue du tournoi
     vue_du_tournoi = Vue()
     # Creation de l'objet Controleur
-    controleur_du_tournoi = Controleur()
-    # Affichage du menu
-    while Controleur.affichage_du_menu(controleur_du_tournoi) != 5:
-        instance_de_tournoi = Controleur.affichage_du_menu(controleur_du_tournoi)
-    # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
-    sys.exit("Vous quittez la gestion du tournoi")
+    controleur_du_tournoi = Controleur(vue_du_tournoi)
+    # Lancement du programme
+    controleur_du_tournoi.execute()
+
 
 
 """gestion_du_tournoi = Controleur()

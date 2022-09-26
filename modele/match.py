@@ -10,11 +10,9 @@ class Match:
         self.joueur2 = joueur2
         self.resultat_joueur1 = ""
         self.resultat_joueur2 = ""
-        self.tuple_match = []
+        self.tuple_match = ([self.joueur1, self.resultat_joueur1], [self.joueur2, self.resultat_joueur2])
 
     def __str__(self):
         return self.joueur1, " a obtenu : ", self.resultat_joueur1, self.joueur2, " a obtenu : ", self.resultat_joueur2
 
-    def creation_tuple_matchs(self):
-        tuple = (self.match)
-        return tuple
+
