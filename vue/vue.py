@@ -30,9 +30,9 @@ class Vue:
         choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
         return choix_utilisateur
 
-    def recuperation_des_resultats_d_un_match(self, joueur):
+    def recuperation_des_resultats_d_un_match(self, match):
         """ Récupère les résultats d'un joueur d'un match d'une ronde"""
-        resultat_joueur = input("Entrez le résultat du match pour " + joueur.nom +
+        resultat_match = input("Entrez le résultat du match pour " + joueur.nom +
                                      " ( Victoire, Defaite, Nul) : /n")
         return resultat_joueur
 
@@ -75,6 +75,10 @@ class Vue:
         else:
             informations_de_tournoi["commentaires"] = ""
         return informations_de_tournoi
+
+    def depart_de_la_ronde(self):
+        input("Appuyer sur entrer quand la ronde commence")
+
 
     def recuperation_des_informations_des_joueurs(self):
         for numero_participant in range(self.instance_de_tournoi["nombre_de_participant"]):

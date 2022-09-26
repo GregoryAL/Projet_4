@@ -42,7 +42,8 @@ class Controleur:
                 ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                                   "MethodeSuisse")
                 instance_de_tournoi.rondes.append(ronde_actuelle)
-                print(self.instance_de_tournoi.rondes)
+                Vue.depart_de_la_ronde(self.vue_instance)
+
 
 
         elif choix_utilisateur == 3:
@@ -83,7 +84,6 @@ class Controleur:
         objet_type_de_tournoi = TypeDeTournoi()
         ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, "MethodeSuisse", numero_de_ronde,
                                                           instance_de_tournoi)
-        print(ronde_actuelle)
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:
             self.affichage_des_matchs(match_de_ronde)
