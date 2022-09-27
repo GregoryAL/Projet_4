@@ -16,6 +16,9 @@ class Vue:
         else:
             _ = system("clear")
 
+    def message_d_erreur(self):
+        print("il y a eut une erreur. \n")
+
     def menu(self):
         """ Affichage du menu général"""
         # Vide l'écran
@@ -32,9 +35,21 @@ class Vue:
 
     def recuperation_des_resultats_d_un_match(self, match):
         """ Récupère les résultats d'un joueur d'un match d'une ronde"""
-        resultat_match = input("Entrez le résultat du match pour " + joueur.nom +
-                                     " ( Victoire, Defaite, Nul) : /n")
-        return resultat_joueur
+        resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1.nom + " et 2:" + match.joueur2.nom +
+                                     " (1/N/2) : \n")
+        return resultat_match
+
+    def verification_resultat_match_avec_vainqueur(self, joueur1, joueur2):
+        """ Verifie que la réponse entrée par l'utilisateur est la bonne"""
+        resultat_verification = input(joueur1.nom + " a gagné contre " + joueur2.nom + ". \n Si c'est exacte, tapez "
+                                                                                       "'OK' puis entrer: \n")
+        return resultat_verification
+
+    def verification_resultat_match_nul(self, joueur1, joueur2):
+        resultat_verification = input(joueur1.nom + " a fait match nul contre " + joueur2.nom + ". \n Si c'est exacte, "
+                                                                                                "tapez 'OK' puis entrer"
+                                                                                                ": \n")
+        return resultat_verification
 
     def recuperation_des_informations_du_tournoi(self):
         """ Creation du tournoi """
@@ -77,8 +92,10 @@ class Vue:
         return informations_de_tournoi
 
     def depart_de_la_ronde(self):
-        input("Appuyer sur entrer quand la ronde commence")
+        input("Appuyer sur 'Entrer' quand la ronde commence")
 
+    def fin_de_la_ronde(self):
+        input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
 
     def recuperation_des_informations_des_joueurs(self):
         for numero_participant in range(self.instance_de_tournoi["nombre_de_participant"]):

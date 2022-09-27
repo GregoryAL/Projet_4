@@ -43,7 +43,9 @@ class Controleur:
                                                                   "MethodeSuisse")
 
                 self.depart_d_une_ronde(ronde_actuelle)
+                self.fin_d_une_ronde(ronde_actuelle)
                 instance_de_tournoi.rondes.append(ronde_actuelle)
+
 
 
         elif choix_utilisateur == 3:
@@ -102,27 +104,55 @@ class Controleur:
     def depart_d_une_ronde(self, ronde_a_lancer):
         Vue.depart_de_la_ronde(self.vue_instance)
         ronde_a_lancer.date_heure_debut_du_match = datetime.datetime.now()
+        return ronde_a_lancer
 
-
-    def recuperation_des_scores(self, numero_de_ronde):
-        """ Recuperation des scores de la vue pour chaque match d'une ronde """
-
-
-        for match_a_recupere in list(self.instance_de_tournoi.rondes[numero_de_ronde].liste_matchs.key()):
-            print(match_a_recupere["joueur1"] + "est le joueur1")
-            print(match_a_recupere["resultat_joueur1"] + " est le resultat du match du joueur1")
-            match_a_recupere["resultat_joueur1"] = Vue.recuperation_des_resultats_d_un_match(match_a_recupere["joueur1"])
-            match_a_recupere["resultat_joueur2"] = Vue.recuperation_des_resultats_d_un_match(match_a_recupere["joueur2"])
-            match_a_recupere.tuple_match = ([match_a_recupere["joueur1"], match_a_recupere["resultat_joueur1"]],
-                                             [match_a_recupere["joueur2"], match_a_recupere["resultat_joueur2"]])
-            self.instance_de_tournoi.rondes[self.numero_de_ronde_active-1].resultat_matchs = match_a_recupere.tuple_match
-        return self.instance_de_tournoi
-
-
-
-
-
-
+    def fin_d_une_ronde(self, ronde_a_clore):
+        Vue.fin_de_la_ronde(self.vue_instance)
+        for match_de_ronde in ronde_a_clore.liste_matchs:
+            resultat_du_match = Vue.recuperation_des_resultats_d_un_match(self.vue_instance, match_de_ronde)
+            if resultat_du_match == "1":
+                verification_resultat_saisie = Vue.verification_resultat_match_avec_vainqueur(self.vue_instance,
+                                                                                              match_de_ronde.joueur1,
+                                                                                              match_de_ronde.joueur2)
+                while verification_resultat_saisie != "OK":
+                    verification_resultat_saisie = \
+                        Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur1,
+                                                                       match_de_ronde.joueur2)
+                else:
+                    match_de_ronde.resultat_joueur1 = 1
+                    match_de_ronde.joueur1.points_tournoi += 1
+                    match_de_ronde.resultat_joueur2 = 0
+                    ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
+            elif resultat_du_match == "2":
+                verification_resultat_saisie = Vue.verification_resultat_match_avec_vainqueur(self.vue_instance,
+                                                                                              match_de_ronde.joueur2,
+                                                                                              match_de_ronde.joueur1)
+                while verification_resultat_saisie != "OK":
+                    verification_resultat_saisie = \
+                        Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur2,
+                                                                       match_de_ronde.joueur1)
+                else:
+                    match_de_ronde.resultat_joueur2 = 1
+                    match_de_ronde.joueur2.points_tournoi += 1
+                    match_de_ronde.resultat_joueur1 = 0
+                    ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
+            elif resultat_du_match == "N":
+                verification_resultat_saisie = Vue.verification_resultat_match_nul(self.vue_instance,
+                                                                                   match_de_ronde.joueur1,
+                                                                                   match_de_ronde.joueur2)
+                while verification_resultat_saisie != "OK":
+                    verification_resultat_saisie = Vue.verification_resultat_match_nul(self.vue_instance,
+                                                                                       match_de_ronde.joueur1,
+                                                                                       match_de_ronde.joueur2)
+                else:
+                    match_de_ronde.resultat_joueur2 = 0.5
+                    match_de_ronde.joueur1.points_tournoi += 0.5
+                    match_de_ronde.resultat_joueur1 = 0.5
+                    match_de_ronde.joueur2.points_tournoi += 0.5
+                    ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
+            else:
+                Vue.message_d_erreur(self.vue_instance)
+        return ronde_a_clore
 
     def ajout_des_joueurs(self):
         """ Ajout des joueurs """
