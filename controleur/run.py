@@ -35,15 +35,15 @@ class Controleur:
             info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance)
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
             numero_de_ronde_active = 0
-            while numero_de_ronde_active <= instance_de_tournoi.nombre_de_tour_du_tournoi:
+            while numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
                 numero_de_ronde_active += 1
                 print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
                       str(instance_de_tournoi.nombre_de_tour_du_tournoi) + "rondes")
                 ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                                   "MethodeSuisse")
-                instance_de_tournoi.rondes.append(ronde_actuelle)
-                Vue.depart_de_la_ronde(self.vue_instance)
 
+                self.depart_d_une_ronde(ronde_actuelle)
+                instance_de_tournoi.rondes.append(ronde_actuelle)
 
 
         elif choix_utilisateur == 3:
@@ -96,7 +96,13 @@ class Controleur:
         return ronde_actuelle
 
     def affichage_des_matchs(self, instance_de_match):
+        """ Affiche le match en argument """
         Vue.affichage_des_matchs(self.vue_instance, instance_de_match)
+
+    def depart_d_une_ronde(self, ronde_a_lancer):
+        Vue.depart_de_la_ronde(self.vue_instance)
+        ronde_a_lancer.date_heure_debut_du_match = datetime.datetime.now()
+
 
     def recuperation_des_scores(self, numero_de_ronde):
         """ Recuperation des scores de la vue pour chaque match d'une ronde """

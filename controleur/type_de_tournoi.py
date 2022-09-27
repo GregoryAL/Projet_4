@@ -26,10 +26,9 @@ class TypeDeTournoi:
             instance_tournoi.participants.sort(key=lambda x: x.points_tournoi, reverse=True)
         # Creation des paires
         moitie_des_participants = int(instance_tournoi.nombre_de_participants/2)
-        ronde_actuelle = ronde.Ronde("round" + str(numero_de_ronde), datetime.datetime.now())
+        ronde_actuelle = ronde.Ronde("round" + str(numero_de_ronde))
         for i in range(moitie_des_participants):
             id_joueur_2 = moitie_des_participants + i
             match_pairing = Match(instance_tournoi.participants[i],instance_tournoi.participants[id_joueur_2])
             ronde_actuelle.liste_matchs.append(match_pairing)
-            print(ronde_actuelle.liste_matchs)
         return ronde_actuelle
