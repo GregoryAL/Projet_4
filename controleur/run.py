@@ -36,11 +36,24 @@ class Controleur:
                 participant = Vue.recuperation_participant_du_tournoi(self.vue_instance, i)
                 # Verifie que le joueur est dans la liste de joueur
                 for joueur_de_la_liste in liste_joueurs.values():
+                    nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs = len(liste_joueurs)
+                    cle_dernier_nom_entre = "player" + str(nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs)
+                    dernier_nom_entre = liste_joueurs[cle_dernier_nom_entre]
                     if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in joueur_de_la_liste.prenom):
                         print("ok")
                         liste_participants.append(joueur_de_la_liste)
                         print(liste_participants)
                         break
+                    else:
+                        if str(joueur_de_la_liste.nom) == str(dernier_nom_entre.nom):
+                            reponse_creation_joueur = Vue.joueur_inexistant(self.vue_instance)
+                            if reponse_creation_joueur == "Oui":
+                                input("Fin de l'ajout des participants. Merci de créer le joueur puis recommencer "
+                                      "l'ajout des participants")
+
+                                return ""
+
+
 
 
 
@@ -64,7 +77,10 @@ class Controleur:
                 print(instance_de_tournoi.participants[1].nom + " a " +
                       str(instance_de_tournoi.participants[1].points_tournoi) + ". \n")
         elif choix_utilisateur == 3:
-            print("????")
+            indice_nouveau_joueur = len(liste_joueurs) + 2
+            cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
+            joueur_a_ajouter = self.ajout_d_un_joueur()
+            liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
         elif choix_utilisateur == 4:
             print(int(self.instance_de_tournoi.nombre_de_tour_du_tournoi))
             print(self.instance_de_tournoi)
@@ -79,7 +95,7 @@ class Controleur:
 
     def ajout_des_joueurs(self):
         """ Ajout des joueurs """
-        # Pool de 24 joueurs statiques
+        # Pool de 28 joueurs statiques
         liste_joueurs = {}
         liste_joueurs["player01"] = Joueur("Nom01", "prénom01", "11/11/11", "M", 1650)
         liste_joueurs["player02"] = Joueur("Nom02", "prénom02", "10/10/10", "F", 1435)
@@ -89,6 +105,8 @@ class Controleur:
         liste_joueurs["player06"] = Joueur("Nom06", "prénom06", "11/5/11", "M", 1580)
         liste_joueurs["player07"] = Joueur("Nom07", "prénom07", "10/9/10", "F", 1415)
         liste_joueurs["player08"] = Joueur("Nom08", "prénom08", "9/4/9", "U", 1953)
+        liste_joueurs["player09"] = Joueur("Nom09", "prénom09", "11/11/11", "M", 1454)
+        liste_joueurs["player10"] = Joueur("Nom10", "prénom10", "10/10/10", "F", 1536)
         liste_joueurs["player11"] = Joueur("Nom11", "prénom11", "11/11/11", "M", 1450)
         liste_joueurs["player12"] = Joueur("Nom12", "prénom12", "10/10/10", "F", 1535)
         liste_joueurs["player13"] = Joueur("Nom13", "prénom13", "9/9/9", "U", 1783)
@@ -97,6 +115,8 @@ class Controleur:
         liste_joueurs["player16"] = Joueur("Nom16", "prénom16", "11/5/11", "M", 1380)
         liste_joueurs["player17"] = Joueur("Nom17", "prénom17", "10/9/10", "F", 1615)
         liste_joueurs["player18"] = Joueur("Nom18", "prénom18", "9/4/9", "U", 1153)
+        liste_joueurs["player19"] = Joueur("Nom19", "prénom19", "11/11/11", "M", 1258)
+        liste_joueurs["player20"] = Joueur("Nom20", "prénom20", "10/10/10", "F", 1338)
         liste_joueurs["player21"] = Joueur("Nom21", "prénom21", "11/11/11", "M", 1250)
         liste_joueurs["player22"] = Joueur("Nom22", "prénom22", "10/10/10", "F", 1335)
         liste_joueurs["player23"] = Joueur("Nom23", "prénom23", "9/9/9", "U", 1483)
@@ -211,4 +231,10 @@ class Controleur:
 
     def ajout_d_un_joueur(self):
         """ Ajout d'un joueur à la liste de joueur """
+        infos_joueur_a_ajouter = Vue.ajout_des_informations_d_un_joueur(self.vue_instance)
+        joueur_a_ajouter = Joueur(infos_joueur_a_ajouter["nom"], infos_joueur_a_ajouter["prenom"],
+                                  infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
+                                  infos_joueur_a_ajouter["classement_elo"])
+        return joueur_a_ajouter
+
 

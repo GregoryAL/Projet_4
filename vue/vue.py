@@ -27,7 +27,7 @@ class Vue:
         print("Menu pour la gestion d'un tournoi d'échec\n")
         print(" [1] Selection des joueurs participants au tournoi\n")
         print(" [2] Création et lancement d'un tournoi\n")
-        print(" [3] ???\n")
+        print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
         print(" [4] test print\n")
         print(" [5] Sortir de la gestion du tournoi\n")
         choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
@@ -117,22 +117,23 @@ class Vue:
     def fin_de_la_ronde(self):
         input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
 
-    def ajout_des_informations_des_joueurs(self):
-        for numero_participant in range(self.instance_de_tournoi["nombre_de_participant"]):
-            joueur = {}
-            prenom = input("Entrez le prenom du joueur" + str(numero_participant+1) + ":\n")
-            joueur["prenom"] = prenom
-            nom = input("Entrez le nom du joueur " + str(numero_participant+1) + ":\n")
-            joueur["nom"] = nom
-            date_de_naissance = input("Entre la date de naissance du joueur " + str(numero_participant+1) + ":\n")
-            joueur["date_de_naissance"] = date_de_naissance
-            sexe = input("Entre le sexe du joueur " + str(numero_participant+1) + "\n")
-            joueur["sexe"] = sexe
-            classement_elo = input("Entrez le classement elo du joueur " + str(numero_participant+1) + ":\n")
-            joueur["classement_elo"] = classement_elo
-            joueur["points_tournoi"] = 0
-            self.liste_des_joueurs["joueur"+str(numero_participant+1)] = joueur
-        return self.liste_des_joueurs
+    def joueur_inexistant(self):
+        reponse_creation_joueur = input("Joueur inexistant : Voulez vous créer le joueur? (Oui/Non)")
+        return reponse_creation_joueur
+
+    def ajout_des_informations_d_un_joueur(self):
+        joueur_a_ajouter = {}
+        nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
+        joueur_a_ajouter["nom"] = nom_a_ajouter
+        prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
+        joueur_a_ajouter["prenom"] = prenom_a_ajouter
+        date_de_naissance_a_ajouter = input("Entre la date de naissance du joueur à ajouter:\n")
+        joueur_a_ajouter["date_de_naissance"] = date_de_naissance_a_ajouter
+        sexe_a_ajouter = input("Entre le sexe du joueur à ajouter:\n")
+        joueur_a_ajouter["sexe"] = sexe_a_ajouter
+        classement_elo_a_ajouter = input("Entrez le classement elo du joueur à ajouter:\n")
+        joueur_a_ajouter["classement_elo"] = classement_elo_a_ajouter
+        return joueur_a_ajouter
 
     def affichage_des_matchs(self, instance_de_match):
         print(instance_de_match.joueur1.nom + " affronte " + instance_de_match.joueur2.nom)
