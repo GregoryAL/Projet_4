@@ -1,5 +1,4 @@
 from modele import ronde
-import datetime
 from modele.match import Match
 
 

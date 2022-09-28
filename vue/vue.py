@@ -25,13 +25,34 @@ class Vue:
         self.clean_screen()
         # Affiche le menu
         print("Menu pour la gestion d'un tournoi d'échec\n")
-        print(" [1] Création d'un tournoi\n")
-        print(" [2] Lancement d'une ronde\n")
-        print(" [3] Récupération des résultats d'une ronde\n")
+        print(" [1] Selection des joueurs participants au tournoi\n")
+        print(" [2] Création et lancement d'un tournoi\n")
+        print(" [3] ???\n")
         print(" [4] test print\n")
         print(" [5] Sortir de la gestion du tournoi\n")
         choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
         return choix_utilisateur
+
+    def recuperation_nombre_de_participants_du_tournoi(self):
+        """ Recupère le nombre de joueurs participants au tournoi """
+        nombre_de_participant = input("Merci de saisir le nombre de participants au tournoi. \n")
+        return nombre_de_participant
+
+    def recuperation_participant_du_tournoi(self, numero_de_joueur):
+        """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """
+        joueur_a_ajouter = {}
+        if numero_de_joueur == 0:
+            nom_du_joueur = input("Merci de saisir le nom du premier joueur à ajouter. \n")
+            prenom_du_joueur = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
+            joueur_a_ajouter["Nom"] = nom_du_joueur
+            joueur_a_ajouter["Prenom"] = prenom_du_joueur
+        else :
+            nom_du_joueur = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
+            prenom_du_joueur = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
+            joueur_a_ajouter["Nom"] = nom_du_joueur
+            joueur_a_ajouter["Prenom"] = prenom_du_joueur
+        return joueur_a_ajouter
+
 
     def recuperation_des_resultats_d_un_match(self, match):
         """ Récupère les résultats d'un joueur d'un match d'une ronde"""
@@ -51,13 +72,12 @@ class Vue:
                                                                                                 ": \n")
         return resultat_verification
 
-    def recuperation_des_informations_du_tournoi(self):
+    def recuperation_des_informations_du_tournoi(self, nombre_de_participant):
         """ Creation du tournoi """
         # Vide l'écran
         self.clean_screen()
         informations_de_tournoi = {}
-        # Demande le nombre de participants au tournoi
-        nombre_de_participant = input("Entrez le nombre de participants du tournoi à créer : \n")
+        # Recupere le nombre de participants au tournoi défini dans la sélection des joueurs
         informations_de_tournoi["nombre_de_participant"] = int(nombre_de_participant)
         # Demande le nom du tournoi
         nom_du_tournoi = input("Entre le nom du tournoi à créer : \n")
@@ -97,7 +117,7 @@ class Vue:
     def fin_de_la_ronde(self):
         input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
 
-    def recuperation_des_informations_des_joueurs(self):
+    def ajout_des_informations_des_joueurs(self):
         for numero_participant in range(self.instance_de_tournoi["nombre_de_participant"]):
             joueur = {}
             prenom = input("Entrez le prenom du joueur" + str(numero_participant+1) + ":\n")
