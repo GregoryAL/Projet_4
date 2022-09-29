@@ -17,18 +17,18 @@ class Controleur:
 
 
     def execute(self):
-        while self.affichage_du_menu() != 5:
-            instance_de_tournoi = self.affichage_du_menu()
+        liste_joueurs = self.ajout_des_joueurs()
+        while self.affichage_du_menu(liste_joueurs) != 5:
+            instance_de_tournoi = self.affichage_du_menu(liste_joueurs)
         # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
         sys.exit("Vous quittez la gestion du tournoi")
 
 
-    def affichage_du_menu(self):
+    def affichage_du_menu(self, liste_joueurs):
         """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
-        choix_utilisateur = int(Vue.menu(self.vue_instance))
         nombre_de_participants = 0
         liste_participants = []
-        liste_joueurs = self.ajout_des_joueurs()
+        choix_utilisateur = int(Vue.menu(self.vue_instance))
         if choix_utilisateur == 1:
             nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
             for i in range(nombre_de_participants):
@@ -50,14 +50,7 @@ class Controleur:
                             if reponse_creation_joueur == "Oui":
                                 input("Fin de l'ajout des participants. Merci de créer le joueur puis recommencer "
                                       "l'ajout des participants")
-
                                 return ""
-
-
-
-
-
-
         elif choix_utilisateur == 2:
             info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance, nombre_de_participants)
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
@@ -77,7 +70,7 @@ class Controleur:
                 print(instance_de_tournoi.participants[1].nom + " a " +
                       str(instance_de_tournoi.participants[1].points_tournoi) + ". \n")
         elif choix_utilisateur == 3:
-            indice_nouveau_joueur = len(liste_joueurs) + 2
+            indice_nouveau_joueur = len(liste_joueurs) + 1
             cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
             joueur_a_ajouter = self.ajout_d_un_joueur()
             liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
