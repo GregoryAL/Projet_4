@@ -25,8 +25,8 @@ class Vue:
         self.clean_screen()
         # Affiche le menu
         print("Menu pour la gestion d'un tournoi d'échec\n")
-        print(" [1] Selection des joueurs participants au tournoi\n")
-        print(" [2] Création et lancement d'un tournoi\n")
+        print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
+        print(" [2] ????")
         print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
         print(" [4] test print\n")
         print(" [5] Sortir de la gestion du tournoi\n")
@@ -121,12 +121,26 @@ class Vue:
         reponse_creation_joueur = input("Joueur inexistant : Voulez vous créer le joueur? (Oui/Non)")
         return reponse_creation_joueur
 
-    def ajout_des_informations_d_un_joueur(self):
+    def ajout_des_informations_d_un_joueur(self, info_joueur_inexistant):
         joueur_a_ajouter = {}
-        nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
-        joueur_a_ajouter["nom"] = nom_a_ajouter
-        prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
-        joueur_a_ajouter["prenom"] = prenom_a_ajouter
+        if info_joueur_inexistant != "":
+            recuperation_info_joueur_inexistant = input(" Voulez vous ajouter le joueur " +
+                                                        info_joueur_inexistant["Prenom"] + " " +
+                                                        info_joueur_inexistant["Nom"] + " à la liste des "
+                                                                                        "joueurs?(Oui/Non)")
+            if recuperation_info_joueur_inexistant == "Oui":
+                joueur_a_ajouter["nom"] = info_joueur_inexistant["Nom"]
+                joueur_a_ajouter["prenom"] = info_joueur_inexistant["Prenom"]
+            else:
+                nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
+                joueur_a_ajouter["nom"] = nom_a_ajouter
+                prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
+                joueur_a_ajouter["prenom"] = prenom_a_ajouter
+        else :
+            nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
+            joueur_a_ajouter["nom"] = nom_a_ajouter
+            prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
+            joueur_a_ajouter["prenom"] = prenom_a_ajouter
         date_de_naissance_a_ajouter = input("Entre la date de naissance du joueur à ajouter:\n")
         joueur_a_ajouter["date_de_naissance"] = date_de_naissance_a_ajouter
         sexe_a_ajouter = input("Entre le sexe du joueur à ajouter:\n")

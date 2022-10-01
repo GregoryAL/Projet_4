@@ -19,41 +19,23 @@ class Controleur:
     def execute(self):
         liste_joueurs = self.ajout_des_joueurs()
         while self.affichage_du_menu(liste_joueurs) != 5:
-            instance_de_tournoi = self.affichage_du_menu(liste_joueurs)
+            self.affichage_du_menu(liste_joueurs)
         # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
         sys.exit("Vous quittez la gestion du tournoi")
 
-
     def affichage_du_menu(self, liste_joueurs):
         """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
-        nombre_de_participants = 0
-        liste_participants = []
+
         choix_utilisateur = int(Vue.menu(self.vue_instance))
         if choix_utilisateur == 1:
-            nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
-            for i in range(nombre_de_participants):
-                # Recupere le nom et prénom du joueur à ajouter au tournoi :
-                participant = Vue.recuperation_participant_du_tournoi(self.vue_instance, i)
-                # Verifie que le joueur est dans la liste de joueur
-                for joueur_de_la_liste in liste_joueurs.values():
-                    nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs = len(liste_joueurs)
-                    cle_dernier_nom_entre = "player" + str(nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs)
-                    dernier_nom_entre = liste_joueurs[cle_dernier_nom_entre]
-                    if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in joueur_de_la_liste.prenom):
-                        print("ok")
-                        liste_participants.append(joueur_de_la_liste)
-                        print(liste_participants)
-                        break
-                    else:
-                        if str(joueur_de_la_liste.nom) == str(dernier_nom_entre.nom):
-                            reponse_creation_joueur = Vue.joueur_inexistant(self.vue_instance)
-                            if reponse_creation_joueur == "Oui":
-                                input("Fin de l'ajout des participants. Merci de créer le joueur puis recommencer "
-                                      "l'ajout des participants")
-                                return ""
-        elif choix_utilisateur == 2:
+            nombre_de_participants = self.recuperation_du_nombre_de_participants()
+            liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
+            print(str(nombre_de_participants) + "est le nombre de participant")
+            print(str(liste_participants_tournoi) + "est la liste de participant")
             info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance, nombre_de_participants)
+            print(liste_participants_tournoi)
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+            instance_de_tournoi.participants = liste_participants_tournoi
             numero_de_ronde_active = 0
             while numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
                 numero_de_ronde_active += 1
@@ -64,6 +46,7 @@ class Controleur:
 
                 self.depart_d_une_ronde(ronde_actuelle)
                 self.fin_d_une_ronde(ronde_actuelle)
+                print(ronde_actuelle)
                 print(ronde_actuelle.liste_matchs[1].joueur1.nom + " a " +
                       str(ronde_actuelle.liste_matchs[1].joueur1.points_tournoi) + ". \n")
                 instance_de_tournoi.rondes.append(ronde_actuelle)
@@ -72,7 +55,7 @@ class Controleur:
         elif choix_utilisateur == 3:
             indice_nouveau_joueur = len(liste_joueurs) + 1
             cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
-            joueur_a_ajouter = self.ajout_d_un_joueur()
+            joueur_a_ajouter = self.creation_d_un_joueur("")
             liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
         elif choix_utilisateur == 4:
             print(int(self.instance_de_tournoi.nombre_de_tour_du_tournoi))
@@ -80,10 +63,67 @@ class Controleur:
         elif choix_utilisateur == 5:
             return choix_utilisateur
 
-    def selection_des_participants(self, nombre_de_participant):
-        """ Selection des participants dans le pool de joueur connu et lance l'ajout si besoin d un nouveau joueur"""
+    def recuperation_du_nombre_de_participants(self):
+        nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
+        return nombre_de_participants
+
+    def selection_des_participants(self, liste_joueurs, nombre_de_participants):
+        """ Selection des participants dans le pool de joueurs connus """
+        liste_participants = []
+        for i in range(nombre_de_participants):
+            # Recupere le nom et prénom du joueur à ajouter au tournoi :
+            participant = Vue.recuperation_participant_du_tournoi(self.vue_instance, i)
+            # Recupere le nombre d'entree dans le dictionnaire de liste de joueurs
+            nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs = len(liste_joueurs)
+            # Recrée la clée de la dernière entrée du dictionnaire de joueur
+            cle_dernier_nom_entre = "player" + str(nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs)
+            # Recupère le dernier nom entré dans la liste de joueur
+            dernier_nom_entre = liste_joueurs[cle_dernier_nom_entre]
+            # Verifie que le joueur est dans la liste de joueur en parcourant toutes les entrées du dictionnaire
+            nombre_de_joueur_dans_la_liste = len(liste_joueurs)
+            for i in range(nombre_de_joueur_dans_la_liste):
+                if i < 9:
+                    joueur_de_la_liste = liste_joueurs["player0"+str(i+1)]
+                else:
+                    joueur_de_la_liste = liste_joueurs["player"+str(i+1)]
+                # Vérifie si le prenom et nom entrée par l'utilisateur fait partie de la liste de joueurs
+                test_presence = self.verification_participant_est_dans_liste_joueurs(participant, joueur_de_la_liste)
+                # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
+                if test_presence == "Presence":
+                    print("ok test " + str(joueur_de_la_liste))
+                    liste_participants.append(joueur_de_la_liste)
+                    print(liste_participants)
+                    break
+                else:
+                    # Sinon, vérifie si la valeur testée est la dernière valeur du dictionnaire
+                    if str(joueur_de_la_liste.nom) == str(dernier_nom_entre.nom):
+                        # Si oui, Cela indique que le joueur n'existe pas, demande à l'utilisateur s'il veut le créer
+                        reponse_creation_joueur = Vue.joueur_inexistant(self.vue_instance)
+                        if reponse_creation_joueur == "Oui":
+                            # Si oui, Crée un joueur en récupérant les informations Noms/Prenom entrées préalablement
+                            joueur_a_ajouter = self.creation_d_un_joueur(participant)
+                            # Ajout ce joueur à la liste des participants
+                            liste_participants.append(joueur_a_ajouter)
+                            # Ajout de ce joueur à la liste des joueurs
+                            liste_joueurs = self.ajout_d_un_joueur_a_la_liste(joueur_a_ajouter, liste_joueurs)
+                            nombre_de_joueur_dans_la_liste += 1
+                        else:
+                            print("Merci de recommencer l'ajout des participants du tournoi")
+                            return
+
+        return liste_participants
 
 
+    def verification_participant_est_dans_liste_joueurs(self, participant, joueur_de_la_liste):
+        """ Verifie si un couple Nom / Prenom se trouve dans la liste des objets joueurs """
+        if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in
+                                                                      joueur_de_la_liste.prenom):
+            print("ok " + joueur_de_la_liste.nom + " et " + participant["Nom"])
+            return "Presence"
+        else:
+            print(" else " + joueur_de_la_liste.nom + " et " + participant["Nom"])
+            return "Absence"
+        
 
 
     def ajout_des_joueurs(self):
@@ -138,11 +178,11 @@ class Controleur:
             # self.liste_joueurs.pop(joueur_random_key)
         return self.instance_de_tournoi
 
-    def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, methode_de_comptage):
+    def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
         # Creation de l'objet instancié tournoi nécessaire
         objet_type_de_tournoi = TypeDeTournoi()
-        ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, "MethodeSuisse", numero_de_ronde,
+        ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, type_de_tournoi, numero_de_ronde,
                                                           instance_de_tournoi)
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:
@@ -222,12 +262,16 @@ class Controleur:
             liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
         return liste_participant
 
-    def ajout_d_un_joueur(self):
+    def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """
-        infos_joueur_a_ajouter = Vue.ajout_des_informations_d_un_joueur(self.vue_instance)
+        infos_joueur_a_ajouter = Vue.ajout_des_informations_d_un_joueur(self.vue_instance, nom_prenom_info_joueur)
         joueur_a_ajouter = Joueur(infos_joueur_a_ajouter["nom"], infos_joueur_a_ajouter["prenom"],
                                   infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
                                   infos_joueur_a_ajouter["classement_elo"])
         return joueur_a_ajouter
-
-
+    
+    def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs):
+        indice_nouveau_joueur = len(liste_joueurs) + 1
+        cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
+        liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
+        return liste_joueurs
