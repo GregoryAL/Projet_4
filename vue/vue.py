@@ -26,7 +26,7 @@ class Vue:
         # Affiche le menu
         print("Menu pour la gestion d'un tournoi d'échec\n")
         print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
-        print(" [2] ????")
+        print(" [2] ????\n")
         print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
         print(" [4] test print\n")
         print(" [5] Sortir de la gestion du tournoi\n")
@@ -145,7 +145,7 @@ class Vue:
         joueur_a_ajouter["date_de_naissance"] = date_de_naissance_a_ajouter
         sexe_a_ajouter = input("Entre le sexe du joueur à ajouter:\n")
         joueur_a_ajouter["sexe"] = sexe_a_ajouter
-        classement_elo_a_ajouter = input("Entrez le classement elo du joueur à ajouter:\n")
+        classement_elo_a_ajouter = int(input("Entrez le classement elo du joueur à ajouter:\n"))
         joueur_a_ajouter["classement_elo"] = classement_elo_a_ajouter
         return joueur_a_ajouter
 

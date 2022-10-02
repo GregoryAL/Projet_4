@@ -208,12 +208,14 @@ class Controleur:
         Vue.fin_de_la_ronde(self.vue_instance)
         for match_de_ronde in ronde_a_clore.liste_matchs:
             resultat_du_match = Vue.recuperation_des_resultats_d_un_match(self.vue_instance, match_de_ronde)
-            while resultat_du_match in ["1", "2", "N"]:
+            while resultat_du_match not in ["1", "2", "N"]:
+                Vue.message_d_erreur(self.vue_instance)
+            else:
                 if resultat_du_match == "1":
                     verification_resultat_saisie = Vue.verification_resultat_match_avec_vainqueur(self.vue_instance,
                                                                                                   match_de_ronde.joueur1,
                                                                                                   match_de_ronde.joueur2)
-                    while verification_resultat_saisie != "OK":
+                    while str(verification_resultat_saisie) != "OK":
                         verification_resultat_saisie = \
                             Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur1,
                                                                            match_de_ronde.joueur2)
@@ -249,8 +251,7 @@ class Controleur:
                         match_de_ronde.resultat_joueur1 = 0.5
                         match_de_ronde.joueur2.points_tournoi += 0.5
                         ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
-            else:
-                Vue.message_d_erreur(self.vue_instance)
+
         return ronde_a_clore
 
     def classement_des_joueurs(self, liste_participant, facteur_tri):
