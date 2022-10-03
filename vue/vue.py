@@ -21,17 +21,21 @@ class Vue:
 
     def menu(self):
         """ Affichage du menu général"""
+
         # Vide l'écran
         self.clean_screen()
         # Affiche le menu
         print("Menu pour la gestion d'un tournoi d'échec\n")
         print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
-        print(" [2] ????\n")
+        print(" [2] Lancement de la ronde suivante \n")
         print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
-        print(" [4] test print\n")
-        print(" [5] Sortir de la gestion du tournoi\n")
-        choix_utilisateur = input("Entrez le chiffre correspondant à l'action voulue :\n")
+        print(" [4] Modification du classement d'un joueur\n")
+        print(" [5] Affichage du classement du tournoi\n")
+        print(" [6] Sortir de la gestion du tournoi\n")
+        choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
         return choix_utilisateur
+
+
 
     def recuperation_nombre_de_participants_du_tournoi(self):
         """ Recupère le nombre de joueurs participants au tournoi """

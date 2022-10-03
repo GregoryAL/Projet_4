@@ -18,16 +18,29 @@ class Controleur:
 
     def execute(self):
         liste_joueurs = self.ajout_des_joueurs()
-        while self.affichage_du_menu(liste_joueurs) != 5:
-            self.affichage_du_menu(liste_joueurs)
-        # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
-        sys.exit("Vous quittez la gestion du tournoi")
+        self.boucle_menu(liste_joueurs)
+
+
+    def boucle_menu(self, liste_joueurs):
+        resultat_choix = 0
+        while int(resultat_choix) != 6:
+            # Test si le choix de l utilisateur est bien un chiffre
+            try :
+                resultat_choix = self.affichage_du_menu(liste_joueurs)
+            except:
+                input("Choix non reconnu. Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
+                      "Appuyer sur une touche pour continuer...\n")
+        else :
+            sys.exit("Vous quittez la gestion du tournoi")
+            # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
+
 
     def affichage_du_menu(self, liste_joueurs):
         """ Affiche le menu du tournoi, récupère le choix utilisateur et lance la methode correspondante """
 
         choix_utilisateur = int(Vue.menu(self.vue_instance))
         if choix_utilisateur == 1:
+            # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
             nombre_de_participants = self.recuperation_du_nombre_de_participants()
             liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
             print(str(nombre_de_participants) + "est le nombre de participant")
@@ -37,6 +50,9 @@ class Controleur:
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
             instance_de_tournoi.participants = liste_participants_tournoi
             numero_de_ronde_active = 0
+
+        elif choix_utilisateur == 2:
+            # Lancement de la ronde suivante
             while numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
                 numero_de_ronde_active += 1
                 print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
@@ -52,16 +68,26 @@ class Controleur:
                 instance_de_tournoi.rondes.append(ronde_actuelle)
                 print(instance_de_tournoi.participants[1].nom + " a " +
                       str(instance_de_tournoi.participants[1].points_tournoi) + ". \n")
+
         elif choix_utilisateur == 3:
+            # Ajout d'un joueur
             indice_nouveau_joueur = len(liste_joueurs) + 1
             cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
             joueur_a_ajouter = self.creation_d_un_joueur("")
             liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
         elif choix_utilisateur == 4:
-            print(int(self.instance_de_tournoi.nombre_de_tour_du_tournoi))
-            print(self.instance_de_tournoi)
+            #Modification classement d'un joeuur
+            print("modif joueur")
         elif choix_utilisateur == 5:
+            # Affichage des resultats du tournoi
+            print("affichage joueur")
+        elif choix_utilisateur == 6:
             return choix_utilisateur
+        else:
+            # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
+            input("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
+                  "Appuyer sur une touche pour continuer...\n")
+
 
     def recuperation_du_nombre_de_participants(self):
         nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
