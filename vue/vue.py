@@ -11,7 +11,6 @@ class Vue:
         """ Initialise un objet vue"""
         self.liste_des_joueurs = {}
 
-
     def clean_screen(self):
         """ Efface l'écran """
         if name == "nt":
@@ -25,7 +24,6 @@ class Vue:
             print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
         for i in range(nombre_de_participants):
             print(" | " + str((i+1)) + " | : " + str(liste_triee[i]) + " \n")
-        self.appuyer_sur_entrer_pour_continuer()
 
     def affichage_choix_liste_participants(self, liste_participants):
         nombre_de_participants = len(liste_participants)
@@ -37,12 +35,14 @@ class Vue:
         return joueur_a_modifier
 
     def modification_classement_elo(self, joueur):
-        print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " + str(joueur.classement_elo) + ".\n")
+        print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " +
+              str(joueur.classement_elo) + ".\n")
         nouveau_classement = input("A combien voulez-vous changer le classement elo? \n : ")
         return nouveau_classement
 
     def modification_point_tournoi(self, joueur):
-        print("Le joueur " + str(joueur.prenom) + " " + str(joueur.nom) + " a " + str(joueur.points_tournoi) + " points dans le tournoi.")
+        print("Le joueur " + str(joueur.prenom) + " " + str(joueur.nom) + " a " +
+              str(joueur.points_tournoi) + " points dans le tournoi.")
         nouveaux_points_tournois = input("A combien voulez-vous changer les points du tournoi? \n : ")
         return nouveaux_points_tournois
 
@@ -53,8 +53,12 @@ class Vue:
         choix_type_classement = input("Entrez votre choix : \n")
         return choix_type_classement
 
-    def selection_de_la_liste_de_joueur_a_trier_par_elo(self):
-        print("Quel listes de joueurs triée par elo souhaitez vous afficher? \n"
+    def selection_de_l_action_a_effectuer(self):
+        choix_action = input("Voulez vous modifier le classement d'un joueur? [Oui/Non] : ")
+        return choix_action
+
+    def selection_de_la_liste_de_joueur_a_modifier_par_elo(self):
+        print("De quelles listes de joueurs souhaitez vous modifier l'elo d'un joueur? \n"
               "[1] tous les joueurs connus\n"
               "[2] les joueurs du tournoi \n")
         choix_liste_joueur = input("Entrez votre choix : \n")
@@ -116,17 +120,14 @@ class Vue:
             print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
             print(" [2] Lancement de la ronde suivante \n")
             print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
-            print(" [4] Modification du classement d'un joueur\n")
-            print(" [5] Affichage du classement du tournoi\n")
-            print(" [6] Affichage du classement elo \n")
-            print(" [7] Sortir de la gestion du tournoi\n")
+            print(" [4] Affichage du classement/Modification du classement elo d'un joueur de la liste\n")
+            print(" [5] Affichage du classement/Modification du classement tournoi d'un participant du tournoi\n")
+            print(" [6] Sortir de la gestion du tournoi\n")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur
-        except:
+        except TypeError:
             print("Choix non reconnu...\n")
             return 0
-
-
 
     def recuperation_nombre_de_participants_du_tournoi(self):
         """ Recupère le nombre de joueurs participants au tournoi """
@@ -141,18 +142,18 @@ class Vue:
             prenom_du_joueur = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
             joueur_a_ajouter["Nom"] = nom_du_joueur
             joueur_a_ajouter["Prenom"] = prenom_du_joueur
-        else :
+        else:
             nom_du_joueur = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
-            prenom_du_joueur = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
+            prenom_du_joueur = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) +
+                                     "ème joueur à ajouter. \n")
             joueur_a_ajouter["Nom"] = nom_du_joueur
             joueur_a_ajouter["Prenom"] = prenom_du_joueur
         return joueur_a_ajouter
 
-
     def recuperation_des_resultats_d_un_match(self, match):
         """ Récupère les résultats d'un joueur d'un match d'une ronde"""
-        resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1.nom + " et 2:" + match.joueur2.nom +
-                                     " (1/N/2) : \n")
+        resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1.nom + " et 2:" +
+                               match.joueur2.nom + " (1/N/2) : \n")
         return resultat_match
 
     def verification_resultat_match_avec_vainqueur(self, joueur1, joueur2):
@@ -162,9 +163,8 @@ class Vue:
         return resultat_verification
 
     def verification_resultat_match_nul(self, joueur1, joueur2):
-        resultat_verification = input(joueur1.nom + " a fait match nul contre " + joueur2.nom + ". \n Si c'est exacte, "
-                                                                                                "tapez 'OK' puis entrer"
-                                                                                                ": \n")
+        resultat_verification = input(joueur1.nom + " a fait match nul contre " + joueur2.nom +
+                                      ". \n Si c'est exacte, tapez 'OK' puis entrer: \n")
         return resultat_verification
 
     def recuperation_des_informations_du_tournoi(self, nombre_de_participant):
@@ -235,7 +235,7 @@ class Vue:
                 joueur_a_ajouter["nom"] = nom_a_ajouter
                 prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
                 joueur_a_ajouter["prenom"] = prenom_a_ajouter
-        else :
+        else:
             nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
             joueur_a_ajouter["nom"] = nom_a_ajouter
             prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
@@ -251,4 +251,3 @@ class Vue:
     def affichage_des_matchs(self, instance_de_match):
         """ Affiche le match """
         print(instance_de_match.joueur1.nom + " affronte " + instance_de_match.joueur2.nom)
-

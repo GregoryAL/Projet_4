@@ -2,13 +2,11 @@ from modele import ronde
 from modele.match import Match
 
 
-
 class TypeDeTournoi:
     """ Classe gérant les types de tournoi"""
 
     def __init__(self):
         """ crée l'objet type de tournoi """
-
 
     def choix_type_tournoi(self, type_de_tournoi, numero_de_ronde, instance_tournoi):
         if type_de_tournoi == "MethodeSuisse":
@@ -30,7 +28,8 @@ class TypeDeTournoi:
             id_joueur_2 = moitie_des_participants + i
             print(str(i) + "id 1 et id2: " + str(id_joueur_2) + " total/moitié =  " + str(
                 moitie_des_participants) + "nombre participants : " + str(instance_tournoi.nombre_de_participants))
-            match_pairing = Match(instance_tournoi.participants[i],instance_tournoi.participants[id_joueur_2])
+            match_pairing = Match(instance_tournoi.participants[i], instance_tournoi.participants[id_joueur_2])
             ronde_actuelle.liste_matchs.append(match_pairing)
-            print("match entre " + instance_tournoi.participants[i].nom + " et " + instance_tournoi.participants[id_joueur_2].nom)
+            print("match entre " + instance_tournoi.participants[i].nom + " et " +
+                  instance_tournoi.participants[id_joueur_2].nom)
         return ronde_actuelle

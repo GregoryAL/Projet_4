@@ -14,5 +14,3 @@ class Match:
 
     def __str__(self):
         return self.joueur1, " a obtenu : ", self.resultat_joueur1, self.joueur2, " a obtenu : ", self.resultat_joueur2
-
-

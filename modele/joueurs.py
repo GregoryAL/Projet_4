@@ -14,12 +14,12 @@ class Joueur:
         self.classement_elo = classement_elo
         self.points_tournoi = points_tournoi
 
-        # self.serialized_player = {
-            # "nom": self.nom,
-            # "prenom": self.prenom,
-            # "date_de_naissance": self.date_de_naissance,
-            # "sexe": self.sexe,
-            # "points_tournoi": self.points_tournoi}
+# self.serialized_player = {
+    # "nom": self.nom,
+    # "prenom": self.prenom,
+    # "date_de_naissance": self.date_de_naissance,
+    # "sexe": self.sexe,
+    # "points_tournoi": self.points_tournoi}
 
     def __str__(self):
         return self.prenom + " " + self.nom + " | nombre de point tournoi : " + \

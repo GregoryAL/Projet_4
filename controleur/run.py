@@ -3,7 +3,6 @@
 from modele.tournoi import Tournoi
 from modele.joueurs import Joueur
 import datetime
-import random
 from vue.vue import Vue
 from controleur.type_de_tournoi import TypeDeTournoi
 
@@ -23,7 +22,7 @@ class Controleur:
     def gestion_du_tournoi(self, liste_joueurs):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
-        while choix_utilisateur != 7:
+        while choix_utilisateur != 6:
             choix_utilisateur = int(Vue.menu(self.vue_instance))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
@@ -35,8 +34,8 @@ class Controleur:
                     if liste_participants_tournoi == "":
                         print("retour")
                     else:
-                        info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
-                                                                                                         nombre_de_participants)
+                        info_instance_tournoi_a_creer = Vue.\
+                            recuperation_des_informations_du_tournoi(self.vue_instance, nombre_de_participants)
                         print(liste_participants_tournoi)
                         instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
                         instance_de_tournoi.participants = liste_participants_tournoi
@@ -54,7 +53,7 @@ class Controleur:
                         self.depart_d_une_ronde(ronde_actuelle)
                         self.fin_d_une_ronde(ronde_actuelle)
                         instance_de_tournoi.rondes.append(ronde_actuelle)
-                    else :
+                    else:
                         Vue.message_d_erreur_tournoi_termine(self.vue_instance)
                 except UnboundLocalError:
                     Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
@@ -65,31 +64,24 @@ class Controleur:
                 joueur_a_ajouter = self.creation_d_un_joueur("")
                 liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
             elif choix_utilisateur == 4:
-                # Modification classement d'un joueur
-                try:
-                    instance_de_tournoi.participants = self.modification_d_un_joueur(instance_de_tournoi.participants)
-                except UnboundLocalError:
-                    Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
+                # Affichage modification du classement elo d'un joueur de la liste
+                self.affichage_du_classement_elo_dict(liste_joueurs)
+                choix_action_sur_liste = Vue.selection_de_l_action_a_effectuer(self.vue_instance)
+                if str(choix_action_sur_liste) == "Oui":
+                    liste_joueurs = self.modification_d_un_joueur_dict(liste_joueurs)
             elif choix_utilisateur == 5:
-                # Affichage des resultats du tournoi
+                # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
+                    # Recupere et affiche le classement du tournoi
                     self.affichage_du_classement_tournoi(instance_de_tournoi, numero_de_ronde_active)
                 except UnboundLocalError:
+                    # Renvoi un message d'erreur si aucun tournoi n'existe
                     Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
+                choix_action_sur_liste = Vue.selection_de_l_action_a_effectuer(self.vue_instance)
+                if str(choix_action_sur_liste) == "Oui":
+                    instance_de_tournoi.participants = self.modification_d_un_joueur(instance_de_tournoi.participants)
             elif choix_utilisateur == 6:
-                # Affichage du classement elo
-                liste_a_trier = int(Vue.selection_de_la_liste_de_joueur_a_trier_par_elo(self.vue_instance))
-                if liste_a_trier == 1:
-                    #try:
-                    self.affichage_du_classement_elo_dict(liste_joueurs)
-                    #except:
-                        #Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
-                elif liste_a_trier == 2:
-                    try:
-                        self.affichage_du_classement_elo(instance_de_tournoi, numero_de_ronde_active)
-                    except UnboundLocalError:
-                        Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
-            elif choix_utilisateur == 7:
+                # Cas du choix de sortie du programme
                 Vue.message_de_sortie_1(self.vue_instance)
             else:
                 # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
@@ -98,30 +90,32 @@ class Controleur:
             Vue.message_de_sortie_2(self.vue_instance)
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
 
-    def selection_d_un_joueur_a_modifier(self, participants):
-        Vue.affichage_choix_liste_participants(self.vue_instance,participants)
+    def selection_d_un_joueur_a_modifier(self):
         choix_du_joueur_a_modifier = Vue.selection_joueur_a_modifier(self.vue_instance)
+        return choix_du_joueur_a_modifier
+
+    def selection_d_un_joueur_a_modifier_dict(self):
+        choix_du_joueur_a_modifier = int(Vue.selection_joueur_a_modifier(self.vue_instance))
         return choix_du_joueur_a_modifier
 
     def modification_d_un_joueur(self, participants):
         try:
-            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier(participants))-1
-        except:
+            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier())-1
+        except TypeError:
             Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
-        try :
-            type_classement_a_modifier = int(Vue.selection_du_type_de_classement_a_modifier(self.vue_instance))
-        except :
-            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
-        if type_classement_a_modifier == 1 :
-            # change le classement elo
-            participants[indice_joueur_a_modifier].classement_elo = int(Vue.modification_classement_elo(self.vue_instance, participants[indice_joueur_a_modifier]))
-        elif type_classement_a_modifier == 2 :
-            # change le classement tournoi
-            participants[indice_joueur_a_modifier].points_tournoi = int(Vue.modification_point_tournoi(self.vue_instance, participants[indice_joueur_a_modifier]))
-        else:
-            # gere le cas ou le chiffre entré n'est pas dans les options
-            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+        # change le classement tournoi
+        participants[indice_joueur_a_modifier].points_tournoi = \
+            int(Vue.modification_point_tournoi(self.vue_instance, participants[indice_joueur_a_modifier]))
         return participants
+
+    def modification_d_un_joueur_dict(self, liste_joueurs):
+        """ Modifie les points elo d'un joueur de la liste"""
+        indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_dict())
+        cle_joueur_a_modifier = "player" + str(indice_joueur_a_modifier)
+        # change le classement elo
+        liste_joueurs[cle_joueur_a_modifier].classement_elo = \
+            int(Vue.modification_classement_elo(self.vue_instance, liste_joueurs[cle_joueur_a_modifier]))
+        return liste_joueurs
 
     def affichage_du_classement_tournoi(self, instance_de_tournoi, numero_de_ronde_active):
         """ Affiche le classement du tournoi """
@@ -144,13 +138,12 @@ class Controleur:
         nombre_de_joueurs = len(liste_joueur_a_trier)
         Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_joueurs, "")
 
-
     def recuperation_du_nombre_de_participants(self):
-        "Récupere le nombre de participants au tournoi"
+        """Récupere le nombre de participants au tournoi"""
         try:
             nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
             return nombre_de_participants
-        except:
+        except TypeError:
             Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
             return ""
 
@@ -168,11 +161,11 @@ class Controleur:
             dernier_nom_entre = liste_joueurs[cle_dernier_nom_entre]
             # Verifie que le joueur est dans la liste de joueur en parcourant toutes les entrées du dictionnaire
             nombre_de_joueur_dans_la_liste = len(liste_joueurs)
-            for i in range(nombre_de_joueur_dans_la_liste):
-                if i < 9:
-                    joueur_de_la_liste = liste_joueurs["player0"+str(i+1)]
+            for j in range(nombre_de_joueur_dans_la_liste):
+                if j < 9:
+                    joueur_de_la_liste = liste_joueurs["player0"+str(j+1)]
                 else:
-                    joueur_de_la_liste = liste_joueurs["player"+str(i+1)]
+                    joueur_de_la_liste = liste_joueurs["player"+str(j+1)]
                 # Vérifie si le prenom et nom entrée par l'utilisateur fait partie de la liste de joueurs
                 test_presence = self.verification_participant_est_dans_liste_joueurs(participant, joueur_de_la_liste)
                 # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
@@ -200,7 +193,6 @@ class Controleur:
                             return ""
         return liste_participants
 
-
     def verification_participant_est_dans_liste_joueurs(self, participant, joueur_de_la_liste):
         """ Verifie si un couple Nom / Prenom se trouve dans la liste des objets joueurs """
         if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in
@@ -208,54 +200,51 @@ class Controleur:
             return "Presence"
         else:
             return "Absence"
-        
-
 
     def ajout_des_joueurs(self):
         """ Ajout des joueurs """
         # Pool de 28 joueurs statiques
-        liste_joueurs = {}
-        liste_joueurs["player01"] = Joueur("Nom01", "prénom01", "11/11/11", "M", 1650)
-        liste_joueurs["player02"] = Joueur("Nom02", "prénom02", "10/10/10", "F", 1435)
-        liste_joueurs["player03"] = Joueur("Nom03", "prénom03", "9/9/9", "U", 1983)
-        liste_joueurs["player04"] = Joueur("Nom04", "prénom04", "08/08/08", "M", 1945)
-        liste_joueurs["player05"] = Joueur("Nom05", "prénom05", "04/05/06", "F", 1345)
-        liste_joueurs["player06"] = Joueur("Nom06", "prénom06", "11/5/11", "M", 1580)
-        liste_joueurs["player07"] = Joueur("Nom07", "prénom07", "10/9/10", "F", 1415)
-        liste_joueurs["player08"] = Joueur("Nom08", "prénom08", "9/4/9", "U", 1953)
-        liste_joueurs["player09"] = Joueur("Nom09", "prénom09", "11/11/11", "M", 1454)
-        liste_joueurs["player10"] = Joueur("Nom10", "prénom10", "10/10/10", "F", 1536)
-        liste_joueurs["player11"] = Joueur("Nom11", "prénom11", "11/11/11", "M", 1450)
-        liste_joueurs["player12"] = Joueur("Nom12", "prénom12", "10/10/10", "F", 1535)
-        liste_joueurs["player13"] = Joueur("Nom13", "prénom13", "9/9/9", "U", 1783)
-        liste_joueurs["player14"] = Joueur("Nom14", "prénom14", "08/08/08", "M", 1245)
-        liste_joueurs["player15"] = Joueur("Nom15", "prénom15", "04/05/06", "F", 1545)
-        liste_joueurs["player16"] = Joueur("Nom16", "prénom16", "11/5/11", "M", 1380)
-        liste_joueurs["player17"] = Joueur("Nom17", "prénom17", "10/9/10", "F", 1615)
-        liste_joueurs["player18"] = Joueur("Nom18", "prénom18", "9/4/9", "U", 1153)
-        liste_joueurs["player19"] = Joueur("Nom19", "prénom19", "11/11/11", "M", 1258)
-        liste_joueurs["player20"] = Joueur("Nom20", "prénom20", "10/10/10", "F", 1338)
-        liste_joueurs["player21"] = Joueur("Nom21", "prénom21", "11/11/11", "M", 1250)
-        liste_joueurs["player22"] = Joueur("Nom22", "prénom22", "10/10/10", "F", 1335)
-        liste_joueurs["player23"] = Joueur("Nom23", "prénom23", "9/9/9", "U", 1483)
-        liste_joueurs["player24"] = Joueur("Nom24", "prénom24", "08/08/08", "M", 1545)
-        liste_joueurs["player25"] = Joueur("Nom25", "prénom25", "04/05/06", "F", 1645)
-        liste_joueurs["player26"] = Joueur("Nom26", "prénom26", "11/5/11", "M", 1780)
-        liste_joueurs["player27"] = Joueur("Nom27", "prénom27", "10/9/10", "F", 1815)
-        liste_joueurs["player28"] = Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)
+        liste_joueurs = {"player01": Joueur("Nom01", "prénom01", "11/11/11", "M", 1650),
+                         "player02": Joueur("Nom02", "prénom02", "10/10/10", "F", 1435),
+                         "player03": Joueur("Nom03", "prénom03", "9/9/9", "U", 1983),
+                         "player04": Joueur("Nom04", "prénom04", "08/08/08", "M", 1945),
+                         "player05": Joueur("Nom05", "prénom05", "04/05/06", "F", 1345),
+                         "player06": Joueur("Nom06", "prénom06", "11/5/11", "M", 1580),
+                         "player07": Joueur("Nom07", "prénom07", "10/9/10", "F", 1415),
+                         "player08": Joueur("Nom08", "prénom08", "9/4/9", "U", 1953),
+                         "player09": Joueur("Nom09", "prénom09", "11/11/11", "M", 1454),
+                         "player10": Joueur("Nom10", "prénom10", "10/10/10", "F", 1536),
+                         "player11": Joueur("Nom11", "prénom11", "11/11/11", "M", 1450),
+                         "player12": Joueur("Nom12", "prénom12", "10/10/10", "F", 1535),
+                         "player13": Joueur("Nom13", "prénom13", "9/9/9", "U", 1783),
+                         "player14": Joueur("Nom14", "prénom14", "08/08/08", "M", 1245),
+                         "player15": Joueur("Nom15", "prénom15", "04/05/06", "F", 1545),
+                         "player16": Joueur("Nom16", "prénom16", "11/5/11", "M", 1380),
+                         "player17": Joueur("Nom17", "prénom17", "10/9/10", "F", 1615),
+                         "player18": Joueur("Nom18", "prénom18", "9/4/9", "U", 1153),
+                         "player19": Joueur("Nom19", "prénom19", "11/11/11", "M", 1258),
+                         "player20": Joueur("Nom20", "prénom20", "10/10/10", "F", 1338),
+                         "player21": Joueur("Nom21", "prénom21", "11/11/11", "M", 1250),
+                         "player22": Joueur("Nom22", "prénom22", "10/10/10", "F", 1335),
+                         "player23": Joueur("Nom23", "prénom23", "9/9/9", "U", 1483),
+                         "player24": Joueur("Nom24", "prénom24", "08/08/08", "M", 1545),
+                         "player25": Joueur("Nom25", "prénom25", "04/05/06", "F", 1645),
+                         "player26": Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
+                         "player27": Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
+                         "player28": Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)}
         return liste_joueurs
 
     def creation_du_tournoi(self, info_tournoi):
         """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""
         # Creation d'un objet tournoi avec les informations récupérées par la Vue
-        self.instance_de_tournoi = Tournoi(info_tournoi["nom_du_tournoi"],
-                                           info_tournoi["lieu_du_tournoi"],
-                                           info_tournoi["date_de_tournoi"],
-                                           info_tournoi["type_de_controle_du_temps"],
-                                           info_tournoi["nombre_de_participant"],
-                                           info_tournoi["nombre_de_tour"],
-                                           info_tournoi["commentaires"])
-        return self.instance_de_tournoi
+        instance_de_tournoi = Tournoi(info_tournoi["nom_du_tournoi"],
+                                      info_tournoi["lieu_du_tournoi"],
+                                      info_tournoi["date_de_tournoi"],
+                                      info_tournoi["type_de_controle_du_temps"],
+                                      info_tournoi["nombre_de_participant"],
+                                      info_tournoi["nombre_de_tour"],
+                                      info_tournoi["commentaires"])
+        return instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
@@ -287,9 +276,9 @@ class Controleur:
                 Vue.message_d_erreur(self.vue_instance)
             else:
                 if resultat_du_match == "1":
-                    verification_resultat_saisie = Vue.verification_resultat_match_avec_vainqueur(self.vue_instance,
-                                                                                                  match_de_ronde.joueur1,
-                                                                                                  match_de_ronde.joueur2)
+                    verification_resultat_saisie = \
+                        Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur1,
+                                                                       match_de_ronde.joueur2)
                     while str(verification_resultat_saisie) != "OK":
                         verification_resultat_saisie = \
                             Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur1,
@@ -300,9 +289,9 @@ class Controleur:
                         match_de_ronde.resultat_joueur2 = 0
                         ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
                 elif resultat_du_match == "2":
-                    verification_resultat_saisie = Vue.verification_resultat_match_avec_vainqueur(self.vue_instance,
-                                                                                                  match_de_ronde.joueur2,
-                                                                                                  match_de_ronde.joueur1)
+                    verification_resultat_saisie = \
+                        Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur2,
+                                                                       match_de_ronde.joueur1)
                     while verification_resultat_saisie != "OK":
                         verification_resultat_saisie = \
                             Vue.verification_resultat_match_avec_vainqueur(self.vue_instance, match_de_ronde.joueur2,
@@ -345,7 +334,7 @@ class Controleur:
                                   infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
                                   infos_joueur_a_ajouter["classement_elo"])
         return joueur_a_ajouter
-    
+
     def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs):
         """ Ajoute un joueur à la liste des joueurs existants parmis lesquels il est possible de sélectionner
         les participants"""
