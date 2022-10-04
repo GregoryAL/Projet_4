@@ -28,16 +28,19 @@ class Controleur:
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                 nombre_de_participants = self.recuperation_du_nombre_de_participants()
-                liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
-                if liste_participants_tournoi == "":
-                    print("retour")
+                if nombre_de_participants == "":
+                    Vue.appuyer_sur_entrer_pour_continuer(self.vue_instance)
                 else:
-                    info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
-                                                                                                     nombre_de_participants)
-                    print(liste_participants_tournoi)
-                    instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
-                    instance_de_tournoi.participants = liste_participants_tournoi
-                    numero_de_ronde_active = 0
+                    liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
+                    if liste_participants_tournoi == "":
+                        print("retour")
+                    else:
+                        info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
+                                                                                                         nombre_de_participants)
+                        print(liste_participants_tournoi)
+                        instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+                        instance_de_tournoi.participants = liste_participants_tournoi
+                        numero_de_ronde_active = 0
             elif choix_utilisateur == 2:
                 # Lancement de la ronde suivante
                 try:
@@ -90,8 +93,12 @@ class Controleur:
 
     def recuperation_du_nombre_de_participants(self):
         "Récupere le nombre de participants au tournoi"
-        nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
-        return nombre_de_participants
+        try:
+            nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
+            return nombre_de_participants
+        except:
+            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+            return ""
 
     def selection_des_participants(self, liste_joueurs, nombre_de_participants):
         """ Selection des participants dans le pool de joueurs connus """

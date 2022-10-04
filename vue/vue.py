@@ -34,6 +34,10 @@ class Vue:
         """ Affiche un message d'erreur indiquant que le tournoi est terminé """
         input("Option indisponible, le tournoi est terminé \n Appuyer sur Entrer pour continuer")
 
+    def appuyer_sur_entrer_pour_continuer(self):
+        """ Affiche la demande d'appuyer sur Entrer pour continuer"""
+        input("Appuyer sur Entrer pour continuer... \n")
+
     def message_d_erreur(self):
         """ Affiche un message d'erreur générique """
         print("il y a eut une erreur. \n")
@@ -45,6 +49,10 @@ class Vue:
     def message_de_sortie_2(self):
         """ Affiche un message de sortie et quitte le programme"""
         sys.exit("Vous quittez la gestion du tournoi")
+
+    def message_d_erreur_d_input_chiffre(self):
+        """ Affiche un message d'erreur car l'utilisateur n'a pas entré un chiffre """
+        input(" L'entrée n'était pas un nombre. Merci d'entrer un nombre")
 
     def message_d_erreur_d_input(self):
         """ Affiche un message d'erreur car l utilisateur a entré un chiffre en dehors des options proposées """
