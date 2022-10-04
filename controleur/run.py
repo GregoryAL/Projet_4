@@ -23,7 +23,7 @@ class Controleur:
     def gestion_du_tournoi(self, liste_joueurs):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
-        while choix_utilisateur != 6:
+        while choix_utilisateur != 7:
             choix_utilisateur = int(Vue.menu(self.vue_instance))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
@@ -65,8 +65,11 @@ class Controleur:
                 joueur_a_ajouter = self.creation_d_un_joueur("")
                 liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
             elif choix_utilisateur == 4:
-                # Modification classement d'un joeuur
-                print("modif joueur")
+                # Modification classement d'un joueur
+                try:
+                    instance_de_tournoi.participants = self.modification_d_un_joueur(instance_de_tournoi.participants)
+                except UnboundLocalError:
+                    Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
             elif choix_utilisateur == 5:
                 # Affichage des resultats du tournoi
                 try:
@@ -74,6 +77,19 @@ class Controleur:
                 except UnboundLocalError:
                     Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
             elif choix_utilisateur == 6:
+                # Affichage du classement elo
+                liste_a_trier = int(Vue.selection_de_la_liste_de_joueur_a_trier_par_elo(self.vue_instance))
+                if liste_a_trier == 1:
+                    #try:
+                    self.affichage_du_classement_elo_dict(liste_joueurs)
+                    #except:
+                        #Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+                elif liste_a_trier == 2:
+                    try:
+                        self.affichage_du_classement_elo(instance_de_tournoi, numero_de_ronde_active)
+                    except UnboundLocalError:
+                        Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
+            elif choix_utilisateur == 7:
                 Vue.message_de_sortie_1(self.vue_instance)
             else:
                 # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
@@ -82,13 +98,51 @@ class Controleur:
             Vue.message_de_sortie_2(self.vue_instance)
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
 
+    def selection_d_un_joueur_a_modifier(self, participants):
+        Vue.affichage_choix_liste_participants(self.vue_instance,participants)
+        choix_du_joueur_a_modifier = Vue.selection_joueur_a_modifier(self.vue_instance)
+        return choix_du_joueur_a_modifier
 
+    def modification_d_un_joueur(self, participants):
+        try:
+            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier(participants))-1
+        except:
+            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+        try :
+            type_classement_a_modifier = int(Vue.selection_du_type_de_classement_a_modifier(self.vue_instance))
+        except :
+            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+        if type_classement_a_modifier == 1 :
+            # change le classement elo
+            participants[indice_joueur_a_modifier].classement_elo = int(Vue.modification_classement_elo(self.vue_instance, participants[indice_joueur_a_modifier]))
+        elif type_classement_a_modifier == 2 :
+            # change le classement tournoi
+            participants[indice_joueur_a_modifier].points_tournoi = int(Vue.modification_point_tournoi(self.vue_instance, participants[indice_joueur_a_modifier]))
+        else:
+            # gere le cas ou le chiffre entré n'est pas dans les options
+            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+        return participants
 
     def affichage_du_classement_tournoi(self, instance_de_tournoi, numero_de_ronde_active):
         """ Affiche le classement du tournoi """
         liste_triee = self.classement_des_joueurs(instance_de_tournoi.participants, "points_tournoi")
         nombre_de_participants = len(instance_de_tournoi.participants)
         Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_participants, numero_de_ronde_active)
+
+    def affichage_du_classement_elo(self, liste_joueur_a_trier, numero_de_ronde_active):
+        """ Affiche le classement en fonction des points elo """
+        liste_triee = self.classement_des_joueurs(liste_joueur_a_trier, "classement_elo")
+        nombre_de_joueurs = len(liste_joueur_a_trier)
+        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_joueurs, numero_de_ronde_active)
+
+    def affichage_du_classement_elo_dict(self, liste_joueur_a_trier):
+        """ Affiche le classement en fonction des points elo d'un dictionnaire de joueur"""
+        liste_joueur_liste = []
+        for objet in liste_joueur_a_trier.values():
+            liste_joueur_liste.append(objet)
+        liste_triee = self.classement_des_joueurs(liste_joueur_liste, "classement_elo")
+        nombre_de_joueurs = len(liste_joueur_a_trier)
+        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_joueurs, "")
 
 
     def recuperation_du_nombre_de_participants(self):

@@ -21,18 +21,54 @@ class Vue:
 
     def affichage_classement(self, liste_triee, nombre_de_participants, numero_de_ronde_active):
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
-        print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
+        if numero_de_ronde_active != "":
+            print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
         for i in range(nombre_de_participants):
             print(" | " + str((i+1)) + " | : " + str(liste_triee[i]) + " \n")
-        input("Appuyer sur Entrer pour continuer.")
+        self.appuyer_sur_entrer_pour_continuer()
+
+    def affichage_choix_liste_participants(self, liste_participants):
+        nombre_de_participants = len(liste_participants)
+        for i in range(nombre_de_participants):
+            print(" | " + str((i+1)) + " | : " + str(liste_participants[i]))
+
+    def selection_joueur_a_modifier(self):
+        joueur_a_modifier = input("Veuillez entrer le numéro du joueur à modifier : \n")
+        return joueur_a_modifier
+
+    def modification_classement_elo(self, joueur):
+        print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " + str(joueur.classement_elo) + ".\n")
+        nouveau_classement = input("A combien voulez-vous changer le classement elo? \n : ")
+        return nouveau_classement
+
+    def modification_point_tournoi(self, joueur):
+        print("Le joueur " + str(joueur.prenom) + " " + str(joueur.nom) + " a " + str(joueur.points_tournoi) + " points dans le tournoi.")
+        nouveaux_points_tournois = input("A combien voulez-vous changer les points du tournoi? \n : ")
+        return nouveaux_points_tournois
+
+    def selection_du_type_de_classement_a_modifier(self):
+        print("Quel type de classement souhaitez vous modifier? \n"
+              "[1] le classement elo\n"
+              "[2] le classement tournoi \n")
+        choix_type_classement = input("Entrez votre choix : \n")
+        return choix_type_classement
+
+    def selection_de_la_liste_de_joueur_a_trier_par_elo(self):
+        print("Quel listes de joueurs triée par elo souhaitez vous afficher? \n"
+              "[1] tous les joueurs connus\n"
+              "[2] les joueurs du tournoi \n")
+        choix_liste_joueur = input("Entrez votre choix : \n")
+        return int(choix_liste_joueur)
 
     def message_d_erreur_tournoi_n_existe_pas(self):
         """ affiche un message d erreur indiquant que l option n'est pas disponible"""
-        input("Option indisponible, aucun tournoi en cours \n Appuyer sur Entrer pour continuer")
+        print("Option indisponible, aucun tournoi en cours")
+        self.appuyer_sur_entrer_pour_continuer()
 
     def message_d_erreur_tournoi_termine(self):
         """ Affiche un message d'erreur indiquant que le tournoi est terminé """
-        input("Option indisponible, le tournoi est terminé \n Appuyer sur Entrer pour continuer")
+        print("Option indisponible, le tournoi est terminé")
+        self.appuyer_sur_entrer_pour_continuer()
 
     def appuyer_sur_entrer_pour_continuer(self):
         """ Affiche la demande d'appuyer sur Entrer pour continuer"""
@@ -56,12 +92,18 @@ class Vue:
 
     def message_d_erreur_d_input(self):
         """ Affiche un message d'erreur car l utilisateur a entré un chiffre en dehors des options proposées """
-        input("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
-              "Appuyer sur Entrer pour continuer...\n")
+        print("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu")
+        self.appuyer_sur_entrer_pour_continuer()
+
+    def message_d_erreur_d_input_hors_choix(self):
+        """Affiche un message quand le chiffre entre ne correspond pas à un choix possible"""
+        print("Choix non reconnu. Merci de rentrer un chiffre correspondant aux options données.")
+        self.appuyer_sur_entrer_pour_continuer()
 
     def message_de_demande_recommencer_ajout_joueur(self):
         """ Demande à l utilisateur de recommencer la création du tournoi"""
-        input("Merci de recommencer la création du tournoi\n Appuyer sur Entrer pour continuer...")
+        print("Merci de recommencer la création du tournoi\n")
+        self.appuyer_sur_entrer_pour_continuer()
 
     def menu(self):
         """ Affichage du menu général"""
@@ -76,7 +118,8 @@ class Vue:
             print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
             print(" [4] Modification du classement d'un joueur\n")
             print(" [5] Affichage du classement du tournoi\n")
-            print(" [6] Sortir de la gestion du tournoi\n")
+            print(" [6] Affichage du classement elo \n")
+            print(" [7] Sortir de la gestion du tournoi\n")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur
         except:

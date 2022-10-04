@@ -22,4 +22,5 @@ class Joueur:
             # "points_tournoi": self.points_tournoi}
 
     def __str__(self):
-        return self.prenom + " " + self.nom + " | nombre de point tournoi : " + str(self.points_tournoi)
+        return self.prenom + " " + self.nom + " | nombre de point tournoi : " + \
+               str(self.points_tournoi) + " | classement elo : " + str(self.classement_elo)
