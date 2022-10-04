@@ -1,6 +1,7 @@
 """ Vue de base """
 from os import system
 from os import name
+import sys
 
 
 class Vue:
@@ -18,11 +19,20 @@ class Vue:
         else:
             _ = system("clear")
 
-    def affichage_classement(self, liste_triee, nombre_de_participants):
+    def affichage_classement(self, liste_triee, nombre_de_participants, numero_de_ronde_active):
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
+        print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
         for i in range(nombre_de_participants):
             print(" | " + str((i+1)) + " | : " + str(liste_triee[i]) + " \n")
         input("Appuyer sur Entrer pour continuer.")
+
+    def message_d_erreur_tournoi_n_existe_pas(self):
+        """ affiche un message d erreur indiquant que l option n'est pas disponible"""
+        input("Option indisponible, aucun tournoi en cours \n Appuyer sur Entrer pour continuer")
+
+    def message_d_erreur_tournoi_termine(self):
+        """ Affiche un message d'erreur indiquant que le tournoi est terminé """
+        input("Option indisponible, le tournoi est terminé \n Appuyer sur Entrer pour continuer")
 
     def message_d_erreur(self):
         """ Affiche un message d'erreur générique """

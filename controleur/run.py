@@ -1,5 +1,5 @@
 """ Point d'entrée du contrôleur"""
-import sys
+
 from modele.tournoi import Tournoi
 from modele.joueurs import Joueur
 import datetime
@@ -29,29 +29,32 @@ class Controleur:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                 nombre_de_participants = self.recuperation_du_nombre_de_participants()
                 liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
-                info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
-                                                                                             nombre_de_participants)
-                print(liste_participants_tournoi)
-                instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
-                instance_de_tournoi.participants = liste_participants_tournoi
-                numero_de_ronde_active = 0
+                if liste_participants_tournoi == "":
+                    print("retour")
+                else:
+                    info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
+                                                                                                     nombre_de_participants)
+                    print(liste_participants_tournoi)
+                    instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+                    instance_de_tournoi.participants = liste_participants_tournoi
+                    numero_de_ronde_active = 0
             elif choix_utilisateur == 2:
                 # Lancement de la ronde suivante
-                while numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
-                    numero_de_ronde_active += 1
-                    print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
-                          str(instance_de_tournoi.nombre_de_tour_du_tournoi) + "rondes")
-                    ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
-                                                                      "MethodeSuisse")
+                try:
+                    if numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
+                        numero_de_ronde_active += 1
+                        print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
+                              str(instance_de_tournoi.nombre_de_tour_du_tournoi) + "rondes")
+                        ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
+                                                                          "MethodeSuisse")
 
-                    self.depart_d_une_ronde(ronde_actuelle)
-                    self.fin_d_une_ronde(ronde_actuelle)
-                    print(ronde_actuelle)
-                    print(ronde_actuelle.liste_matchs[1].joueur1.nom + " a " +
-                          str(ronde_actuelle.liste_matchs[1].joueur1.points_tournoi) + ". \n")
-                    instance_de_tournoi.rondes.append(ronde_actuelle)
-                    print(instance_de_tournoi.participants[1].nom + " a " +
-                          str(instance_de_tournoi.participants[1].points_tournoi) + ". \n")
+                        self.depart_d_une_ronde(ronde_actuelle)
+                        self.fin_d_une_ronde(ronde_actuelle)
+                        instance_de_tournoi.rondes.append(ronde_actuelle)
+                    else :
+                        Vue.message_d_erreur_tournoi_termine(self.vue_instance)
+                except UnboundLocalError:
+                    Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
             elif choix_utilisateur == 3:
                 # Ajout d'un joueur
                 indice_nouveau_joueur = len(liste_joueurs) + 1
@@ -63,7 +66,10 @@ class Controleur:
                 print("modif joueur")
             elif choix_utilisateur == 5:
                 # Affichage des resultats du tournoi
-                self.affichage_du_classement_tournoi(instance_de_tournoi)
+                try:
+                    self.affichage_du_classement_tournoi(instance_de_tournoi, numero_de_ronde_active)
+                except UnboundLocalError:
+                    Vue.message_d_erreur_tournoi_n_existe_pas(self.vue_instance)
             elif choix_utilisateur == 6:
                 Vue.message_de_sortie_1(self.vue_instance)
             else:
@@ -75,11 +81,11 @@ class Controleur:
 
 
 
-    def affichage_du_classement_tournoi(self, instance_de_tournoi):
+    def affichage_du_classement_tournoi(self, instance_de_tournoi, numero_de_ronde_active):
         """ Affiche le classement du tournoi """
         liste_triee = self.classement_des_joueurs(instance_de_tournoi.participants, "points_tournoi")
         nombre_de_participants = len(instance_de_tournoi.participants)
-        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_participants)
+        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_participants, numero_de_ronde_active)
 
 
     def recuperation_du_nombre_de_participants(self):
@@ -130,8 +136,7 @@ class Controleur:
                             nombre_de_joueur_dans_la_liste += 1
                         else:
                             Vue.message_de_demande_recommencer_ajout_joueur(self.vue_instance)
-                            return
-
+                            return ""
         return liste_participants
 
 
