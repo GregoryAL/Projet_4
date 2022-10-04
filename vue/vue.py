@@ -7,17 +7,43 @@ class Vue:
     """ Vue du tournoi d'échec """
 
     def __init__(self):
+        """ Initialise un objet vue"""
         self.liste_des_joueurs = {}
 
 
     def clean_screen(self):
+        """ Efface l'écran """
         if name == "nt":
             _ = system("cls")
         else:
             _ = system("clear")
 
+    def affichage_classement(self, liste_triee, nombre_de_participants):
+        """ Affiche le classement des joueurs en fonction des resultats du tournoi """
+        for i in range(nombre_de_participants):
+            print(" | " + str((i+1)) + " | : " + str(liste_triee[i]) + " \n")
+        input("Appuyer sur Entrer pour continuer.")
+
     def message_d_erreur(self):
+        """ Affiche un message d'erreur générique """
         print("il y a eut une erreur. \n")
+
+    def message_de_sortie_1(self):
+        """ Affiche un message de sortie """
+        print("Merci d'avoir utilisé le logiciel de gestion de tournoi d'échec.\n")
+
+    def message_de_sortie_2(self):
+        """ Affiche un message de sortie et quitte le programme"""
+        sys.exit("Vous quittez la gestion du tournoi")
+
+    def message_d_erreur_d_input(self):
+        """ Affiche un message d'erreur car l utilisateur a entré un chiffre en dehors des options proposées """
+        input("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
+              "Appuyer sur Entrer pour continuer...\n")
+
+    def message_de_demande_recommencer_ajout_joueur(self):
+        """ Demande à l utilisateur de recommencer la création du tournoi"""
+        input("Merci de recommencer la création du tournoi\n Appuyer sur Entrer pour continuer...")
 
     def menu(self):
         """ Affichage du menu général"""
@@ -25,15 +51,19 @@ class Vue:
         # Vide l'écran
         self.clean_screen()
         # Affiche le menu
-        print("Menu pour la gestion d'un tournoi d'échec\n")
-        print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
-        print(" [2] Lancement de la ronde suivante \n")
-        print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
-        print(" [4] Modification du classement d'un joueur\n")
-        print(" [5] Affichage du classement du tournoi\n")
-        print(" [6] Sortir de la gestion du tournoi\n")
-        choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
-        return choix_utilisateur
+        try:
+            print("Menu pour la gestion d'un tournoi d'échec\n")
+            print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
+            print(" [2] Lancement de la ronde suivante \n")
+            print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
+            print(" [4] Modification du classement d'un joueur\n")
+            print(" [5] Affichage du classement du tournoi\n")
+            print(" [6] Sortir de la gestion du tournoi\n")
+            choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
+            return choix_utilisateur
+        except:
+            print("Choix non reconnu...\n")
+            return 0
 
 
 
@@ -116,16 +146,20 @@ class Vue:
         return informations_de_tournoi
 
     def depart_de_la_ronde(self):
+        """ Affiche l'annonce de départ de ronde après appuie sur Entrer """
         input("Appuyer sur 'Entrer' quand la ronde commence")
 
     def fin_de_la_ronde(self):
+        """ Affiche l'annonce de fin de ronde après appuie sur Entrer """
         input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
 
     def joueur_inexistant(self):
+        """ Annonce que le joueur est inexistant, demande si le joueur doit être créé """
         reponse_creation_joueur = input("Joueur inexistant : Voulez vous créer le joueur? (Oui/Non)")
         return reponse_creation_joueur
 
     def ajout_des_informations_d_un_joueur(self, info_joueur_inexistant):
+        """ Recupère les informations d'un joueur à ajouter """
         joueur_a_ajouter = {}
         if info_joueur_inexistant != "":
             recuperation_info_joueur_inexistant = input(" Voulez vous ajouter le joueur " +
@@ -154,5 +188,6 @@ class Vue:
         return joueur_a_ajouter
 
     def affichage_des_matchs(self, instance_de_match):
+        """ Affiche le match """
         print(instance_de_match.joueur1.nom + " affronte " + instance_de_match.joueur2.nom)
 

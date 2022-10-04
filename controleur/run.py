@@ -15,21 +15,20 @@ class Controleur:
         """ initialise le controleur. """
         self.vue_instance = vue
 
-
     def execute(self):
+        """ ajoute les joueurs et lance le programme """
         liste_joueurs = self.ajout_des_joueurs()
         self.gestion_du_tournoi(liste_joueurs)
 
     def gestion_du_tournoi(self, liste_joueurs):
+        """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
         while choix_utilisateur != 6:
-            choix_utilisateur = int(self.menu())
+            choix_utilisateur = int(Vue.menu(self.vue_instance))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                 nombre_de_participants = self.recuperation_du_nombre_de_participants()
                 liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
-                print(str(nombre_de_participants) + "est le nombre de participant")
-                print(str(liste_participants_tournoi) + "est la liste de participant")
                 info_instance_tournoi_a_creer = Vue.recuperation_des_informations_du_tournoi(self.vue_instance,
                                                                                              nombre_de_participants)
                 print(liste_participants_tournoi)
@@ -64,29 +63,27 @@ class Controleur:
                 print("modif joueur")
             elif choix_utilisateur == 5:
                 # Affichage des resultats du tournoi
-                print("affichage joueur")
+                self.affichage_du_classement_tournoi(instance_de_tournoi)
             elif choix_utilisateur == 6:
-                print("sortie")
+                Vue.message_de_sortie_1(self.vue_instance)
             else:
                 # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
-                input("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
-                      "Appuyer sur Entrer pour continuer...\n")
-
+                Vue.message_d_erreur_d_input(self.vue_instance)
         else:
-            sys.exit("Vous quittez la gestion du tournoi")
+            Vue.message_de_sortie_2(self.vue_instance)
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
 
-    def menu(self):
-        # Test si le choix de l utilisateur est bien un chiffre
-        try:
-            resultat_choix = int(Vue.menu(self.vue_instance))
-            return resultat_choix
-        except:
-            print(resultat_choix)
-            input("Choix non reconnu. Merci de taper un chiffre entre 1 et 6 à l'affichage du menu\n"
-                      "Appuyer sur Entrer pour continuer...\n")
+
+
+    def affichage_du_classement_tournoi(self, instance_de_tournoi):
+        """ Affiche le classement du tournoi """
+        liste_triee = self.classement_des_joueurs(instance_de_tournoi.participants, "points_tournoi")
+        nombre_de_participants = len(instance_de_tournoi.participants)
+        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_participants)
+
 
     def recuperation_du_nombre_de_participants(self):
+        "Récupere le nombre de participants au tournoi"
         nombre_de_participants = int(Vue.recuperation_nombre_de_participants_du_tournoi(self.vue_instance))
         return nombre_de_participants
 
@@ -113,7 +110,8 @@ class Controleur:
                 test_presence = self.verification_participant_est_dans_liste_joueurs(participant, joueur_de_la_liste)
                 # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
                 if test_presence == "Presence":
-                    print("ok test " + str(joueur_de_la_liste))
+                    joueur_de_la_liste.points_tournoi = 0
+                    print("joueur ajouté : " + str(joueur_de_la_liste))
                     liste_participants.append(joueur_de_la_liste)
                     print(liste_participants)
                     break
@@ -131,7 +129,7 @@ class Controleur:
                             liste_joueurs = self.ajout_d_un_joueur_a_la_liste(joueur_a_ajouter, liste_joueurs)
                             nombre_de_joueur_dans_la_liste += 1
                         else:
-                            print("Merci de recommencer l'ajout des participants du tournoi")
+                            Vue.message_de_demande_recommencer_ajout_joueur(self.vue_instance)
                             return
 
         return liste_participants
@@ -141,10 +139,8 @@ class Controleur:
         """ Verifie si un couple Nom / Prenom se trouve dans la liste des objets joueurs """
         if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in
                                                                       joueur_de_la_liste.prenom):
-            print("ok " + joueur_de_la_liste.nom + " et " + participant["Nom"])
             return "Presence"
         else:
-            print(" else " + joueur_de_la_liste.nom + " et " + participant["Nom"])
             return "Absence"
         
 
@@ -193,12 +189,6 @@ class Controleur:
                                            info_tournoi["nombre_de_participant"],
                                            info_tournoi["nombre_de_tour"],
                                            info_tournoi["commentaires"])
-        # Récuperation de la liste des joueurs avec la Vue
-        # for i in range(self.instance_de_tournoi.nombre_de_participants):
-            # joueur_random_key = random.choice(list(self.liste_joueurs.keys()))
-            # joueur_random = self.liste_joueurs[joueur_random_key]
-            # self.instance_de_tournoi.participants.append(joueur_random)
-            # self.liste_joueurs.pop(joueur_random_key)
         return self.instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
@@ -210,12 +200,6 @@ class Controleur:
         # pour chaque match de la liste des matchs de la ronde
         for match_de_ronde in ronde_actuelle.liste_matchs:
             self.affichage_des_matchs(match_de_ronde)
-        # ronde_actuelle.liste_matchs[match_de_ronde] = self.deroulement_d_un_match(
-            # ronde_actuelle.liste_matchs[match_de_ronde])
-        # ronde_actuelle.resultat_matchs = ([ronde_actuelle.liste_matchs[match_de_ronde].joueur1,
-                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur1],
-                                          # [ronde_actuelle.liste_matchs[match_de_ronde].joueur2,
-                                           # ronde_actuelle.liste_matchs[match_de_ronde].resultat_joueur2])
         return ronde_actuelle
 
     def affichage_des_matchs(self, instance_de_match):
@@ -223,11 +207,13 @@ class Controleur:
         Vue.affichage_des_matchs(self.vue_instance, instance_de_match)
 
     def depart_d_une_ronde(self, ronde_a_lancer):
+        """ lance une ronde """
         Vue.depart_de_la_ronde(self.vue_instance)
         ronde_a_lancer.date_heure_debut_du_match = datetime.datetime.now()
         return ronde_a_lancer
 
     def fin_d_une_ronde(self, ronde_a_clore):
+        """ Clos une ronde et saisie les resultats"""
         Vue.fin_de_la_ronde(self.vue_instance)
         for match_de_ronde in ronde_a_clore.liste_matchs:
             resultat_du_match = Vue.recuperation_des_resultats_d_un_match(self.vue_instance, match_de_ronde)
@@ -282,7 +268,7 @@ class Controleur:
         tournoi pour les rondes suivantes."""
         if facteur_tri == "classement_elo":
             liste_participant.sort(key=lambda x: x.classement_elo, reverse=True)
-        elif facteur_tri == "points_tournoi:":
+        elif facteur_tri == "points_tournoi":
             liste_participant.sort(key=lambda x: x.points_tournoi, reverse=True)
         return liste_participant
 
@@ -295,6 +281,8 @@ class Controleur:
         return joueur_a_ajouter
     
     def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs):
+        """ Ajoute un joueur à la liste des joueurs existants parmis lesquels il est possible de sélectionner
+        les participants"""
         indice_nouveau_joueur = len(liste_joueurs) + 1
         cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
         liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
