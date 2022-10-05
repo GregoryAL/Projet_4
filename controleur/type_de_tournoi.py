@@ -20,7 +20,7 @@ class TypeDeTournoi:
         if int(numero_de_ronde) == 1:
             instance_tournoi.participants.sort(key=lambda x: x.classement_elo, reverse=True)
         elif int(numero_de_ronde) >= 2:
-            instance_tournoi.participants.sort(key=lambda x: x.points_tournoi, reverse=True)
+            instance_tournoi.participants.sort(key=lambda x: (x.points_tournoi, x.classement_elo), reverse=True)
         # Creation des paires
         moitie_des_participants = int(instance_tournoi.nombre_de_participants/2)
         ronde_actuelle = ronde.Ronde("round" + str(numero_de_ronde))

@@ -1,5 +1,4 @@
 """ Point d'entrée du contrôleur"""
-
 from modele.tournoi import Tournoi
 from modele.joueurs import Joueur
 import datetime
