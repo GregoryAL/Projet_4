@@ -18,6 +18,11 @@ class Vue:
         else:
             _ = system("clear")
 
+    def choix_classement_ou_alphabetique(self):
+        """ Recupere le choix de l'utilisateur entre un tri alphabetique ou par classement """
+        choix_classement = input("Voulez vous un tri : \n [1] Alphabetique \n [2] Par Classement \n :")
+        return choix_classement
+
     def affichage_classement(self, liste_triee, nombre_de_participants, numero_de_ronde_active):
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
         if numero_de_ronde_active != "":
