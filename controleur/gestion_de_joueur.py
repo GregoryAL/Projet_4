@@ -1,29 +1,34 @@
 from modele.joueur import Joueur
 from vue.vue import Vue
+from vue.message_d_erreur import MessageDErreur
+from vue.saisie_de_donnees import SaisieDeDonnees
+
 
 class GestionDeJoueur:
     """ Classe gérant les joueurs"""
 
-    def __init__(self, vue_instance):
+    def __init__(self, vue_instance, vue_message_d_erreur, vue_saisie_de_donnees):
         """ crée l'objet type de joueur """
         self.vue_instance = vue_instance
+        self.vue_message_d_erreur = vue_message_d_erreur
+        self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
     def selection_d_un_joueur_a_modifier(self):
-        choix_du_joueur_a_modifier = Vue.selection_joueur_a_modifier(self.vue_instance)
+        choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
         return choix_du_joueur_a_modifier
 
     def selection_d_un_joueur_a_modifier_dict(self):
-        choix_du_joueur_a_modifier = int(Vue.selection_joueur_a_modifier(self.vue_instance))
+        choix_du_joueur_a_modifier = int(SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees))
         return choix_du_joueur_a_modifier
 
     def modification_d_un_joueur(self, participants):
         try:
             indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier())-1
         except TypeError:
-            Vue.message_d_erreur_d_input_chiffre(self.vue_instance)
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
         # change le classement tournoi
         participants[indice_joueur_a_modifier].points_tournoi = \
-            int(Vue.modification_point_tournoi(self.vue_instance, participants[indice_joueur_a_modifier]))
+            int(SaisieDeDonnees.modification_point_tournoi(self.vue_saisie_de_donnees, participants[indice_joueur_a_modifier]))
         return participants
 
     def modification_d_un_joueur_dict(self, liste_joueurs):
@@ -35,7 +40,7 @@ class GestionDeJoueur:
             cle_joueur_a_modifier = "player" + str(indice_joueur_a_modifier)
         # change le classement elo
         liste_joueurs[cle_joueur_a_modifier].classement_elo = \
-            int(Vue.modification_classement_elo(self.vue_instance, liste_joueurs[cle_joueur_a_modifier]))
+            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees, liste_joueurs[cle_joueur_a_modifier]))
         return liste_joueurs
 
     def ajout_des_joueurs(self):
@@ -84,7 +89,7 @@ class GestionDeJoueur:
 
     def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """
-        infos_joueur_a_ajouter = Vue.ajout_des_informations_d_un_joueur(self.vue_instance, nom_prenom_info_joueur)
+        infos_joueur_a_ajouter = SaisieDeDonnees.ajout_des_informations_d_un_joueur(self.vue_saisie_de_donnees, nom_prenom_info_joueur)
         joueur_a_ajouter = Joueur(infos_joueur_a_ajouter["nom"], infos_joueur_a_ajouter["prenom"],
                                   infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
                                   infos_joueur_a_ajouter["classement_elo"])
