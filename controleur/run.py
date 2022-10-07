@@ -5,6 +5,7 @@ from controleur.gestion_de_joueur import GestionDeJoueur
 from controleur.gestion_de_rapport import GestionDeRapport
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
+from tinydb import TinyDB, Query
 
 
 class Controleur:
@@ -23,6 +24,8 @@ class Controleur:
 
     def execute(self):
         """ lance le programme """
-        liste_joueurs = GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur)
-        GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, liste_joueurs)
+        db = TinyDB('db.json')
+        players_table = db.table('players')
+        liste_joueurs = GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur, players_table)
+        GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, liste_joueurs, players_table)
 

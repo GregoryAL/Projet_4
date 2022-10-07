@@ -44,9 +44,10 @@ class GestionDeJoueur:
             int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees, liste_joueurs[cle_joueur_a_modifier]))
         return liste_joueurs
 
-    def ajout_des_joueurs(self):
+    def ajout_des_joueurs(self, players_table):
         """ Ajout des joueurs """
         # Pool de 28 joueurs statiques
+        players_table.truncate()
         liste_joueurs = [Joueur("Nom01", "prénom01", "11/11/11", "M", 1650),
                          Joueur("Nom02", "prénom02", "10/10/10", "F", 1435),
                          Joueur("Nom03", "prénom03", "9/9/9", "U", 1983),
@@ -77,7 +78,14 @@ class GestionDeJoueur:
                          Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
                          Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
                          Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)]
+        for joueur in liste_joueurs:
+            self.ajout_joueur_db(joueur, players_table)
         return liste_joueurs
+
+    def ajout_joueur_db(self, joueur, players_table):
+        joueur = Joueur.serialisation_joueur(joueur)
+        players_table.insert(joueur)
+
 
     def classement_des_joueurs(self, liste_participant, facteur_tri):
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
@@ -92,16 +100,16 @@ class GestionDeJoueur:
 
     def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """
-        infos_joueur_a_ajouter = SaisieDeDonnees.ajout_des_informations_d_un_joueur(self.vue_saisie_de_donnees, nom_prenom_info_joueur)
+        infos_joueur_a_ajouter = SaisieDeDonnees.ajout_des_informations_d_un_joueur(self.vue_saisie_de_donnees,
+                                                                                    nom_prenom_info_joueur)
         joueur_a_ajouter = Joueur(infos_joueur_a_ajouter["nom"], infos_joueur_a_ajouter["prenom"],
                                   infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
                                   infos_joueur_a_ajouter["classement_elo"])
         return joueur_a_ajouter
 
-    def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs):
+    def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs, players_table):
         """ Ajoute un joueur à la liste des joueurs existants parmis lesquels il est possible de sélectionner
         les participants"""
-        indice_nouveau_joueur = len(liste_joueurs) + 1
-        cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
-        liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
+        liste_joueurs.append(joueur_a_ajouter)
+        self.ajout_joueur_db(joueur_a_ajouter, players_table)
         return liste_joueurs

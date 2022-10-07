@@ -2,7 +2,7 @@ from modele.tournoi import Tournoi
 from modele.joueur import Joueur
 import datetime
 from controleur.type_de_tournoi import TypeDeTournoi
-from tinydb import TinyDB, Query
+
 from vue.vue import Vue
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
@@ -21,17 +21,16 @@ class GestionDeTournoi:
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
-    def gestion_du_tournoi(self, liste_joueurs):
+    def gestion_du_tournoi(self, liste_joueurs, players_table):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
         numero_de_ronde_active = 0
-        db = TinyDB('db.json')
-        players_table = db.table('players')
+
         """players_table.truncate()  # clear the table first
         players_table.insert_multiple(serialized_players)
-        tournament_table = db.table('tournament')
-        tournament_table.truncate()
-        tournament_table.insert(serialized_tournament)"""
+        tournament_table = db.table('tournament')"""
+
+        """tournament_table.insert(serialized_tournament)"""
         while choix_utilisateur != 6:
             choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
             if choix_utilisateur == 1:
@@ -69,11 +68,9 @@ class GestionDeTournoi:
                     MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
             elif choix_utilisateur == 3:
                 # Ajout d'un joueur
-                indice_nouveau_joueur = len(liste_joueurs) + 1
-                cle_nouveau_joueur = "player" + str(indice_nouveau_joueur)
                 joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
-                db.insert(Joueur.serialisation_joueur(joueur_a_ajouter))
-                liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
+                GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
+                liste_joueurs.append(joueur_a_ajouter)
             elif choix_utilisateur == 4:
                 # Affichage modification du classement elo d'un joueur de la liste
                 GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, liste_joueurs, "")
