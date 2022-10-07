@@ -56,13 +56,14 @@ class SaisieDeDonnees:
         Vue.clean_screen(self.vue)
         # Affiche le menu
         try:
-            print("Menu pour la gestion d'un tournoi d'échec\n")
-            print(" [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi \n")
-            print(" [2] Lancement de la ronde suivante \n")
-            print(" [3] Ajout d'un joueur dans la liste des joueurs\n")
-            print(" [4] Affichage du classement/Modification du classement elo d'un joueur de la liste\n")
-            print(" [5] Affichage du classement/Modification du classement tournoi d'un participant du tournoi\n")
-            print(" [6] Sortir de la gestion du tournoi\n")
+            print("                     Menu pour la gestion d'un tournoi d'échec\n"
+                  " [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi\n"
+                  " [2] Lancement de la ronde suivante\n"
+                  " [3] Ajout d'un joueur dans la liste des joueurs\n"
+                  " [4] Affichage du classement/Modification du classement elo d'un joueur de la liste\n"
+                  " [5] Affichage du classement/Modification du classement tournoi d'un participant du tournoi\n"
+                  " [6] Rapport\n"
+                  " [7] Sortie du Programme")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur
         except TypeError:

@@ -31,7 +31,7 @@ class GestionDeTournoi:
         tournament_table = db.table('tournament')"""
 
         """tournament_table.insert(serialized_tournament)"""
-        while choix_utilisateur != 6:
+        while choix_utilisateur != 7:
             choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
@@ -76,8 +76,8 @@ class GestionDeTournoi:
                 GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, liste_joueurs, "")
                 choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
                 if str(choix_action_sur_liste) == "Oui":
-                    liste_joueurs = GestionDeJoueur.modification_d_un_joueur_dict(self.objet_gestion_joueur,
-                                                                                  liste_joueurs)
+                    liste_joueurs = GestionDeJoueur.modification_d_un_joueur_elo(self.objet_gestion_joueur,
+                                                                                 liste_joueurs, players_table)
             elif choix_utilisateur == 5:
                 # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
@@ -94,7 +94,9 @@ class GestionDeTournoi:
                                                                  instance_de_tournoi.participants)
             elif choix_utilisateur == 6:
                 # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
-                print("rapports")
+                for players in players_table:
+                    print(players)
+                input("")
 
             elif choix_utilisateur == 7:
                 # Cas du choix de sortie du programme

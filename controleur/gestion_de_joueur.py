@@ -1,6 +1,7 @@
 from modele.joueur import Joueur
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
+from tinydb import TinyDB, Query
 
 
 class GestionDeJoueur:
@@ -16,7 +17,7 @@ class GestionDeJoueur:
         choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
         return choix_du_joueur_a_modifier
 
-    def selection_d_un_joueur_a_modifier_dict(self):
+    def selection_d_un_joueur_a_modifier_elo(self):
         choix_du_joueur_a_modifier = int(SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees))
         return choix_du_joueur_a_modifier
 
@@ -32,16 +33,19 @@ class GestionDeJoueur:
                                                            participants[indice_joueur_a_modifier]))
         return participants
 
-    def modification_d_un_joueur_dict(self, liste_joueurs):
+    def modification_d_un_joueur_elo(self, liste_joueurs, players_table):
         """ Modifie les points elo d'un joueur de la liste"""
-        indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_dict())
-        if indice_joueur_a_modifier <= 9:
-            cle_joueur_a_modifier = "player0" + str(indice_joueur_a_modifier)
-        else:
-            cle_joueur_a_modifier = "player" + str(indice_joueur_a_modifier)
+        indice_joueur_a_modifier = 0
+        try:
+            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_elo())-1
+        except TypeError:
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
         # change le classement elo
-        liste_joueurs[cle_joueur_a_modifier].classement_elo = \
-            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees, liste_joueurs[cle_joueur_a_modifier]))
+        liste_joueurs[indice_joueur_a_modifier].classement_elo = \
+            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees,
+                                                            liste_joueurs[indice_joueur_a_modifier]))
+        joueur_cherche_db = Query()
+        players_table.search(joueur_cherche_db.nom == liste_joueurs[indice_joueur_a_modifier].nom)
         return liste_joueurs
 
     def ajout_des_joueurs(self, players_table):
