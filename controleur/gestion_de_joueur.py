@@ -1,5 +1,4 @@
 from modele.joueur import Joueur
-from vue.vue import Vue
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
 
@@ -22,13 +21,15 @@ class GestionDeJoueur:
         return choix_du_joueur_a_modifier
 
     def modification_d_un_joueur(self, participants):
+        indice_joueur_a_modifier = 0
         try:
             indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier())-1
         except TypeError:
             MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
         # change le classement tournoi
         participants[indice_joueur_a_modifier].points_tournoi = \
-            int(SaisieDeDonnees.modification_point_tournoi(self.vue_saisie_de_donnees, participants[indice_joueur_a_modifier]))
+            int(SaisieDeDonnees.modification_point_tournoi(self.vue_saisie_de_donnees,
+                                                           participants[indice_joueur_a_modifier]))
         return participants
 
     def modification_d_un_joueur_dict(self, liste_joueurs):
@@ -46,34 +47,36 @@ class GestionDeJoueur:
     def ajout_des_joueurs(self):
         """ Ajout des joueurs """
         # Pool de 28 joueurs statiques
-        liste_joueurs = {"player01": Joueur("Nom01", "prénom01", "11/11/11", "M", 1650),
-                         "player02": Joueur("Nom02", "prénom02", "10/10/10", "F", 1435),
-                         "player03": Joueur("Nom03", "prénom03", "9/9/9", "U", 1983),
-                         "player04": Joueur("Nom04", "prénom04", "08/08/08", "M", 1945),
-                         "player05": Joueur("Nom05", "prénom05", "04/05/06", "F", 1345),
-                         "player06": Joueur("Nom06", "prénom06", "11/5/11", "M", 1580),
-                         "player07": Joueur("Nom07", "prénom07", "10/9/10", "F", 1415),
-                         "player17": Joueur("Nom17", "prénom17", "10/9/10", "F", 1615),
-                         "player18": Joueur("Nom18", "prénom18", "9/4/9", "U", 1153),
-                         "player19": Joueur("Nom19", "prénom19", "11/11/11", "M", 1258),
-                         "player20": Joueur("Nom20", "prénom20", "10/10/10", "F", 1338),
-                         "player21": Joueur("Nom21", "prénom21", "11/11/11", "M", 1250),
-                         "player22": Joueur("Nom22", "prénom22", "10/10/10", "F", 1335),
-                         "player08": Joueur("Nom08", "prénom08", "9/4/9", "U", 1953),
-                         "player09": Joueur("Nom09", "prénom09", "11/11/11", "M", 1454),
-                         "player10": Joueur("Nom10", "prénom10", "10/10/10", "F", 1536),
-                         "player11": Joueur("Nom11", "prénom11", "11/11/11", "M", 1450),
-                         "player12": Joueur("Nom12", "prénom12", "10/10/10", "F", 1535),
-                         "player13": Joueur("Nom13", "prénom13", "9/9/9", "U", 1783),
-                         "player14": Joueur("Nom14", "prénom14", "08/08/08", "M", 1245),
-                         "player15": Joueur("Nom15", "prénom15", "04/05/06", "F", 1545),
-                         "player16": Joueur("Nom16", "prénom16", "11/5/11", "M", 1380),
-                         "player23": Joueur("Nom23", "prénom23", "9/9/9", "U", 1483),
-                         "player24": Joueur("Nom24", "prénom24", "08/08/08", "M", 1545),
-                         "player25": Joueur("Nom25", "prénom25", "04/05/06", "F", 1645),
-                         "player26": Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
-                         "player27": Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
-                         "player28": Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)}
+        liste_joueurs = [Joueur("Nom01", "prénom01", "11/11/11", "M", 1650),
+                         Joueur("Nom02", "prénom02", "10/10/10", "F", 1435),
+                         Joueur("Nom03", "prénom03", "9/9/9", "U", 1983),
+                         Joueur("Nom04", "prénom04", "08/08/08", "M", 1945),
+                         Joueur("Nom05", "prénom05", "04/05/06", "F", 1345),
+                         Joueur("Nom06", "prénom06", "11/5/11", "M", 1580),
+                         Joueur("Nom07", "prénom07", "10/9/10", "F", 1415),
+                         Joueur("Nom17", "prénom17", "10/9/10", "F", 1615),
+                         Joueur("Nom18", "prénom18", "9/4/9", "U", 1153),
+                         Joueur("Nom19", "prénom19", "11/11/11", "M", 1258),
+                         Joueur("Nom20", "prénom20", "10/10/10", "F", 1338),
+                         Joueur("Nom21", "prénom21", "11/11/11", "M", 1250),
+                         Joueur("Nom22", "prénom22", "10/10/10", "F", 1335),
+                         Joueur("Nom08", "prénom08", "9/4/9", "U", 1953),
+                         Joueur("Nom01", "prénom01", "10/10/10", "F", 1222),
+                         Joueur("Nom09", "prénom09", "11/11/11", "M", 1454),
+                         Joueur("Nom10", "prénom10", "10/10/10", "F", 1536),
+                         Joueur("Nom11", "prénom11", "11/11/11", "M", 1450),
+                         Joueur("Nom12", "prénom12", "10/10/10", "F", 1535),
+                         Joueur("Nom13", "prénom13", "9/9/9", "U", 1783),
+                         Joueur("Nom14", "prénom14", "08/08/08", "M", 1245),
+                         Joueur("Nom15", "prénom15", "04/05/06", "F", 1545),
+                         Joueur("Nom01", "prénom01", "09/09/09", "M", 1502),
+                         Joueur("Nom16", "prénom16", "11/5/11", "M", 1380),
+                         Joueur("Nom23", "prénom23", "9/9/9", "U", 1483),
+                         Joueur("Nom24", "prénom24", "08/08/08", "M", 1545),
+                         Joueur("Nom25", "prénom25", "04/05/06", "F", 1645),
+                         Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
+                         Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
+                         Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)]
         return liste_joueurs
 
     def classement_des_joueurs(self, liste_participant, facteur_tri):

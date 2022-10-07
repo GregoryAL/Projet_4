@@ -23,7 +23,6 @@ class GestionDeTournoi:
 
     def gestion_du_tournoi(self, liste_joueurs):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
-
         choix_utilisateur = 0
         numero_de_ronde_active = 0
         db = TinyDB('db.json')
@@ -43,11 +42,11 @@ class GestionDeTournoi:
                 else:
                     liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
                     if liste_participants_tournoi == "":
-                        print("retour")
+                        MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
                     else:
                         info_instance_tournoi_a_creer = SaisieDeDonnees. \
                             recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
-                        print(liste_participants_tournoi)
+                        input(liste_participants_tournoi)
                         instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
                         instance_de_tournoi.participants = liste_participants_tournoi
                         numero_de_ronde_active = 0
@@ -77,7 +76,7 @@ class GestionDeTournoi:
                 liste_joueurs[cle_nouveau_joueur] = joueur_a_ajouter
             elif choix_utilisateur == 4:
                 # Affichage modification du classement elo d'un joueur de la liste
-                GestionDeRapport.affichage_du_classement_elo_dict(self.objet_gestion_rapport, liste_joueurs)
+                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, liste_joueurs, "")
                 choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
                 if str(choix_action_sur_liste) == "Oui":
                     liste_joueurs = GestionDeJoueur.modification_d_un_joueur_dict(self.objet_gestion_joueur,
@@ -124,59 +123,69 @@ class GestionDeTournoi:
         """ Selection des participants dans le pool de joueurs connus """
         liste_participants = []
         for i in range(nombre_de_participants):
+            # Met le nombre d homonyme à 0
+            nombre_d_homonyme = 0
+            joueurs_de_la_liste_homonyme = []
             # Recupere le nom et prénom du joueur à ajouter au tournoi :
             participant = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
             # Recupere le nombre d'entree dans le dictionnaire de liste de joueurs
-            nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs = len(liste_joueurs)
-            # Recrée la clée de la dernière entrée du dictionnaire de joueur
-            cle_dernier_nom_entre = "player" + str(nombre_d_entree_dans_le_dictionnaire_de_liste_des_joueurs)
+            nombre_d_entree_dans_la_liste_des_joueurs = len(liste_joueurs)
             # Recupère le dernier nom entré dans la liste de joueur
-            dernier_nom_entre = liste_joueurs[cle_dernier_nom_entre]
+            dernier_nom_entre = liste_joueurs[nombre_d_entree_dans_la_liste_des_joueurs-1]
             # Verifie que le joueur est dans la liste de joueur en parcourant toutes les entrées du dictionnaire
-            nombre_de_joueur_dans_la_liste = len(liste_joueurs)
-            for j in range(nombre_de_joueur_dans_la_liste):
-                if j < 9:
-                    joueur_de_la_liste = liste_joueurs["player0"+str(j+1)]
-                else:
-                    joueur_de_la_liste = liste_joueurs["player"+str(j+1)]
+            for j in range(nombre_d_entree_dans_la_liste_des_joueurs):
+                joueur_de_la_liste = liste_joueurs[j]
                 # Vérifie si le prenom et nom entrée par l'utilisateur fait partie de la liste de joueurs
-                test_presence = self.verification_participant_est_dans_liste_joueurs(participant, joueur_de_la_liste)
+                test_presence = self.verification_participant_est_dans_liste_joueurs(participant, liste_joueurs[j])
                 # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
                 if test_presence == "Presence":
-                    joueur_de_la_liste.points_tournoi = 0
-                    print("joueur ajouté : " + str(joueur_de_la_liste))
-                    liste_participants.append(joueur_de_la_liste)
-                    print(liste_participants)
-                    break
+                    joueurs_de_la_liste_homonyme.append(liste_joueurs[j])
                 else:
                     # Sinon, vérifie si la valeur testée est la dernière valeur du dictionnaire
-                    if str(joueur_de_la_liste.nom) == str(dernier_nom_entre.nom):
-                        # Si oui, Cela indique que le joueur n'existe pas, demande à l'utilisateur s'il veut le créer
-                        reponse_creation_joueur = SaisieDeDonnees.joueur_inexistant(self.vue_saisie_de_donnees)
-                        if reponse_creation_joueur == "Oui":
-                            # Si oui, Crée un joueur en récupérant les informations Noms/Prenom entrées préalablement
-                            joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur,
-                                                                                    participant)
-                            # Ajout ce joueur à la liste des participants
-                            liste_participants.append(joueur_a_ajouter)
-                            # Ajout de ce joueur à la liste des joueurs
-                            liste_joueurs = GestionDeJoueur.ajout_d_un_joueur_a_la_liste(self.objet_gestion_joueur,
-                                                                                         joueur_a_ajouter,
-                                                                                         liste_joueurs)
-                            nombre_de_joueur_dans_la_liste += 1
+                    if str(liste_joueurs[j].nom) == str(dernier_nom_entre.nom):
+                        if len(joueurs_de_la_liste_homonyme) == 0:
+                            # Si oui, Cela indique que le joueur n'existe pas, demande à l'utilisateur s'il veut le
+                            # créer
+                            reponse_creation_joueur = SaisieDeDonnees.joueur_inexistant(self.vue_saisie_de_donnees)
+                            if reponse_creation_joueur == "Oui":
+                                # Si oui, Crée un joueur en récupérant les informations Noms/Prenom entrées
+                                # préalablement
+                                joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur,
+                                                                                        participant)
+                                # Ajout ce joueur à la liste des participants
+                                liste_participants.append(joueur_a_ajouter)
+                                # Ajout de ce joueur à la liste des joueurs
+                                liste_joueurs = GestionDeJoueur.ajout_d_un_joueur_a_la_liste(self.objet_gestion_joueur,
+                                                                                             joueur_a_ajouter,
+                                                                                             liste_joueurs)
+                                nombre_de_joueur_dans_la_liste += 1
+                            else:
+                                MessageDErreur.message_de_demande_recommencer_ajout_joueur(self.vue_message_d_erreur)
+                                return ""
+                        elif len(joueurs_de_la_liste_homonyme) == 1:
+                            joueurs_de_la_liste_homonyme[0].points_tournoi = 0
+                            print("joueur ajouté : " + str(joueurs_de_la_liste_homonyme[0]))
+                            liste_participants.append(joueurs_de_la_liste_homonyme[0])
+                        elif len(joueurs_de_la_liste_homonyme) >= 2:
+                            choix_du_joueur = self.verification_duplicate_joueurs(joueurs_de_la_liste_homonyme)
+                            choix_du_joueur.points_tournoi = 0
+                            print("joueur ajouté : " + str(choix_du_joueur))
+                            liste_participants.append(choix_du_joueur)
                         else:
-                            MessageDErreur.message_de_demande_recommencer_ajout_joueur(self.vue_message_d_erreur)
-                            return ""
+                            MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
         return liste_participants
 
     def verification_participant_est_dans_liste_joueurs(self, participant, joueur_de_la_liste):
         """ Verifie si un couple Nom / Prenom se trouve dans la liste des objets joueurs """
-        if ((str(participant["Nom"])) in joueur_de_la_liste.nom) and ((str(participant["Prenom"])) in
-                                                                      joueur_de_la_liste.prenom):
+        if (participant["Nom"] == joueur_de_la_liste.nom) and (participant["Prenom"] == joueur_de_la_liste.prenom):
             return "Presence"
         else:
             return "Absence"
 
+    def verification_duplicate_joueurs(self, liste_duplicate):
+        """ Affiche la liste des homonymes et recupere la selection de l'utilisateur """
+        Vue.affichage_duplicate(self.vue_instance, liste_duplicate)
+        return SaisieDeDonnees.selection_duplicate(self.vue_saisie_de_donnees, liste_duplicate)
 
     def creation_du_tournoi(self, info_tournoi):
         """ Creation d'un tournoi en utilisant les paramètres utilisateurs"""

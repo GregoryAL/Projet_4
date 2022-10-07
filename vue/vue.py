@@ -9,7 +9,7 @@ class Vue:
 
     def __init__(self):
         """ Initialise un objet vue"""
-        self.liste_des_joueurs = {}
+        self.liste_des_joueurs = []
 
     def clean_screen(self):
         """ Efface l'écran """
@@ -29,6 +29,14 @@ class Vue:
         nombre_de_participants = len(liste_participants)
         for i in range(nombre_de_participants):
             print(" | " + str((i+1)) + " | : " + str(liste_participants[i]))
+
+    def affichage_duplicate(self, liste_duplicate):
+        print("Il y a plus d'un joueur avec ces noms et prénoms. \n")
+        for i in range(len(liste_duplicate)):
+            print(" [" + str(i) + "] : " + str(liste_duplicate[i].prenom) + " " + str(liste_duplicate[i].nom) +
+                  " | Date de naissance : " + str(liste_duplicate[i].date_de_naissance) +
+                  " | Sexe : " + str(liste_duplicate[i].sexe) +
+                  " | Classement elo : " + str(liste_duplicate[i].classement_elo) + "\n")
 
     def message_de_sortie_1(self):
         """ Affiche un message de sortie """

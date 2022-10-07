@@ -1,15 +1,14 @@
-
-from os import system
-from os import name
-import sys
 from vue.vue import Vue
+from vue.message_d_erreur import MessageDErreur
+
 
 
 class SaisieDeDonnees:
 
-    def __init__(self, vue):
+    def __init__(self, vue, message_d_erreur):
         """ initialiste un objet Saisie de données """
         self.vue = vue
+        self.message_d_erreur = message_d_erreur
 
     def choix_classement_ou_alphabetique(self):
         """ Recupere le choix de l'utilisateur entre un tri alphabetique ou par classement """
@@ -79,16 +78,12 @@ class SaisieDeDonnees:
         """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """
         joueur_a_ajouter = {}
         if numero_de_joueur == 0:
-            nom_du_joueur = input("Merci de saisir le nom du premier joueur à ajouter. \n")
-            prenom_du_joueur = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
-            joueur_a_ajouter["Nom"] = nom_du_joueur
-            joueur_a_ajouter["Prenom"] = prenom_du_joueur
+            joueur_a_ajouter["Nom"] = input("Merci de saisir le nom du premier joueur à ajouter. \n")
+            joueur_a_ajouter["Prenom"] = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
         else:
-            nom_du_joueur = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
-            prenom_du_joueur = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) +
+            joueur_a_ajouter["Nom"] = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
+            joueur_a_ajouter["Prenom"] = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) +
                                      "ème joueur à ajouter. \n")
-            joueur_a_ajouter["Nom"] = nom_du_joueur
-            joueur_a_ajouter["Prenom"] = prenom_du_joueur
         return joueur_a_ajouter
 
     def recuperation_des_resultats_d_un_match(self, match):
@@ -155,6 +150,26 @@ class SaisieDeDonnees:
     def fin_de_la_ronde(self):
         """ Affiche l'annonce de fin de ronde après appuie sur Entrer """
         input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
+
+    def selection_duplicate(self, liste_duplicate):
+        """ Demande de selectionner le joueur dans un choix d homonyme. Recupere le choix """
+        confirmation_choix_homonyme = ""
+        while confirmation_choix_homonyme != "Oui":
+            choix_homonyme = ""
+            try:
+                choix_homonyme = int(input("Merci d'entrer le numéro du joueur à ajouter à la liste de participants \n"))
+            except TypeError:
+                MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
+            confirmation_choix_homonyme = input("Est ce que le choix : \n " +
+                                                "[" + str(choix_homonyme) + "] : " +
+                                                str(liste_duplicate[choix_homonyme].prenom) + " " +
+                                                str(liste_duplicate[choix_homonyme].nom) + " | Date de naissance : " +
+                                                str(liste_duplicate[choix_homonyme].date_de_naissance) + " | Sexe : " +
+                                                str(liste_duplicate[choix_homonyme].sexe) + " | Classement elo : " +
+                                                str(liste_duplicate[choix_homonyme].classement_elo) + "\nEst correct (Oui/Non)? \n:")
+        else:
+            return liste_duplicate[choix_homonyme]
+
 
     def joueur_inexistant(self):
         """ Annonce que le joueur est inexistant, demande si le joueur doit être créé """
