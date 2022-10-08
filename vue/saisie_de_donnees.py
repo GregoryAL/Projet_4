@@ -42,13 +42,6 @@ class SaisieDeDonnees:
         choix_action = input("Voulez vous modifier le classement d'un joueur? [Oui/Non] : ")
         return choix_action
 
-    def selection_de_la_liste_de_joueur_a_modifier_par_elo(self):
-        print("De quelles listes de joueurs souhaitez vous modifier l'elo d'un joueur? \n"
-              "[1] tous les joueurs connus\n"
-              "[2] les joueurs du tournoi \n")
-        choix_liste_joueur = input("Entrez votre choix : \n")
-        return int(choix_liste_joueur)
-
     def menu(self):
         """ Affichage du menu général"""
 
@@ -57,13 +50,15 @@ class SaisieDeDonnees:
         # Affiche le menu
         try:
             print("                     Menu pour la gestion d'un tournoi d'échec\n"
+                  "_________________________________________________________________________________________________\n"
                   " [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi\n"
                   " [2] Lancement de la ronde suivante\n"
                   " [3] Ajout d'un joueur dans la liste des joueurs\n"
                   " [4] Affichage du classement/Modification du classement elo d'un joueur de la liste\n"
                   " [5] Affichage du classement/Modification du classement tournoi d'un participant du tournoi\n"
                   " [6] Rapport\n"
-                  " [7] Sortie du Programme")
+                  " [7] Sortie du Programme\n"
+                  "_________________________________________________________________________________________________")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur
         except TypeError:

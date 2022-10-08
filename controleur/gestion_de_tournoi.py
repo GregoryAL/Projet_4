@@ -73,7 +73,8 @@ class GestionDeTournoi:
                 liste_joueurs.append(joueur_a_ajouter)
             elif choix_utilisateur == 4:
                 # Affichage modification du classement elo d'un joueur de la liste
-                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, liste_joueurs, "")
+                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, "",
+                                                             players_table)
                 choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
                 if str(choix_action_sur_liste) == "Oui":
                     liste_joueurs = GestionDeJoueur.modification_d_un_joueur_elo(self.objet_gestion_joueur,
@@ -95,7 +96,7 @@ class GestionDeTournoi:
             elif choix_utilisateur == 6:
                 # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
                 for players in players_table:
-                    print(players)
+                    print(str(players.doc_id) + " | " + str(players))
                 input("")
 
             elif choix_utilisateur == 7:

@@ -13,6 +13,15 @@ class GestionDeJoueur:
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
+    def deserialisation_joueur(self, joueur):
+        nom = joueur["nom"]
+        prenom = joueur["prenom"]
+        date_de_naissance = joueur["date_de_naissance"]
+        sexe = joueur["sexe"]
+        classement_elo = joueur["classement_elo"]
+        points_tournoi = joueur["points_tournoi"]
+        return Joueur(nom, prenom, date_de_naissance, sexe, classement_elo, points_tournoi)
+
     def selection_d_un_joueur_a_modifier(self):
         choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
         return choix_du_joueur_a_modifier
@@ -90,7 +99,6 @@ class GestionDeJoueur:
         joueur = Joueur.serialisation_joueur(joueur)
         players_table.insert(joueur)
 
-
     def classement_des_joueurs(self, liste_participant, facteur_tri):
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
         tournoi pour les rondes suivantes."""
@@ -101,6 +109,11 @@ class GestionDeJoueur:
         elif facteur_tri == "nom":
             liste_participant.sort(key=lambda x: x.nom, reverse=False)
         return liste_participant
+
+    def classement_des_joueurs_db(self, players_table, facteur_tri):
+        """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
+        tournoi pour les rondes suivantes."""
+        return sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
 
     def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """

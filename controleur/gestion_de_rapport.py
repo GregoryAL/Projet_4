@@ -37,15 +37,13 @@ class GestionDeRapport:
         """ Affiche le classement du tournoi """
         instance_de_tournoi.participants = self.choix_du_type_de_classement_tournoi(instance_de_tournoi)
         nombre_de_participants = len(instance_de_tournoi.participants)
-        Vue.affichage_classement(self.vue_instance, instance_de_tournoi.participants, nombre_de_participants,
-                                 numero_de_ronde_active)
+        Vue.affichage_classement(self.vue_instance, numero_de_ronde_active, players_table)
 
-    def affichage_du_classement_elo(self, liste_joueur_a_trier, numero_de_ronde_active):
+    def affichage_du_classement_elo(self, numero_de_ronde_active, players_table):
         """ Affiche le classement en fonction des points elo """
-        liste_joueur_a_trier = GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, liste_joueur_a_trier,
-                                                                      "classement_elo")
-        nombre_de_joueurs = len(liste_joueur_a_trier)
-        Vue.affichage_classement(self.vue_instance, liste_joueur_a_trier, nombre_de_joueurs, numero_de_ronde_active)
+        liste_joueur_triee = GestionDeJoueur.classement_des_joueurs_db(self.gestion_joueur, players_table,
+                                                                       "classement_elo")
+        Vue.affichage_classement(self.vue_instance, numero_de_ronde_active, liste_joueur_triee)
 
     def affichage_du_classement_elo_dict(self, liste_joueur_a_trier):
         """ Affiche le classement en fonction des points elo d'un dictionnaire de joueur"""
@@ -54,5 +52,5 @@ class GestionDeRapport:
             liste_joueur_liste.append(objet)
         liste_triee = self.choix_du_type_de_classement_elo(liste_joueur_liste)
         nombre_de_joueurs = len(liste_joueur_a_trier)
-        Vue.affichage_classement(self.vue_instance, liste_triee, nombre_de_joueurs, "")
+        Vue.affichage_classement(self.vue_instance, "", players_table)
 
