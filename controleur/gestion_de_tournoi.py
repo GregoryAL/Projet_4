@@ -72,13 +72,29 @@ class GestionDeTournoi:
                 GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
                 liste_joueurs.append(joueur_a_ajouter)
             elif choix_utilisateur == 4:
-                # Affichage modification du classement elo d'un joueur de la liste
-                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, "",
-                                                             players_table)
-                choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
+                # Modification d'un joueur / participant
+                base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
+                if base_a_modifier == 1:
+                    joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
+                    print(GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
+                                                                joueur_a_modifier))
+                    input()
+                elif base_a_modifier == 2:
+                    try:
+                        print(instance_de_tournoi.nom_du_tournoi)
+                        joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
+                        GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
+                                                                    joueur_a_modifier)
+
+                    except UnboundLocalError:
+                        # Renvoi un message d'erreur si aucun tournoi n'existe
+                        MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+
+
+                """choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
                 if str(choix_action_sur_liste) == "Oui":
-                    liste_joueurs = GestionDeJoueur.modification_d_un_joueur_elo(self.objet_gestion_joueur,
-                                                                                 liste_joueurs, players_table)
+                    liste_joueurs = GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur,
+                                                                                players_table)"""
             elif choix_utilisateur == 5:
                 # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
@@ -95,9 +111,7 @@ class GestionDeTournoi:
                                                                  instance_de_tournoi.participants)
             elif choix_utilisateur == 6:
                 # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
-                for players in players_table:
-                    print(str(players.doc_id) + " | " + str(players))
-                input("")
+                self.menu_rapport(players_table)
 
             elif choix_utilisateur == 7:
                 # Cas du choix de sortie du programme
@@ -108,6 +122,15 @@ class GestionDeTournoi:
         else:
             Vue.message_de_sortie_2(self.vue_instance)
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
+
+    def menu_rapport(self, players_table):
+        choix_rapport = 0
+        while choix_rapport != 6:
+            choix_rapport = int(SaisieDeDonnees.menu_rapport(self.vue_saisie_de_donnees))
+            if choix_rapport == 1:
+                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, "",
+                                                             players_table)
+
 
     def recuperation_du_nombre_de_participants(self):
         """Récupere le nombre de participants au tournoi"""

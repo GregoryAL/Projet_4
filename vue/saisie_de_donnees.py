@@ -16,8 +16,16 @@ class SaisieDeDonnees:
         return choix_classement
 
     def selection_joueur_a_modifier(self):
-        joueur_a_modifier = input("Veuillez entrer le numéro du joueur à modifier : \n")
+        nom_joueur_a_modifier = input("Veuillez entrer le nom du joueur à modifier : \n")
+        prenom_joueur_a_modifier = input("Veuillez entrer le prénom du joueur à modifier : \n")
+        joueur_a_modifier = {"nom": nom_joueur_a_modifier, "prenom": prenom_joueur_a_modifier}
         return joueur_a_modifier
+
+    def selection_base_a_modifier(self):
+        base_a_modifier = input("Voulez vous modifier un joueur de la liste des joueurs ? (1)\n"
+                                "Ou  un joueur de la liste des participants du tournoi? (2) \n"
+                                ": ")
+        return base_a_modifier
 
     def modification_classement_elo(self, joueur):
         print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " +
@@ -54,10 +62,33 @@ class SaisieDeDonnees:
                   " [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi\n"
                   " [2] Lancement de la ronde suivante\n"
                   " [3] Ajout d'un joueur dans la liste des joueurs\n"
-                  " [4] Affichage du classement/Modification du classement elo d'un joueur de la liste\n"
-                  " [5] Affichage du classement/Modification du classement tournoi d'un participant du tournoi\n"
+                  " [4] Modification d'un joueur ou d'un participant\n"
+                  " [5] Rapport\n"
                   " [6] Rapport\n"
                   " [7] Sortie du Programme\n"
+                  "_________________________________________________________________________________________________")
+            choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
+            return choix_utilisateur
+        except TypeError:
+            print("Choix non reconnu...\n")
+            return 0
+
+    def menu_rapport(self):
+        """ Affichage du menu général"""
+
+        # Vide l'écran
+        Vue.clean_screen(self.vue)
+        # Affiche le menu
+        try:
+            print("                     Menu pour la gestion d'un tournoi d'échec\n"
+                  "                                     Rapport\n"
+                  "_________________________________________________________________________________________________\n"
+                  " [1] Liste des joueurs\n"
+                  " [2] Liste des participants\n"
+                  " [3] Liste des tournois\n"
+                  " [4] Liste des tours d'un tournoi\n"
+                  " [5] Liste des matchs d'un tournoi\n"
+                  " [6] Sortie du menu\n"
                   "_________________________________________________________________________________________________")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur

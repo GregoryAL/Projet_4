@@ -1,7 +1,8 @@
 from modele.joueur import Joueur
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
-from tinydb import TinyDB, Query
+from tinydb import Query
+from vue.vue import Vue
 
 
 class GestionDeJoueur:
@@ -42,8 +43,43 @@ class GestionDeJoueur:
                                                            participants[indice_joueur_a_modifier]))
         return participants
 
+    def recherche_correspondance_db(self, players_table, joueur_a_rechercher):
+        """ Recherche toutes les correspondances d'un couple Nom/Prenom dans une base"""
+        Joueur = Query()
+        resultat_recherche = players_table.search((Joueur.nom == joueur_a_rechercher["nom"]) & (Joueur.prenom == joueur_a_rechercher["prenom"]))
+        i=0
+        for resultat in resultat_recherche:
+            print("[" + str(i) + "] | " + str(resultat))
+            i += 1
+        if i>0:
+            joueur_choisi = int(input("Veuillez renseignez le numéro du joueur à modifier : \n"))
+            return resultat_recherche[joueur_choisi]
+        else:
+            return resultat_recherche
+
+
+    def modification_d_un_joueur_db(self, players_table):
+        """ Modifie les paramètres d'un joueur de la db"""
+        indice_joueur_a_modifier = 0
+        try:
+            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_elo())
+        except TypeError:
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
+        # change le classement elo
+        Joueur_db = Query()
+        input(" l indice est " + str(indice_joueur_a_modifier) + " et le joueur est " +
+              str(players_table.get(doc_id=indice_joueur_a_modifier)))
+        players_table.update({'classement_elo': 9999}, doc_id = indice_joueur_a_modifier)
+        Vue.affichage_classement(self.vue_instance, "", players_table)
+        input("")
+        """liste_joueurs[indice_joueur_a_modifier].classement_elo = \
+            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees,
+                                                            liste_joueurs[indice_joueur_a_modifier]))
+        joueur_cherche_db = Query()
+        players_table.search(joueur_cherche_db.nom == liste_joueurs[indice_joueur_a_modifier].nom)"""
+
+
     def modification_d_un_joueur_elo(self, liste_joueurs, players_table):
-        """ Modifie les points elo d'un joueur de la liste"""
         indice_joueur_a_modifier = 0
         try:
             indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_elo())-1
@@ -113,7 +149,11 @@ class GestionDeJoueur:
     def classement_des_joueurs_db(self, players_table, facteur_tri):
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
         tournoi pour les rondes suivantes."""
-        return sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
+        if facteur_tri == "points_tournoi":
+            sorted(players_table.all(), key=lambda x: (x[facteur_tri], x["classement_elo"]), reverse=True)
+        else :
+            sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
+        return players_table
 
     def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """
