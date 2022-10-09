@@ -27,6 +27,33 @@ class SaisieDeDonnees:
                                 ": ")
         return base_a_modifier
 
+    def selection_du_parametre_a_modifier(self):
+        parametre_a_modifier = input("Quel paramètre du joueur souhaitez vous modifier?\n"
+                                     "[1] Nom\n"
+                                     "[2] Prénom\n"
+                                     "[3] Date de naissance\n"
+                                     "[4] Sexe \n"
+                                     "[5] Points elo \n"
+                                     "[6] Points tournoi \n"
+                                     "Veuillez entrer le chiffre correspondant : \n")
+        return int(parametre_a_modifier)
+
+    def entree_nouvelle_valeur_parametre(self, parametre):
+        if parametre == "nom":
+            return input("Quel est le nouveau Nom?\n:")
+        elif parametre == "prenom":
+            return input("Quel est le nouveau Prenom?\n:")
+        elif parametre == "date_de_naissance":
+            return input("Quelle est la nouvelle date de naissance?\n:")
+        elif parametre == "sexe":
+            return input("Quel est le nouveau sexe?\n:")
+        elif parametre == "classement_elo":
+            return int(input("Quel est le nouveau nombre de points elo?\n:"))
+        elif parametre == "points_tournoi":
+            return int(input("Quel est le nouveau nombre de points tournoi?\n:"))
+
+
+
     def modification_classement_elo(self, joueur):
         print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " +
               str(joueur.classement_elo) + ".\n")

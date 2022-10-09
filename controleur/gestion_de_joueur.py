@@ -51,32 +51,44 @@ class GestionDeJoueur:
         for resultat in resultat_recherche:
             print("[" + str(i) + "] | " + str(resultat))
             i += 1
-        if i>0:
+        if len(resultat_recherche)>1:
             joueur_choisi = int(input("Veuillez renseignez le numéro du joueur à modifier : \n"))
             return resultat_recherche[joueur_choisi]
         else:
-            return resultat_recherche
+            return resultat_recherche[0]
 
+    def recuperation_du_parametre_a_modifier_db(self):
+        parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier(self.vue_saisie_de_donnees)
+        if parametre_a_modifier == 1:
+            return "nom"
+        elif parametre_a_modifier == 2:
+            return "prenom"
+        elif parametre_a_modifier == 3:
+            return "date_de_naissance"
+        elif parametre_a_modifier == 4:
+            return "sexe"
+        elif parametre_a_modifier == 5:
+            return "classement_elo"
+        elif parametre_a_modifier == 6:
+            return "points_tournoi"
+        else:
+            MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
-    def modification_d_un_joueur_db(self, players_table):
+    def modification_d_un_joueur_db(self, players_table, joueur_a_modif, parametre, nouvelle_valeur):
         """ Modifie les paramètres d'un joueur de la db"""
-        indice_joueur_a_modifier = 0
-        try:
-            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_elo())
-        except TypeError:
-            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-        # change le classement elo
-        Joueur_db = Query()
-        input(" l indice est " + str(indice_joueur_a_modifier) + " et le joueur est " +
-              str(players_table.get(doc_id=indice_joueur_a_modifier)))
-        players_table.update({'classement_elo': 9999}, doc_id = indice_joueur_a_modifier)
-        Vue.affichage_classement(self.vue_instance, "", players_table)
-        input("")
-        """liste_joueurs[indice_joueur_a_modifier].classement_elo = \
-            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees,
-                                                            liste_joueurs[indice_joueur_a_modifier]))
-        joueur_cherche_db = Query()
-        players_table.search(joueur_cherche_db.nom == liste_joueurs[indice_joueur_a_modifier].nom)"""
+        joueurmodif = Query()
+        players_table.update({parametre: nouvelle_valeur}, ((joueurmodif.nom == joueur_a_modif["nom"]) &
+                                                            (joueurmodif.prenom == joueur_a_modif["prenom"]) &
+                                                            (joueurmodif.date_de_naissance ==
+                                                             joueur_a_modif["date_de_naissance"]) &
+                                                            (joueurmodif.sexe == joueur_a_modif["sexe"]) &
+                                                            (joueurmodif.classement_elo ==
+                                                             joueur_a_modif["classement_elo"]) &
+                                                            (joueurmodif.points_tournoi ==
+                                                             joueur_a_modif["points_tournoi"])
+                                                            )
+                             )
+        input("Changement effectué...")
 
 
     def modification_d_un_joueur_elo(self, liste_joueurs, players_table):

@@ -76,15 +76,27 @@ class GestionDeTournoi:
                 base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
                 if base_a_modifier == 1:
                     joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-                    print(GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
-                                                                joueur_a_modifier))
+                    joueur_a_modifier_complet = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
+                                                                                players_table, joueur_a_modifier)
+                    print(joueur_a_modifier_complet)
+                    parametre_a_modifier = GestionDeJoueur.\
+                        recuperation_du_parametre_a_modifier_db(self.objet_gestion_joueur)
+                    nouvelle_valeur_parametre = SaisieDeDonnees.\
+                        entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+                    print(" parametre à modif : " + str(parametre_a_modifier) +
+                          " nouvelle valeur : " + str(nouvelle_valeur_parametre))
                     input()
+                    GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table, joueur_a_modifier_complet,
+                                                                parametre_a_modifier, nouvelle_valeur_parametre)
+
+
                 elif base_a_modifier == 2:
                     try:
                         print(instance_de_tournoi.nom_du_tournoi)
                         joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-                        GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
+                        doc_id_joueur = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
                                                                     joueur_a_modifier)
+
 
                     except UnboundLocalError:
                         # Renvoi un message d'erreur si aucun tournoi n'existe
@@ -130,6 +142,7 @@ class GestionDeTournoi:
             if choix_rapport == 1:
                 GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, "",
                                                              players_table)
+                input()
 
 
     def recuperation_du_nombre_de_participants(self):
