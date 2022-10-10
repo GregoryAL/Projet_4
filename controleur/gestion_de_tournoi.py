@@ -2,7 +2,7 @@ from modele.tournoi import Tournoi
 from modele.joueur import Joueur
 import datetime
 from controleur.type_de_tournoi import TypeDeTournoi
-
+from tinydb import Query
 from vue.vue import Vue
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
@@ -21,7 +21,7 @@ class GestionDeTournoi:
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
-    def gestion_du_tournoi(self, liste_joueurs, players_table):
+    def gestion_du_tournoi(self, liste_joueurs, players_table, tournaments_table):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
         numero_de_ronde_active = 0
@@ -45,9 +45,16 @@ class GestionDeTournoi:
                     else:
                         info_instance_tournoi_a_creer = SaisieDeDonnees. \
                             recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
-                        input(liste_participants_tournoi)
                         instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+                        tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
+
                         instance_de_tournoi.participants = liste_participants_tournoi
+                        liste_participants_db = []
+                        for participants in liste_participants_tournoi:
+                            liste_participants_db.append(Joueur.serialisation_joueur(participants))
+                        tournoi = Query()
+                        tournaments_table.update({"participants":liste_participants_db}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
+                        input()
                         numero_de_ronde_active = 0
             elif choix_utilisateur == 2:
                 # Lancement de la ronde suivante
@@ -102,6 +109,9 @@ class GestionDeTournoi:
                         # Renvoi un message d'erreur si aucun tournoi n'existe
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
             elif choix_utilisateur == 5:
+                for tournament in tournaments_table:
+                    print(tournament)
+
                 # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
                     # Recupere et affiche le classement du tournoi
@@ -143,17 +153,22 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des participants
+                print("en construction...")
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
+                print("en construction...")
             elif choix_rapport == 4:
                 # Affiche la liste des tours d'un tournoi
+                print("en construction...")
             elif choix_rapport == 5:
                 # Affiche la liste des matchs d'un tournoi
+                print("en construction...")
             elif choix_rapport == 6:
                 # sort du sous menu rapport
+                print("en construction...")
             else:
                 # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
-                MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
+                MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
 
 
     def recuperation_du_nombre_de_participants(self):

@@ -13,3 +13,16 @@ class Tournoi:
         self.commentaire = commentaire
         self.participants = []
         self.rondes = []
+
+    def serialisation_tournoi(self):
+        return {
+            "nom": self.nom_du_tournoi,
+            "lieu": self.lieu_du_tournoi,
+            "dates_du_tournoi": self.date_du_tournoi,
+            "nombre_de_tour": self.nombre_de_tour_du_tournoi,
+            "type_controle_de_temps": self.type_de_controle_du_temps,
+            "nombre_de_participants": self.nombre_de_participants,
+            "commentaire": self.commentaire,
+            "participants": self.participants,
+            "rondes": self.rondes
+        }
