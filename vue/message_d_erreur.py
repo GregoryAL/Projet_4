@@ -15,6 +15,11 @@ class MessageDErreur:
         print("Option indisponible, le tournoi est terminé")
         self.appuyer_sur_entrer_pour_continuer()
 
+    def message_d_erreur_option_tri_alpha(self):
+        """ Affiche un message d erreur indiquant que le choix n'est pas valide et que le tri va se faire
+        alphabétiquement par defaut """
+        print("Option non reconnu, le tri est fait Alphabétiquement par défaut... \n")
+
     def appuyer_sur_entrer_pour_continuer(self):
         """ Affiche la demande d'appuyer sur Entrer pour continuer"""
         input("Appuyer sur Entrer pour continuer... \n")

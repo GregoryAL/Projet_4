@@ -101,12 +101,6 @@ class GestionDeTournoi:
                     except UnboundLocalError:
                         # Renvoi un message d'erreur si aucun tournoi n'existe
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
-
-
-                """choix_action_sur_liste = SaisieDeDonnees.selection_de_l_action_a_effectuer(self.vue_saisie_de_donnees)
-                if str(choix_action_sur_liste) == "Oui":
-                    liste_joueurs = GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur,
-                                                                                players_table)"""
             elif choix_utilisateur == 5:
                 # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
@@ -136,13 +130,30 @@ class GestionDeTournoi:
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
 
     def menu_rapport(self, players_table):
+        # Initialise la variable récupérant le choix utilisateur
         choix_rapport = 0
+        # Gere la sortie du menu
         while choix_rapport != 6:
+            # Recupere le choix utilisateur
             choix_rapport = int(SaisieDeDonnees.menu_rapport(self.vue_saisie_de_donnees))
             if choix_rapport == 1:
-                GestionDeRapport.affichage_du_classement_elo(self.objet_gestion_rapport, "",
-                                                             players_table)
-                input()
+                # Affiche la liste des joueurs
+                choix_type_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                GestionDeRapport.affichage_du_classement_db(self.objet_gestion_rapport, "",
+                                                            players_table, choix_type_tri)
+            elif choix_rapport == 2:
+                # Affiche la liste des participants
+            elif choix_rapport == 3:
+                # Affiche la liste des tournois
+            elif choix_rapport == 4:
+                # Affiche la liste des tours d'un tournoi
+            elif choix_rapport == 5:
+                # Affiche la liste des matchs d'un tournoi
+            elif choix_rapport == 6:
+                # sort du sous menu rapport
+            else:
+                # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
+                MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
 
     def recuperation_du_nombre_de_participants(self):

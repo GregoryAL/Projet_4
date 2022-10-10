@@ -10,10 +10,7 @@ class SaisieDeDonnees:
         self.vue = vue
         self.message_d_erreur = message_d_erreur
 
-    def choix_classement_ou_alphabetique(self):
-        """ Recupere le choix de l'utilisateur entre un tri alphabetique ou par classement """
-        choix_classement = input("Voulez vous un tri : \n [1] Alphabetique \n [2] Par Classement \n :")
-        return choix_classement
+
 
     def selection_joueur_a_modifier(self):
         nom_joueur_a_modifier = input("Veuillez entrer le nom du joueur à modifier : \n")

@@ -22,14 +22,8 @@ class Vue:
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
         if numero_de_ronde_active != "":
             print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
-        for players in liste_db_triee:
-            if players.doc_id <= 9:
-                players_doc_id = "0" + str(players.doc_id)
-            else :
-                players_doc_id = str(players.doc_id)
-            print(" ID : " + players_doc_id + "    | " + str(players))
-        #for i in range(nombre_de_participants):
-            # print(" | " + str((i+1)) + " | : " + str(liste_triee[i]) + " \n")
+        for player in liste_db_triee:
+            print(player)
 
     def affichage_choix_liste_participants(self, liste_participants):
         nombre_de_participants = len(liste_participants)

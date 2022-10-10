@@ -162,10 +162,12 @@ class GestionDeJoueur:
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
         tournoi pour les rondes suivantes."""
         if facteur_tri == "points_tournoi":
-            sorted(players_table.all(), key=lambda x: (x[facteur_tri], x["classement_elo"]), reverse=True)
+            table_sorted = sorted(players_table.all(), key=lambda x: (x[facteur_tri], x["classement_elo"]), reverse=True)
+        elif facteur_tri == "nom":
+            table_sorted = sorted(players_table.all(), key=lambda x: x[facteur_tri])
         else :
-            sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
-        return players_table
+            table_sorted = sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
+        return table_sorted
 
     def creation_d_un_joueur(self, nom_prenom_info_joueur):
         """ Ajout d'un joueur à la liste de joueur """
