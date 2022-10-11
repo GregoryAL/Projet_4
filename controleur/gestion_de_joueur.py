@@ -52,7 +52,7 @@ class GestionDeJoueur:
             print("[" + str(i) + "] | " + str(resultat))
             i += 1
         if len(resultat_recherche)>1:
-            joueur_choisi = int(input("Veuillez renseignez le numéro du joueur à modifier : \n"))
+            joueur_choisi = int(input("Veuillez renseignez le numéro du joueur choisi : \n"))
             return resultat_recherche[joueur_choisi]
         else:
             return resultat_recherche[0]
@@ -139,13 +139,42 @@ class GestionDeJoueur:
                          Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
                          Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
                          Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)]
+        liste_joueurs_db = []
         for joueur in liste_joueurs:
-            self.ajout_joueur_db(joueur, players_table)
+            liste_joueurs_db.append(Joueur.serialisation_joueur(joueur))
+        players_table.insert_multiple(liste_joueurs_db)
         return liste_joueurs
 
-    def ajout_joueur_db(self, joueur, players_table):
-        joueur = Joueur.serialisation_joueur(joueur)
-        players_table.insert(joueur)
+    def fonction_decorateurs_pour_tri_participants(self, liste_participants, type_tri):
+        liste_de_liste_a_trie = []
+        if type_tri == "nom":
+            for participant in liste_participants:
+                input(participant[0].nom)
+                indice = participant[0].nom
+                liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
+                liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
+                for liste in liste_de_liste_a_trie:
+                    del liste[0]
+        elif type_tri == "classement_elo":
+            for participant in liste_participants:
+                input(participant[0].classement_elo)
+                indice = participant[0].classement_elo
+                liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
+            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
+            for liste in liste_de_liste_a_trie:
+                del liste[0]
+        elif type_tri == "points_tournoi":
+            for participant in liste_participants:
+                indice = participant[1]
+                liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
+            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
+            for liste in liste_de_liste_a_trie:
+                print(str(liste[0]) + str(liste[1]) + str(liste[2]))
+                del liste[0]
+                input(liste[0])
+        input(liste_de_liste_a_trie)
+        return liste_de_liste_a_trie
+
 
     def classement_des_joueurs(self, liste_participant, facteur_tri):
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement

@@ -8,4 +8,5 @@ if __name__ == "__main__":
     # Creation de l'objet Controleur
     controleur_du_tournoi = Controleur()
     # Lancement du programme
-    controleur_du_tournoi.execute()
+    Controleur.execute(controleur_du_tournoi)
+

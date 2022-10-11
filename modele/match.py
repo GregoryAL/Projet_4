@@ -14,3 +14,12 @@ class Match:
 
     def __str__(self):
         return self.joueur1, " a obtenu : ", self.resultat_joueur1, self.joueur2, " a obtenu : ", self.resultat_joueur2
+
+    def serialisation_match(self):
+        return {
+            "joueur1": self.joueur1,
+            "joueur2": self.joueur2,
+            "resultat_joueur1": self.resultat_joueur1,
+            "resultat_joueur2": self.resultat_joueur2,
+            "tuple_match": self.tuple_match
+        }

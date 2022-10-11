@@ -1,5 +1,6 @@
 from modele.tournoi import Tournoi
 from modele.joueur import Joueur
+from modele.ronde import Ronde
 import datetime
 from controleur.type_de_tournoi import TypeDeTournoi
 from tinydb import Query
@@ -25,54 +26,22 @@ class GestionDeTournoi:
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
         numero_de_ronde_active = 0
-
-        """players_table.truncate()  # clear the table first
-        players_table.insert_multiple(serialized_players)
-        tournament_table = db.table('tournament')"""
-
-        """tournament_table.insert(serialized_tournament)"""
         while choix_utilisateur != 7:
             choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
-                nombre_de_participants = self.recuperation_du_nombre_de_participants()
-                if nombre_de_participants == "":
-                    MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
-                else:
-                    liste_participants_tournoi = self.selection_des_participants(liste_joueurs, nombre_de_participants)
-                    if liste_participants_tournoi == "":
-                        MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
-                    else:
-                        info_instance_tournoi_a_creer = SaisieDeDonnees. \
-                            recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
-                        instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
-                        tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
-
-                        instance_de_tournoi.participants = liste_participants_tournoi
-                        liste_participants_db = []
-                        for participants in liste_participants_tournoi:
-                            liste_participants_db.append(Joueur.serialisation_joueur(participants))
-                        tournoi = Query()
-                        tournaments_table.update({"participants":liste_participants_db}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
-                        input()
-                        numero_de_ronde_active = 0
+                instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
+                input(instance_de_tournoi.participants[0][0])
+                numero_de_ronde_active = 0
             elif choix_utilisateur == 2:
                 # Lancement de la ronde suivante
-                try:
-                    if numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
-                        numero_de_ronde_active += 1
-                        print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
-                              str(instance_de_tournoi.nombre_de_tour_du_tournoi) + "rondes")
-                        ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
-                                                                          "MethodeSuisse")
+                ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table)
+                instance_de_tournoi.rondes.append(ronde)
+                ronde = Ronde.serialisation_ronde(ronde)
+                tournoi = Query()
+                tournaments_table.upsert({"rondes": ronde}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
 
-                        self.depart_d_une_ronde(ronde_actuelle)
-                        self.fin_d_une_ronde(ronde_actuelle)
-                        instance_de_tournoi.rondes.append(ronde_actuelle)
-                    else:
-                        MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
-                except UnboundLocalError:
-                    MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+
             elif choix_utilisateur == 3:
                 # Ajout d'un joueur
                 joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
@@ -111,8 +80,14 @@ class GestionDeTournoi:
             elif choix_utilisateur == 5:
                 for tournament in tournaments_table:
                     print(tournament)
+                for parti in instance_de_tournoi.participants:
+                    print(str(parti[0]) + " et a " + str(parti[1]))
+                input()
+                GestionDeJoueur.fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
+                                                                           instance_de_tournoi.participants, "classement_elo")
+                input()
 
-                # Affichage modification du classement tournoi d'un participant du tournoi
+                """# Affichage modification du classement tournoi d'un participant du tournoi
                 try:
                     # Recupere et affiche le classement du tournoi
                     GestionDeRapport.affichage_du_classement_tournoi(self.objet_gestion_rapport, instance_de_tournoi,
@@ -124,7 +99,7 @@ class GestionDeTournoi:
                 if str(choix_action_sur_liste) == "Oui":
                     instance_de_tournoi.participants = \
                         GestionDeJoueur.modification_d_un_joueur(self.objet_gestion_joueur,
-                                                                 instance_de_tournoi.participants)
+                                                                 instance_de_tournoi.participants)"""
             elif choix_utilisateur == 6:
                 # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
                 self.menu_rapport(players_table)
@@ -170,7 +145,6 @@ class GestionDeTournoi:
                 # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
                 MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
 
-
     def recuperation_du_nombre_de_participants(self):
         """Récupere le nombre de participants au tournoi"""
         try:
@@ -181,12 +155,27 @@ class GestionDeTournoi:
             MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
             return ""
 
+
+
+    def selection_des_participants_db(self, players_table, nombre_de_participants):
+        """ Selection des participants dans le pool de joueurs connus de la base table_players"""
+        liste_participants = []
+        for i in range(nombre_de_participants):
+            # Recupere le nom et prénom du joueur à ajouter au tournoi :
+            participant_nom_prenom = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
+            participant = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table, participant_nom_prenom)
+            print(participant["nom"])
+            liste_participants.append([Joueur(participant["nom"], participant["prenom"],
+                                                        participant["date_de_naissance"], participant["sexe"],
+                                                        participant["classement_elo"]), [0]])
+            print(liste_participants[i][0])
+        return liste_participants
+
+
     def selection_des_participants(self, liste_joueurs, nombre_de_participants):
         """ Selection des participants dans le pool de joueurs connus """
         liste_participants = []
         for i in range(nombre_de_participants):
-            # Met le nombre d homonyme à 0
-            nombre_d_homonyme = 0
             joueurs_de_la_liste_homonyme = []
             # Recupere le nom et prénom du joueur à ajouter au tournoi :
             participant = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
@@ -194,10 +183,13 @@ class GestionDeTournoi:
             nombre_d_entree_dans_la_liste_des_joueurs = len(liste_joueurs)
             # Recupère le dernier nom entré dans la liste de joueur
             dernier_nom_entre = liste_joueurs[nombre_d_entree_dans_la_liste_des_joueurs-1]
+
+
             # Verifie que le joueur est dans la liste de joueur en parcourant toutes les entrées du dictionnaire
+
             for j in range(nombre_d_entree_dans_la_liste_des_joueurs):
-                joueur_de_la_liste = liste_joueurs[j]
                 # Vérifie si le prenom et nom entrée par l'utilisateur fait partie de la liste de joueurs
+
                 test_presence = self.verification_participant_est_dans_liste_joueurs(participant, liste_joueurs[j])
                 # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
                 if test_presence == "Presence":
@@ -340,3 +332,45 @@ class GestionDeTournoi:
 
         return ronde_a_clore
 
+    def initialisation_tournoi(self, players_table, tournaments_table):
+        # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
+        nombre_de_participants = self.recuperation_du_nombre_de_participants()
+        if nombre_de_participants == "":
+            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+        else:
+            liste_participants_tournoi = self.selection_des_participants_db(players_table, nombre_de_participants)
+            if liste_participants_tournoi == "":
+                MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
+            else:
+                info_instance_tournoi_a_creer = SaisieDeDonnees.\
+                    recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
+                instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+                tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
+                instance_de_tournoi.participants = liste_participants_tournoi
+                participants_db = []
+                for participants in liste_participants_tournoi:
+                    participants_db.append(Joueur.serialisation_joueur(participants[0]))
+                tournoi = Query()
+                tournaments_table.update({"participants": participants_db}, tournoi.
+                                          nom == instance_de_tournoi.nom_du_tournoi)
+                input()
+                return instance_de_tournoi
+
+    def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table):
+        # Lancement de la ronde suivante
+        try:
+            if numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
+                numero_de_ronde_active += 1
+                print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
+                      str(instance_de_tournoi.nombre_de_tour_du_tournoi) + " rondes")
+                print("le joueur1 est " + str(instance_de_tournoi.participants[0]))
+                ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
+                                                                  "MethodeSuisse")
+
+                self.depart_d_une_ronde(ronde_actuelle)
+                self.fin_d_une_ronde(ronde_actuelle)
+                return ronde_actuelle
+            else:
+                MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
+        except UnboundLocalError:
+            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)

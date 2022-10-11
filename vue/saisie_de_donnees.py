@@ -129,11 +129,12 @@ class SaisieDeDonnees:
         """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """
         joueur_a_ajouter = {}
         if numero_de_joueur == 0:
-            joueur_a_ajouter["Nom"] = input("Merci de saisir le nom du premier joueur à ajouter. \n")
-            joueur_a_ajouter["Prenom"] = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
+            joueur_a_ajouter["nom"] = input("Merci de saisir le nom du premier joueur à ajouter. \n")
+            joueur_a_ajouter["prenom"] = input("Merci de saisir le prenom du  premier joueur à ajouter. \n")
         else:
-            joueur_a_ajouter["Nom"] = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à ajouter. \n")
-            joueur_a_ajouter["Prenom"] = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) +
+            joueur_a_ajouter["nom"] = input("Merci de saisir le nom du " + str(numero_de_joueur+1) + "ème joueur à "
+                                                                                                     "ajouter. \n")
+            joueur_a_ajouter["prenom"] = input("Merci de saisir le prenom du " + str(numero_de_joueur+1) +
                                      "ème joueur à ajouter. \n")
         return joueur_a_ajouter
 
