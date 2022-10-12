@@ -88,8 +88,7 @@ class SaisieDeDonnees:
                   " [3] Ajout d'un joueur dans la liste des joueurs\n"
                   " [4] Modification d'un joueur ou d'un participant\n"
                   " [5] Rapport\n"
-                  " [6] Rapport\n"
-                  " [7] Sortie du Programme\n"
+                  " [6] Sortie du Programme\n"
                   "_________________________________________________________________________________________________")
             choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
             return choix_utilisateur

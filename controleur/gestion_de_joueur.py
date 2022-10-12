@@ -149,30 +149,25 @@ class GestionDeJoueur:
         liste_de_liste_a_trie = []
         if type_tri == "nom":
             for participant in liste_participants:
-                input(participant[0].nom)
                 indice = participant[0].nom
                 liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
-                liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
-                for liste in liste_de_liste_a_trie:
-                    del liste[0]
+            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
+            for liste in liste_de_liste_a_trie:
+                del liste[0]
         elif type_tri == "classement_elo":
             for participant in liste_participants:
-                input(participant[0].classement_elo)
                 indice = participant[0].classement_elo
                 liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
-            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
+            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=True)
             for liste in liste_de_liste_a_trie:
                 del liste[0]
         elif type_tri == "points_tournoi":
             for participant in liste_participants:
-                indice = participant[1]
+                indice = participant[0].classement_elo
                 liste_de_liste_a_trie.append([indice, participant[0], participant[1]])
-            liste_de_liste_a_trie.sort(key=lambda x: x[0], reverse=False)
-            for liste in liste_de_liste_a_trie:
-                print(str(liste[0]) + str(liste[1]) + str(liste[2]))
-                del liste[0]
-                input(liste[0])
-        input(liste_de_liste_a_trie)
+            liste_de_liste_a_trie.sort(key=lambda x: (x[2], x[0]), reverse=True)
+            for item in liste_de_liste_a_trie:
+                del item[0]
         return liste_de_liste_a_trie
 
 

@@ -26,7 +26,7 @@ class GestionDeTournoi:
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
         choix_utilisateur = 0
         numero_de_ronde_active = 0
-        while choix_utilisateur != 7:
+        while choix_utilisateur != 6:
             choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
             if choix_utilisateur == 1:
                 # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
@@ -78,16 +78,13 @@ class GestionDeTournoi:
                         # Renvoi un message d'erreur si aucun tournoi n'existe
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
             elif choix_utilisateur == 5:
-                for tournament in tournaments_table:
-                    print(tournament)
-                for parti in instance_de_tournoi.participants:
-                    print(str(parti[0]) + " et a " + str(parti[1]))
-                input()
-                GestionDeJoueur.fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
-                                                                           instance_de_tournoi.participants, "classement_elo")
-                input()
-
-                """# Affichage modification du classement tournoi d'un participant du tournoi
+                # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
+                self.menu_rapport(players_table, instance_de_tournoi, tournaments_table, numero_de_ronde_active)
+            elif choix_utilisateur == 6:
+                # Cas du choix de sortie du programme
+                Vue.message_de_sortie_1(self.vue_instance)
+                """elif choix_utilisateur == 5:
+                # Affichage modification du classement tournoi d'un participant du tournoi
                 try:
                     # Recupere et affiche le classement du tournoi
                     GestionDeRapport.affichage_du_classement_tournoi(self.objet_gestion_rapport, instance_de_tournoi,
@@ -100,13 +97,6 @@ class GestionDeTournoi:
                     instance_de_tournoi.participants = \
                         GestionDeJoueur.modification_d_un_joueur(self.objet_gestion_joueur,
                                                                  instance_de_tournoi.participants)"""
-            elif choix_utilisateur == 6:
-                # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
-                self.menu_rapport(players_table)
-
-            elif choix_utilisateur == 7:
-                # Cas du choix de sortie du programme
-                Vue.message_de_sortie_1(self.vue_instance)
             else:
                 # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
                 MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -114,7 +104,7 @@ class GestionDeTournoi:
             Vue.message_de_sortie_2(self.vue_instance)
             # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
 
-    def menu_rapport(self, players_table):
+    def menu_rapport(self, players_table, instance_de_tournoi, tournaments_table, numero_de_ronde_active):
         # Initialise la variable récupérant le choix utilisateur
         choix_rapport = 0
         # Gere la sortie du menu
@@ -128,10 +118,21 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des participants
-                print("en construction...")
+                choix_type_de_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                instance_de_tournoi.participants = GestionDeJoueur. \
+                    fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
+                                                               instance_de_tournoi.participants,
+                                                               choix_type_de_tri)
+                Vue.affichage_classement_participants(self.vue_instance, numero_de_ronde_active,
+                                                      instance_de_tournoi.participants)
+
+                input()
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
                 print("en construction...")
+                for tournament in tournaments_table:
+                    print(tournament)
+                input()
             elif choix_rapport == 4:
                 # Affiche la liste des tours d'un tournoi
                 print("en construction...")

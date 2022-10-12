@@ -25,6 +25,13 @@ class Vue:
         for player in liste_db_triee:
             print(player)
 
+    def affichage_classement_participants(self, numero_de_ronde_active, liste_db_triee):
+        """ Affiche le classement des joueurs en fonction des resultats du tournoi """
+        if numero_de_ronde_active != "":
+            print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
+        for player in liste_db_triee:
+            print(str(player[0]) + " Points tournoi: " + str(player[1]))
+
     def affichage_choix_liste_participants(self, liste_participants):
         nombre_de_participants = len(liste_participants)
         for i in range(nombre_de_participants):
