@@ -96,6 +96,21 @@ class SaisieDeDonnees:
             print("Choix non reconnu...\n")
             return 0
 
+    def recuperation_choix_type_tournoi(self):
+        try:
+            print("_________________________________________________________________________________________________\n"
+                  " Merci de sélectionner le type de tournoi : \n"
+                  " [1] Methode Suisse\n"
+                  " [2] ??? \n"
+                  "_________________________________________________________________________________________________")
+            choix_type_tournoi = int(input("Entrez le chiffre correspondant :\n"))
+            if choix_type_tournoi == 1:
+                return "MethodeSuisse"
+            else:
+                print("Choix non reconnu...\n")
+        except ValueError:
+            print("Merci d'entrer un chiffre.")
+
     def menu_rapport(self):
         """ Affichage du menu général"""
 
@@ -121,8 +136,8 @@ class SaisieDeDonnees:
 
     def recuperation_nombre_de_participants_du_tournoi(self):
         """ Recupère le nombre de joueurs participants au tournoi """
-        nombre_de_participant = input("Merci de saisir le nombre de participants au tournoi. \n")
-        return nombre_de_participant
+        return input("Merci de saisir le nombre de participants au tournoi. \n")
+
 
     def recuperation_participant_du_tournoi(self, numero_de_joueur):
         """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """
