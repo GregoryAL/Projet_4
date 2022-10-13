@@ -98,11 +98,11 @@ class SaisieDeDonnees:
 
     def recuperation_choix_type_tournoi(self):
         try:
+            Vue.clean_screen(self.vue)
             print("_________________________________________________________________________________________________\n"
                   " Merci de sélectionner le type de tournoi : \n"
                   " [1] Methode Suisse\n"
-                  " [2] ??? \n"
-                  "_________________________________________________________________________________________________")
+                  " [2] ??? \n")
             choix_type_tournoi = int(input("Entrez le chiffre correspondant :\n"))
             if choix_type_tournoi == 1:
                 return "MethodeSuisse"

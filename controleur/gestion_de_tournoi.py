@@ -39,7 +39,7 @@ class GestionDeTournoi:
                     # Lancement de la ronde suivante
                     try:
                         ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
-                                                          choix_type_tournoi)
+                                                          choix_type_tournoi, tournaments_table)
                     except UnboundLocalError:
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
                 elif choix_utilisateur == 3:
@@ -246,7 +246,7 @@ class GestionDeTournoi:
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
         # Creation de l'objet instancié tournoi nécessaire
-        objet_type_de_tournoi = TypeDeTournoi()
+        objet_type_de_tournoi = TypeDeTournoi(self.objet_gestion_joueur)
         ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, type_de_tournoi, numero_de_ronde,
                                                           instance_de_tournoi)
         # pour chaque match de la liste des matchs de la ronde

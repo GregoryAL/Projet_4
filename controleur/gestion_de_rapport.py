@@ -35,6 +35,9 @@ class GestionDeRapport:
         elif choix_de_tri == 2:
             return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, instance_de_tournoi.participants,
                                                           "points_tournoi")
+        elif choix_de_tri == 3:
+            return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, instance_de_tournoi.participants,
+                                                          "points_tournoi")
         else:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
