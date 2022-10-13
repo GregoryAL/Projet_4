@@ -20,8 +20,7 @@ class GestionDeJoueur:
         date_de_naissance = joueur["date_de_naissance"]
         sexe = joueur["sexe"]
         classement_elo = joueur["classement_elo"]
-        points_tournoi = joueur["points_tournoi"]
-        return Joueur(nom, prenom, date_de_naissance, sexe, classement_elo, points_tournoi)
+        return Joueur(nom, prenom, date_de_naissance, sexe, classement_elo)
 
     def selection_d_un_joueur_a_modifier(self):
         choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)

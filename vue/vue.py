@@ -55,4 +55,4 @@ class Vue:
 
     def affichage_des_matchs(self, instance_de_match):
         """ Affiche le match """
-        print(instance_de_match.joueur1.nom + " affronte " + instance_de_match.joueur2.nom)
+        print(instance_de_match.joueur1[0].nom + " affronte " + instance_de_match.joueur2[0].nom)

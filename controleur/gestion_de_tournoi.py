@@ -38,8 +38,11 @@ class GestionDeTournoi:
                 elif choix_utilisateur == 2:
                     # Lancement de la ronde suivante
                     try:
+                        numero_de_ronde_active += 1
                         ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
                                                           choix_type_tournoi, tournaments_table)
+                        instance_de_tournoi = self.maj_instance_tournoi_apres_ronde(ronde, instance_de_tournoi)
+
                     except UnboundLocalError:
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
                 elif choix_utilisateur == 3:
@@ -161,7 +164,7 @@ class GestionDeTournoi:
             else:
                 liste_participants.append([Joueur(participant["nom"], participant["prenom"],
                                           participant["date_de_naissance"], participant["sexe"],
-                                          participant["classement_elo"]), [0]])
+                                          participant["classement_elo"]), 0])
         return liste_participants
 
 
@@ -264,9 +267,10 @@ class GestionDeTournoi:
         ronde_a_lancer.date_heure_debut_du_match = datetime.datetime.now()
         return ronde_a_lancer
 
-    def fin_d_une_ronde(self, ronde_a_clore):
+    def fin_d_une_ronde(self, ronde_a_clore, instance_tournoi):
         """ Clos une ronde et saisie les resultats"""
         SaisieDeDonnees.fin_de_la_ronde(self.vue_saisie_de_donnees)
+        ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
         for match_de_ronde in ronde_a_clore.liste_matchs:
             resultat_du_match = SaisieDeDonnees.recuperation_des_resultats_d_un_match(self.vue_saisie_de_donnees,
                                                                                       match_de_ronde)
@@ -285,9 +289,9 @@ class GestionDeTournoi:
                                                                                        match_de_ronde.joueur2)
                     else:
                         match_de_ronde.resultat_joueur1 = 1
-                        match_de_ronde.joueur1.points_tournoi += 1
+                        match_de_ronde.joueur1[1] = 1
+                        match_de_ronde.joueur2[1] = 0
                         match_de_ronde.resultat_joueur2 = 0
-                        ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
                 elif resultat_du_match == "2":
                     verification_resultat_saisie = \
                         SaisieDeDonnees.verification_resultat_match_avec_vainqueur(self.vue_saisie_de_donnees,
@@ -300,9 +304,9 @@ class GestionDeTournoi:
                                                                                        match_de_ronde.joueur1)
                     else:
                         match_de_ronde.resultat_joueur2 = 1
-                        match_de_ronde.joueur2.points_tournoi += 1
+                        match_de_ronde.joueur2[1] = 1
+                        match_de_ronde.joueur1[1] = 0
                         match_de_ronde.resultat_joueur1 = 0
-                        ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
                 elif resultat_du_match == "N":
                     verification_resultat_saisie = SaisieDeDonnees.\
                         verification_resultat_match_nul(self.vue_saisie_de_donnees, match_de_ronde.joueur1,
@@ -313,11 +317,9 @@ class GestionDeTournoi:
                                                             match_de_ronde.joueur2)
                     else:
                         match_de_ronde.resultat_joueur2 = 0.5
-                        match_de_ronde.joueur1.points_tournoi += 0.5
+                        match_de_ronde.joueur1[1] = 0.5
                         match_de_ronde.resultat_joueur1 = 0.5
-                        match_de_ronde.joueur2.points_tournoi += 0.5
-                        ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
-
+                        match_de_ronde.joueur2[1] = 0.5
         return ronde_a_clore
 
     def initialisation_tournoi(self, players_table, tournaments_table):
@@ -347,23 +349,39 @@ class GestionDeTournoi:
                 MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
                 return ""
 
-
-    def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table, choix_type_tournoi, tournaments_table):
+    def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table, choix_type_tournoi,
+                             tournaments_table):
         # Lancement de la ronde suivante
+        if int(numero_de_ronde_active)-1 < int(instance_de_tournoi.nombre_de_tour_du_tournoi):
 
-        if numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:
-            numero_de_ronde_active += 1
             print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
                   str(instance_de_tournoi.nombre_de_tour_du_tournoi) + " rondes")
             ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                               choix_type_tournoi)
 
-            self.depart_d_une_ronde(ronde_actuelle)
-            self.fin_d_une_ronde(ronde_actuelle)
-            instance_de_tournoi.rondes.append(ronde_actuelle)
-            ronde_db = Ronde.serialisation_ronde(ronde_actuelle)
-            tournoi = Query()
-            tournaments_table.upsert({"rondes": ronde_db}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
+            ronde_actuelle = self.depart_d_une_ronde(ronde_actuelle)
+            ronde_actuelle = self.fin_d_une_ronde(ronde_actuelle, instance_de_tournoi)
+            # ronde_db = Ronde.serialisation_ronde(ronde_actuelle)
+            # tournoi = Query()
+            # tournaments_table.upsert({"rondes": ronde_db}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
+            input()
+
+    def maj_instance_tournoi_apres_ronde(self, ronde_actuelle, instance_de_tournoi):
+        instance_de_tournoi.rondes.append(ronde_actuelle)
+        i = 0
+        resultat_ronde = {}
+        for match in ronde_actuelle.liste_matchs:
+            resultat_ronde[match.joueur1[0]] = match.resultat_joueur1
+            resultat_ronde[match.joueur2[0]] = match.resultat_joueur2
+        for cle, valeur in resultat_ronde:
+            print(cle)
+            for participant in instance_de_tournoi.participants:
+                if participant[0] == cle:
+                    participant[1] += int(valeur)
+                    print(valeur)
+                    input(participant[0])
+        return instance_de_tournoi
+

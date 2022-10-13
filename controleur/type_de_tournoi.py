@@ -29,7 +29,7 @@ class TypeDeTournoi:
         ronde_actuelle = Ronde(nom=("round" + str(numero_de_ronde)))
         for i in range(moitie_des_participants):
             id_joueur_2 = moitie_des_participants + i
-            match_pairing = Match(instance_tournoi.participants[i][0], instance_tournoi.participants[id_joueur_2][0])
+            match_pairing = Match(instance_tournoi.participants[i], instance_tournoi.participants[id_joueur_2])
             ronde_actuelle.liste_matchs.append(match_pairing)
             print("match entre " + instance_tournoi.participants[i][0].nom + " et " +
                   instance_tournoi.participants[id_joueur_2][0].nom)

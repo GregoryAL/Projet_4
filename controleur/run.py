@@ -1,6 +1,6 @@
 """ Point d'entrée du contrôleur"""
 from vue.vue import Vue
-from modele.joueur import Joueur
+from modele.tournoi import Tournoi
 from controleur.gestion_de_tournoi import GestionDeTournoi
 from controleur.gestion_de_joueur import GestionDeJoueur
 from controleur.gestion_de_rapport import GestionDeRapport

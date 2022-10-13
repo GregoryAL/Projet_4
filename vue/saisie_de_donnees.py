@@ -154,19 +154,19 @@ class SaisieDeDonnees:
 
     def recuperation_des_resultats_d_un_match(self, match):
         """ Récupère les résultats d'un joueur d'un match d'une ronde"""
-        resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1.nom + " et 2:" +
-                               match.joueur2.nom + " (1/N/2) : \n")
+        resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1[0].nom + " et 2:" +
+                               match.joueur2[0].nom + " (1/N/2) : \n")
         return resultat_match
 
 
     def verification_resultat_match_avec_vainqueur(self, joueur1, joueur2):
         """ Verifie que la réponse entrée par l'utilisateur est la bonne"""
-        resultat_verification = input(joueur1.nom + " a gagné contre " + joueur2.nom + ". \n Si c'est exacte, tapez "
-                                                                                       "'OK' puis entrer: \n")
+        resultat_verification = input(joueur1[0].nom + " a gagné contre " + joueur2[0].nom +
+                                      ". \n Si c'est exacte, tapez 'OK' puis entrer: \n")
         return resultat_verification
 
     def verification_resultat_match_nul(self, joueur1, joueur2):
-        resultat_verification = input(joueur1.nom + " a fait match nul contre " + joueur2.nom +
+        resultat_verification = input(joueur1[0].nom + " a fait match nul contre " + joueur2[0].nom +
                                       ". \n Si c'est exacte, tapez 'OK' puis entrer: \n")
         return resultat_verification
 
