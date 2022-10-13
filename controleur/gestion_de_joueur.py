@@ -45,8 +45,9 @@ class GestionDeJoueur:
 
     def recherche_correspondance_db(self, players_table, joueur_a_rechercher):
         """ Recherche toutes les correspondances d'un couple Nom/Prenom dans une base"""
-        Joueur = Query()
-        resultat_recherche = players_table.search((Joueur.nom == joueur_a_rechercher["nom"]) & (Joueur.prenom == joueur_a_rechercher["prenom"]))
+        joueur = Query()
+        resultat_recherche = players_table.search((joueur.nom == joueur_a_rechercher["nom"]) &
+                                                  (joueur.prenom == joueur_a_rechercher["prenom"]))
         i=0
         for resultat in resultat_recherche:
             print("[" + str(i) + "] | " + str(resultat))
@@ -54,8 +55,38 @@ class GestionDeJoueur:
         if len(resultat_recherche)>1:
             joueur_choisi = int(input("Veuillez renseignez le numéro du joueur choisi : \n"))
             return resultat_recherche[joueur_choisi]
-        else:
+        elif len(resultat_recherche) == 1:
             return resultat_recherche[0]
+        else:
+            joueur_cree = self.creation_joueur_si_inexistant(players_table, joueur_a_rechercher)
+            if joueur_cree != "":
+                joueur_cree_recherche = Query()
+                joueur_cree_liste = players_table.search((joueur_cree_recherche.nom == joueur_cree.nom) &
+                                                      (joueur_cree_recherche.prenom == joueur_cree.prenom))
+                return joueur_cree_liste[0]
+            else:
+                return ""
+
+    def creation_joueur_si_inexistant(self, players_table, joueur_a_rechercher):
+        """ Demande si l'utilisateur veut creer le joueur inexistant, si oui renvoi le joueur cree apres ajout
+        dans db """
+        # Annonce que le joueur n'existe pas et demande si le joueur doit etre créé.
+        creation_joueur_oui_non = SaisieDeDonnees.joueur_inexistant(self.vue_saisie_de_donnees)
+        if creation_joueur_oui_non == "Oui":
+            # Recupere les informations du joueur à ajouter à la liste, recupere automatiquement Nom/Prenom
+            # si l'utilisateur le veut
+            info_joueur_a_creer = SaisieDeDonnees.ajout_des_informations_d_un_joueur(self.vue_saisie_de_donnees,
+                                                                                     joueur_a_rechercher)
+            # Crée l'objet joueur
+            objet_joueur = self.creation_objet_joueur(info_joueur_a_creer)
+            # ajoute la serialisation de cet objet à la base des joueurs
+            self.ajout_joueur_db(objet_joueur, players_table)
+            return objet_joueur
+        elif creation_joueur_oui_non == "Non":
+            return ""
+
+
+
 
     def recuperation_du_parametre_a_modifier_db(self):
         parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier(self.vue_saisie_de_donnees)
@@ -197,14 +228,16 @@ class GestionDeJoueur:
         """ Ajout d'un joueur à la liste de joueur """
         infos_joueur_a_ajouter = SaisieDeDonnees.ajout_des_informations_d_un_joueur(self.vue_saisie_de_donnees,
                                                                                     nom_prenom_info_joueur)
+        joueur_a_ajouter = self.creation_objet_joueur(infos_joueur_a_ajouter)
+        return joueur_a_ajouter
+
+    def creation_objet_joueur(self, infos_joueur_a_ajouter):
         joueur_a_ajouter = Joueur(infos_joueur_a_ajouter["nom"], infos_joueur_a_ajouter["prenom"],
                                   infos_joueur_a_ajouter["date_de_naissance"], infos_joueur_a_ajouter["sexe"],
                                   infos_joueur_a_ajouter["classement_elo"])
         return joueur_a_ajouter
 
-    def ajout_d_un_joueur_a_la_liste(self, joueur_a_ajouter, liste_joueurs, players_table):
-        """ Ajoute un joueur à la liste des joueurs existants parmis lesquels il est possible de sélectionner
-        les participants"""
-        liste_joueurs.append(joueur_a_ajouter)
-        self.ajout_joueur_db(joueur_a_ajouter, players_table)
-        return liste_joueurs
+
+    def ajout_joueur_db(self, joueur_a_ajouter, players_table):
+        """ Ajoute un objet joueur à la db joueur apres l'avoir serialisé"""
+        players_table.insert(Joueur.serialisation_joueur(joueur_a_ajouter))

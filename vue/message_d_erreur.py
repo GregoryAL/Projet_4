@@ -35,14 +35,11 @@ class MessageDErreur:
     def message_d_erreur_d_input(self):
         """ Affiche un message d'erreur car l utilisateur a entré un chiffre en dehors des options proposées """
         print("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu")
-        self.appuyer_sur_entrer_pour_continuer()
 
     def message_d_erreur_d_input_hors_choix(self):
         """Affiche un message quand le chiffre entre ne correspond pas à un choix possible"""
         print("Choix non reconnu. Merci de rentrer un chiffre correspondant aux options données.")
-        self.appuyer_sur_entrer_pour_continuer()
 
     def message_de_demande_recommencer_ajout_joueur(self):
         """ Demande à l utilisateur de recommencer la création du tournoi"""
         print("Merci de recommencer la création du tournoi\n")
-        self.appuyer_sur_entrer_pour_continuer()

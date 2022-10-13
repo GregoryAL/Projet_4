@@ -24,18 +24,17 @@ class GestionDeTournoi:
 
     def gestion_du_tournoi(self, liste_joueurs, players_table, tournaments_table):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
-        choix_utilisateur = 0
-        numero_de_ronde_active = 0
-        choix_type_tournoi = ""
         try:
+            choix_utilisateur = 0
+            numero_de_ronde_active = 0
+            choix_type_tournoi = ""
             while choix_utilisateur != 6:
                 choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
                 if choix_utilisateur == 1:
-                    # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
-                    instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
-                    input(instance_de_tournoi.participants[0][0])
                     numero_de_ronde_active = 0
                     choix_type_tournoi = SaisieDeDonnees.recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
+                    # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
+                    instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
                 elif choix_utilisateur == 2:
                     # Lancement de la ronde suivante
                     try:
@@ -47,7 +46,6 @@ class GestionDeTournoi:
                     # Ajout d'un joueur
                     joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
                     GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
-                    liste_joueurs.append(joueur_a_ajouter)
                 elif choix_utilisateur == 4:
                     # Modification d'un joueur / participant
                     base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
@@ -69,8 +67,9 @@ class GestionDeTournoi:
                         try:
                             print(instance_de_tournoi.nom_du_tournoi)
                             joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-                            doc_id_joueur = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
-                                                                        joueur_a_modifier)
+                            doc_id_joueur = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
+                                                                                        players_table,joueur_a_modifier,
+                                                                                        tournaments_table)
                         except UnboundLocalError:
                             # Renvoi un message d'erreur si aucun tournoi n'existe
                             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
@@ -107,15 +106,19 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des participants
-                choix_type_de_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
-                instance_de_tournoi.participants = GestionDeJoueur. \
-                    fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
-                                                               instance_de_tournoi.participants,
-                                                               choix_type_de_tri)
-                Vue.affichage_classement_participants(self.vue_instance, numero_de_ronde_active,
-                                                      instance_de_tournoi.participants)
-
-                input()
+                try:
+                    test_instance_tournoi = instance_de_tournoi.nom_du_tournoi
+                except AttributeError:
+                    MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+                else:
+                    choix_type_de_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                    instance_de_tournoi.participants = GestionDeJoueur. \
+                        fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
+                                                                   instance_de_tournoi.participants,
+                                                                   choix_type_de_tri)
+                    Vue.affichage_classement_participants(self.vue_instance, numero_de_ronde_active,
+                                                          instance_de_tournoi.participants)
+                    input()
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
                 print("en construction...")
@@ -137,13 +140,11 @@ class GestionDeTournoi:
 
     def recuperation_du_nombre_de_participants(self):
         """Récupere le nombre de participants au tournoi"""
-        try:
-            nombre_de_participants = int(SaisieDeDonnees.
-                                         recuperation_nombre_de_participants_du_tournoi(self.vue_saisie_de_donnees))
-            return nombre_de_participants
-        except (TypeError, ValueError):
-            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-            return ""
+
+        nombre_de_participants = SaisieDeDonnees.\
+            recuperation_nombre_de_participants_du_tournoi(self.vue_saisie_de_donnees)
+        return nombre_de_participants
+
 
     def selection_des_participants_db(self, players_table, nombre_de_participants):
         """ Selection des participants dans le pool de joueurs connus de la base table_players"""
@@ -151,12 +152,16 @@ class GestionDeTournoi:
         for i in range(nombre_de_participants):
             # Recupere le nom et prénom du joueur à ajouter au tournoi :
             participant_nom_prenom = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
-            participant = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table, participant_nom_prenom)
-            print(participant["nom"])
-            liste_participants.append([Joueur(participant["nom"], participant["prenom"],
-                                       participant["date_de_naissance"], participant["sexe"],
-                                       participant["classement_elo"]), [0]])
-            print(liste_participants[i][0])
+            participant = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur, players_table,
+                                                                      participant_nom_prenom)
+            if participant == "":
+                MessageDErreur.message_de_demande_recommencer_ajout_joueur(self.vue_message_d_erreur)
+                MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+                return ""
+            else:
+                liste_participants.append([Joueur(participant["nom"], participant["prenom"],
+                                          participant["date_de_naissance"], participant["sexe"],
+                                          participant["classement_elo"]), [0]])
         return liste_participants
 
 
@@ -317,14 +322,14 @@ class GestionDeTournoi:
 
     def initialisation_tournoi(self, players_table, tournaments_table):
         # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
-        nombre_de_participants = self.recuperation_du_nombre_de_participants()
-        if nombre_de_participants == "":
-            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+        try:
+            nombre_de_participants = int(self.recuperation_du_nombre_de_participants())
+        except TypeError:
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
+            return ""
         else:
             liste_participants_tournoi = self.selection_des_participants_db(players_table, nombre_de_participants)
-            if liste_participants_tournoi == "":
-                MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
-            else:
+            if len(liste_participants_tournoi) == nombre_de_participants:
                 info_instance_tournoi_a_creer = SaisieDeDonnees.\
                     recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
                 instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
@@ -335,11 +340,15 @@ class GestionDeTournoi:
                     participants_db.append(Joueur.serialisation_joueur(participants[0]))
                 tournoi = Query()
                 tournaments_table.update({"participants": participants_db}, tournoi.
-                                          nom == instance_de_tournoi.nom_du_tournoi)
+                                         nom == instance_de_tournoi.nom_du_tournoi)
                 input()
                 return instance_de_tournoi
+            else:
+                MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
+                return ""
 
-    def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table, choix_type_tournoi):
+
+    def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table, choix_type_tournoi, tournaments_table):
         # Lancement de la ronde suivante
 
         if numero_de_ronde_active < instance_de_tournoi.nombre_de_tour_du_tournoi:

@@ -247,12 +247,12 @@ class SaisieDeDonnees:
         joueur_a_ajouter = {}
         if info_joueur_inexistant != "":
             recuperation_info_joueur_inexistant = input(" Voulez vous ajouter le joueur " +
-                                                        info_joueur_inexistant["Prenom"] + " " +
-                                                        info_joueur_inexistant["Nom"] + " à la liste des "
+                                                        info_joueur_inexistant["prenom"] + " " +
+                                                        info_joueur_inexistant["nom"] + " à la liste des "
                                                                                         "joueurs?(Oui/Non)")
             if recuperation_info_joueur_inexistant == "Oui":
-                joueur_a_ajouter["nom"] = info_joueur_inexistant["Nom"]
-                joueur_a_ajouter["prenom"] = info_joueur_inexistant["Prenom"]
+                joueur_a_ajouter["nom"] = info_joueur_inexistant["nom"]
+                joueur_a_ajouter["prenom"] = info_joueur_inexistant["prenom"]
             else:
                 nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
                 joueur_a_ajouter["nom"] = nom_a_ajouter
