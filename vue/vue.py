@@ -56,3 +56,18 @@ class Vue:
     def affichage_des_matchs(self, instance_de_match):
         """ Affiche le match """
         print(instance_de_match.joueur1[0].nom + " affronte " + instance_de_match.joueur2[0].nom)
+
+
+    def affichage_liste_de_tournoi(self, tournaments_table):
+        for tournament in tournaments_table:
+            try:
+                print("ID : " + str(tournament.doc_id) +
+                      " Nom du Tournoi : " + str(tournament["nom"]) + " Lieu : " + str(tournament["lieu"]) +
+                      " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
+                      " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
+                      " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
+                      " Commentaires : " + str(tournament["commentaire"]))
+
+            except:
+                input("erreur")
+        input()
