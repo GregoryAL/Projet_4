@@ -1,6 +1,7 @@
 from modele.tournoi import Tournoi
 from modele.joueur import Joueur
 from modele.ronde import Ronde
+from modele.match import Match
 import datetime
 from controleur.type_de_tournoi import TypeDeTournoi
 from tinydb import Query
@@ -32,6 +33,7 @@ class GestionDeTournoi:
                 choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
                 if choix_utilisateur == 1:
                     numero_de_ronde_active = 0
+
                     choix_type_tournoi = SaisieDeDonnees.recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
                     # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                     instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
@@ -41,7 +43,7 @@ class GestionDeTournoi:
                         numero_de_ronde_active += 1
                         ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
                                                           choix_type_tournoi, tournaments_table)
-                        instance_de_tournoi = self.maj_instance_tournoi_apres_ronde(ronde, instance_de_tournoi)
+                        instance_de_tournoi.rondes.append(ronde)
 
                     except UnboundLocalError:
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
@@ -61,9 +63,6 @@ class GestionDeTournoi:
                             recuperation_du_parametre_a_modifier_db(self.objet_gestion_joueur)
                         nouvelle_valeur_parametre = SaisieDeDonnees.\
                             entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
-                        print(" parametre à modif : " + str(parametre_a_modifier) +
-                              " nouvelle valeur : " + str(nouvelle_valeur_parametre))
-                        input()
                         GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table, joueur_a_modifier_complet,
                                                                     parametre_a_modifier, nouvelle_valeur_parametre)
                     elif base_a_modifier == 2:
@@ -82,6 +81,15 @@ class GestionDeTournoi:
                 elif choix_utilisateur == 6:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
+                elif choix_utilisateur == 7:
+                    players_table.get(doc_id=5)
+
+
+                    joueur = Query()
+                    id_joueur = players_table.search((joueur.nom == "Nom19") &
+                                                              (joueur.prenom == "prénom19"))
+                    valeur_test = id_joueur[0].doc_id
+                    input(valeur_test)
                 else:
                     # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
                     MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -167,61 +175,6 @@ class GestionDeTournoi:
                                           participant["classement_elo"]), 0])
         return liste_participants
 
-
-    def selection_des_participants(self, liste_joueurs, nombre_de_participants):
-        """ Selection des participants dans le pool de joueurs connus """
-        liste_participants = []
-        for i in range(nombre_de_participants):
-            joueurs_de_la_liste_homonyme = []
-            # Recupere le nom et prénom du joueur à ajouter au tournoi :
-            participant = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
-            # Recupere le nombre d'entree dans le dictionnaire de liste de joueurs
-            nombre_d_entree_dans_la_liste_des_joueurs = len(liste_joueurs)
-            # Recupère le dernier nom entré dans la liste de joueur
-            dernier_nom_entre = liste_joueurs[nombre_d_entree_dans_la_liste_des_joueurs-1]
-            # Verifie que le joueur est dans la liste de joueur en parcourant toutes les entrées du dictionnaire
-            for j in range(nombre_d_entree_dans_la_liste_des_joueurs):
-                # Vérifie si le prenom et nom entrée par l'utilisateur fait partie de la liste de joueurs
-
-                test_presence = self.verification_participant_est_dans_liste_joueurs(participant, liste_joueurs[j])
-                # Si le test est concluant, ajoute le joueur de la liste de joueurs à la liste de participants
-                if test_presence == "Presence":
-                    joueurs_de_la_liste_homonyme.append(liste_joueurs[j])
-                else:
-                    # Sinon, vérifie si la valeur testée est la dernière valeur du dictionnaire
-                    if str(liste_joueurs[j].nom) == str(dernier_nom_entre.nom):
-                        if len(joueurs_de_la_liste_homonyme) == 0:
-                            # Si oui, Cela indique que le joueur n'existe pas, demande à l'utilisateur s'il veut le
-                            # créer
-                            reponse_creation_joueur = SaisieDeDonnees.joueur_inexistant(self.vue_saisie_de_donnees)
-                            if reponse_creation_joueur == "Oui":
-                                # Si oui, Crée un joueur en récupérant les informations Noms/Prenom entrées
-                                # préalablement
-                                joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur,
-                                                                                        participant)
-                                # Ajout ce joueur à la liste des participants
-                                liste_participants.append(joueur_a_ajouter)
-                                # Ajout de ce joueur à la liste des joueurs
-                                liste_joueurs = GestionDeJoueur.ajout_d_un_joueur_a_la_liste(self.objet_gestion_joueur,
-                                                                                             joueur_a_ajouter,
-                                                                                             liste_joueurs)
-                                nombre_de_joueur_dans_la_liste += 1
-                            else:
-                                MessageDErreur.message_de_demande_recommencer_ajout_joueur(self.vue_message_d_erreur)
-                                return ""
-                        elif len(joueurs_de_la_liste_homonyme) == 1:
-                            joueurs_de_la_liste_homonyme[0].points_tournoi = 0
-                            print("joueur ajouté : " + str(joueurs_de_la_liste_homonyme[0]))
-                            liste_participants.append(joueurs_de_la_liste_homonyme[0])
-                        elif len(joueurs_de_la_liste_homonyme) >= 2:
-                            choix_du_joueur = self.verification_duplicate_joueurs(joueurs_de_la_liste_homonyme)
-                            choix_du_joueur.points_tournoi = 0
-                            print("joueur ajouté : " + str(choix_du_joueur))
-                            liste_participants.append(choix_du_joueur)
-                        else:
-                            MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
-        return liste_participants
-
     def verification_participant_est_dans_liste_joueurs(self, participant, joueur_de_la_liste):
         """ Verifie si un couple Nom / Prenom se trouve dans la liste des objets joueurs """
         if (participant["Nom"] == joueur_de_la_liste.nom) and (participant["Prenom"] == joueur_de_la_liste.prenom):
@@ -276,50 +229,24 @@ class GestionDeTournoi:
                                                                                       match_de_ronde)
             while resultat_du_match not in ["1", "2", "N"]:
                 MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
+                resultat_du_match = SaisieDeDonnees.recuperation_des_resultats_d_un_match(self.vue_saisie_de_donnees,
+                                                                                          match_de_ronde)
             else:
                 if resultat_du_match == "1":
-                    verification_resultat_saisie = \
-                        SaisieDeDonnees.verification_resultat_match_avec_vainqueur(self.vue_saisie_de_donnees,
-                                                                                   match_de_ronde.joueur1,
-                                                                                   match_de_ronde.joueur2)
-                    while str(verification_resultat_saisie) != "OK":
-                        verification_resultat_saisie = \
-                            SaisieDeDonnees.verification_resultat_match_avec_vainqueur(self.vue_saisie_de_donnees,
-                                                                                       match_de_ronde.joueur1,
-                                                                                       match_de_ronde.joueur2)
-                    else:
-                        match_de_ronde.resultat_joueur1 = 1
-                        match_de_ronde.joueur1[1] = 1
-                        match_de_ronde.joueur2[1] = 0
-                        match_de_ronde.resultat_joueur2 = 0
+                    match_de_ronde.resultat_joueur1 = 1
+                    match_de_ronde.joueur1[1] += 1
+                    match_de_ronde.joueur2[1] += 0
+                    match_de_ronde.resultat_joueur2 = 0
                 elif resultat_du_match == "2":
-                    verification_resultat_saisie = \
-                        SaisieDeDonnees.verification_resultat_match_avec_vainqueur(self.vue_saisie_de_donnees,
-                                                                                   match_de_ronde.joueur2,
-                                                                                   match_de_ronde.joueur1)
-                    while verification_resultat_saisie != "OK":
-                        verification_resultat_saisie = \
-                            SaisieDeDonnees.verification_resultat_match_avec_vainqueur(self.vue_saisie_de_donnees,
-                                                                                       match_de_ronde.joueur2,
-                                                                                       match_de_ronde.joueur1)
-                    else:
-                        match_de_ronde.resultat_joueur2 = 1
-                        match_de_ronde.joueur2[1] = 1
-                        match_de_ronde.joueur1[1] = 0
-                        match_de_ronde.resultat_joueur1 = 0
+                    match_de_ronde.resultat_joueur2 = 1
+                    match_de_ronde.joueur2[1] += 1
+                    match_de_ronde.joueur1[1] += 0
+                    match_de_ronde.resultat_joueur1 = 0
                 elif resultat_du_match == "N":
-                    verification_resultat_saisie = SaisieDeDonnees.\
-                        verification_resultat_match_nul(self.vue_saisie_de_donnees, match_de_ronde.joueur1,
-                                                        match_de_ronde.joueur2)
-                    while verification_resultat_saisie != "OK":
-                        verification_resultat_saisie = SaisieDeDonnees.\
-                            verification_resultat_match_nul(self.vue_saisie_de_donnees, match_de_ronde.joueur1,
-                                                            match_de_ronde.joueur2)
-                    else:
-                        match_de_ronde.resultat_joueur2 = 0.5
-                        match_de_ronde.joueur1[1] = 0.5
-                        match_de_ronde.resultat_joueur1 = 0.5
-                        match_de_ronde.joueur2[1] = 0.5
+                    match_de_ronde.resultat_joueur2 = 0.5
+                    match_de_ronde.joueur1[1] += 0.5
+                    match_de_ronde.resultat_joueur1 = 0.5
+                    match_de_ronde.joueur2[1] += 0.5
         return ronde_a_clore
 
     def initialisation_tournoi(self, players_table, tournaments_table):
@@ -352,36 +279,72 @@ class GestionDeTournoi:
     def initialisation_ronde(self, numero_de_ronde_active, instance_de_tournoi, players_table, choix_type_tournoi,
                              tournaments_table):
         # Lancement de la ronde suivante
-        if int(numero_de_ronde_active)-1 < int(instance_de_tournoi.nombre_de_tour_du_tournoi):
-
-            print("le numéro de ronde active est " + str(numero_de_ronde_active) + " sur un total de " +
-                  str(instance_de_tournoi.nombre_de_tour_du_tournoi) + " rondes")
+        if int(numero_de_ronde_active) <= int(instance_de_tournoi.nombre_de_tour_du_tournoi):
             ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                               choix_type_tournoi)
-
             ronde_actuelle = self.depart_d_une_ronde(ronde_actuelle)
             ronde_actuelle = self.fin_d_une_ronde(ronde_actuelle, instance_de_tournoi)
-            # ronde_db = Ronde.serialisation_ronde(ronde_actuelle)
-            # tournoi = Query()
-            # tournaments_table.upsert({"rondes": ronde_db}, tournoi.nom == instance_de_tournoi.nom_du_tournoi)
+            self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table)
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
             input()
 
-    def maj_instance_tournoi_apres_ronde(self, ronde_actuelle, instance_de_tournoi):
-        instance_de_tournoi.rondes.append(ronde_actuelle)
-        i = 0
-        resultat_ronde = {}
-        for match in ronde_actuelle.liste_matchs:
-            resultat_ronde[match.joueur1[0]] = match.resultat_joueur1
-            resultat_ronde[match.joueur2[0]] = match.resultat_joueur2
-        for cle, valeur in resultat_ronde:
-            print(cle)
-            for participant in instance_de_tournoi.participants:
-                if participant[0] == cle:
-                    participant[1] += int(valeur)
-                    print(valeur)
-                    input(participant[0])
-        return instance_de_tournoi
+    def serialisation_ronde_objet(self, ronde, players_table):
+        """ serialise tous les objets contenu dans une ronde"""
+        liste_match_serialized = []
 
+        for match in ronde.liste_matchs:
+            joueur1_serialized = Joueur.serialisation_participant(match.joueur1[0], match.joueur1[1])
+            recherche = Query()
+            joueur2_serialized = Joueur.serialisation_participant(match.joueur2[0], match.joueur2[1])
+            match_serialized = Match.serialisation_match(match)
+            resultat_rech_joueur1_dans_table = players_table.search((recherche.nom == match.joueur1[0].nom) &
+                                                               (recherche.prenom == match.joueur1[0].prenom) &
+                                                               (recherche.date_de_naissance ==
+                                                                match.joueur1[0].date_de_naissance) &
+                                                               (recherche.sexe == match.joueur1[0].sexe) &
+                                                               (recherche.classement_elo == match.joueur1[0].
+                                                                classement_elo))
+
+            match_serialized["joueur1"] = resultat_rech_joueur1_dans_table[0].doc_id
+            match_serialized["joueur2"] = (players_table.search((recherche.nom == match.joueur2[0].nom) &
+                                                               (recherche.prenom == match.joueur2[0].prenom) &
+                                                               (recherche.date_de_naissance ==
+                                                                match.joueur2[0].date_de_naissance) &
+                                                               (recherche.sexe == match.joueur2[0].sexe) &
+                                                               (recherche.classement_elo == match.joueur2[0].
+                                                                classement_elo)))[0].doc_id
+            match_serialized["tuple_match"] = ([match_serialized["joueur1"], match_serialized["resultat_joueur1"]],
+                                               [match_serialized["joueur2"], match_serialized["resultat_joueur2"]])
+            liste_match_serialized.append(match_serialized)
+        ronde_serial = Ronde.serialisation_ronde(ronde)
+        ronde_serial["liste_match"] = liste_match_serialized
+        return ronde_serial
+
+
+    def recuperation_ronde_db(self, ronde, instance_de_tournoi, tournaments_table, players_table):
+        """ serialise la ronde, la stock dans la base tournaments, puis reserialise """
+        ronde_serial = self.serialisation_ronde_objet(ronde, players_table)
+        tournoi = Query()
+
+        tournaments_table.insert({"rondes": ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
+        # ronde = self.deserialisation_ronde(ronde)
+
+
+    def deserialisation_ronde(self, ronde):
+        """ deserialise tous les objets contenu dans une ronde """
+        for match in ronde["liste_match"]:
+            match = self.deserialisation_match(match)
+            match.joueur1 = GestionDeJoueur.deserialisation_joueur(self.objet_gestion_joueur, match.joueur1)
+            match.joueur2 = GestionDeJoueur.deserialisation_joueur(self.objet_gestion_joueur, match.joueur2)
+        return ronde
+
+    def deserialisation_match(self, match):
+        """ deserialise le match, retourne en objet """
+        joueur1 = match["joueur1"]
+        joueur2 = match["joueur2"]
+        match_deserialise = Match(joueur1, joueur2)
+        match_deserialise.resultat_joueur1 = match["resultat_joueur1"]
+        match_deserialise.resultat_joueur2 = match["resultat_joueur2"]
+        return match_deserialise

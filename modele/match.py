@@ -21,5 +21,4 @@ class Match:
             "joueur2": self.joueur2,
             "resultat_joueur1": self.resultat_joueur1,
             "resultat_joueur2": self.resultat_joueur2,
-            "tuple_match": self.tuple_match
-        }
+            "tuple_match": self.tuple_match}

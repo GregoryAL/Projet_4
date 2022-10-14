@@ -52,7 +52,7 @@ class GestionDeJoueur:
             print("[" + str(i) + "] | " + str(resultat))
             i += 1
         if len(resultat_recherche)>1:
-            joueur_choisi = int(input("Veuillez renseignez le numéro du joueur choisi : \n"))
+            joueur_choisi = SaisieDeDonnees.choisir_un_joueur(self.vue_saisie_de_donnees)
             return resultat_recherche[joueur_choisi]
         elif len(resultat_recherche) == 1:
             return resultat_recherche[0]

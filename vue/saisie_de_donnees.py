@@ -63,16 +63,9 @@ class SaisieDeDonnees:
         nouveaux_points_tournois = input("A combien voulez-vous changer les points du tournoi? \n : ")
         return nouveaux_points_tournois
 
-    def selection_du_type_de_classement_a_modifier(self):
-        print("Quel type de classement souhaitez vous modifier? \n"
-              "[1] le classement elo\n"
-              "[2] le classement tournoi \n")
-        choix_type_classement = input("Entrez votre choix : \n")
-        return choix_type_classement
+    def choisir_un_joueur(self):
+        return int(input("Veuillez renseignez le numéro du joueur choisi : \n"))
 
-    def selection_de_l_action_a_effectuer(self):
-        choix_action = input("Voulez vous modifier le classement d'un joueur? [Oui/Non] : ")
-        return choix_action
 
     def menu(self):
         """ Affichage du menu général"""
@@ -157,18 +150,6 @@ class SaisieDeDonnees:
         resultat_match = input("Entrez le résultat du match entre 1:" + match.joueur1[0].nom + " et 2:" +
                                match.joueur2[0].nom + " (1/N/2) : \n")
         return resultat_match
-
-
-    def verification_resultat_match_avec_vainqueur(self, joueur1, joueur2):
-        """ Verifie que la réponse entrée par l'utilisateur est la bonne"""
-        resultat_verification = input(joueur1[0].nom + " a gagné contre " + joueur2[0].nom +
-                                      ". \n Si c'est exacte, tapez 'OK' puis entrer: \n")
-        return resultat_verification
-
-    def verification_resultat_match_nul(self, joueur1, joueur2):
-        resultat_verification = input(joueur1[0].nom + " a fait match nul contre " + joueur2[0].nom +
-                                      ". \n Si c'est exacte, tapez 'OK' puis entrer: \n")
-        return resultat_verification
 
     def recuperation_des_informations_du_tournoi(self, nombre_de_participant):
         """ Creation du tournoi """
