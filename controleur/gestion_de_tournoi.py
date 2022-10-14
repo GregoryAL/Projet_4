@@ -77,7 +77,10 @@ class GestionDeTournoi:
                             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
                 elif choix_utilisateur == 5:
                     # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
-                    self.menu_rapport(players_table, instance_de_tournoi, tournaments_table, numero_de_ronde_active)
+                    try:
+                        self.menu_rapport(players_table, tournaments_table, numero_de_ronde_active, instance_de_tournoi)
+                    except UnboundLocalError :
+                        self.menu_rapport_light(players_table, tournaments_table, numero_de_ronde_active)
                 elif choix_utilisateur == 6:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
@@ -98,7 +101,43 @@ class GestionDeTournoi:
             MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
             self.gestion_du_tournoi(liste_joueurs, players_table, tournaments_table)
 
-    def menu_rapport(self, players_table, instance_de_tournoi, tournaments_table, numero_de_ronde_active):
+    def menu_rapport_light(self, players_table, tournaments_table, numero_de_ronde_active):
+        # Initialise la variable récupérant le choix utilisateur
+        choix_rapport = 0
+        # Gere la sortie du menu
+        while choix_rapport != 5:
+            # Recupere le choix utilisateur
+            choix_rapport = int(SaisieDeDonnees.menu_rapport_light(self.vue_saisie_de_donnees))
+            if choix_rapport == 1:
+                # Affiche la liste des joueurs
+                choix_type_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                GestionDeRapport.affichage_du_classement_db(self.objet_gestion_rapport, "",
+                                                            players_table, choix_type_tri)
+            elif choix_rapport == 2:
+                # Affiche la liste des tournois
+                for tournament in tournaments_table:
+                    # print("ID : " + tournament.doc_id +
+                    # " Nom du Tournoi : " + tournament["nom"] + " Lieu : " + tournament["lieu"] +
+                    # " Date du Tournoi : " + tournament["date"] +
+                    # " Type de controle du temps : " + tournament["type_controle_de_temps"] +
+                    # " Nombre de participant : " + tournament["nombre_de_participants"] +
+                    # " Commentaires : " + tournament["commentaire"])
+                    print(tournament)
+                input()
+            elif choix_rapport == 3:
+                # Affiche la liste des tours d'un tournoi
+                print("en construction...")
+            elif choix_rapport == 4:
+                # Affiche la liste des matchs d'un tournoi
+                print("en construction...")
+            elif choix_rapport == 5:
+                # sort du sous menu rapport
+                print("en construction...")
+            else:
+                # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
+                MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
+
+    def menu_rapport(self, players_table, tournaments_table, numero_de_ronde_active, instance_de_tournoi):
         # Initialise la variable récupérant le choix utilisateur
         choix_rapport = 0
         # Gere la sortie du menu
@@ -127,8 +166,13 @@ class GestionDeTournoi:
                     input()
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
-                print("en construction...")
                 for tournament in tournaments_table:
+                    # print("ID : " + tournament.doc_id +
+                    # " Nom du Tournoi : " + tournament["nom"] + " Lieu : " + tournament["lieu"] +
+                    # " Date du Tournoi : " + tournament["date"] +
+                    # " Type de controle du temps : " + tournament["type_controle_de_temps"] +
+                    # " Nombre de participant : " + tournament["nombre_de_participants"] +
+                    # " Commentaires : " + tournament["commentaire"])
                     print(tournament)
                 input()
             elif choix_rapport == 4:

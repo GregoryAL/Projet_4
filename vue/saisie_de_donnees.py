@@ -104,6 +104,31 @@ class SaisieDeDonnees:
         except ValueError:
             print("Merci d'entrer un chiffre.")
 
+
+    def menu_rapport_light(self):
+        """ Affichage du menu général"""
+
+        # Vide l'écran
+        Vue.clean_screen(self.vue)
+        # Affiche le menu
+        try:
+            print("                     Menu pour la gestion d'un tournoi d'échec\n"
+                  "                                     Rapport\n"
+                  "         !!!!!    Menu Réduit car aucune instance de tournoi en cours !!!!! \n"  
+                  "_________________________________________________________________________________________________\n"
+                  " [1] Liste des joueurs\n"
+                  " [2] Liste des tournois\n"
+                  " [3] Liste des tours d'un tournoi\n"
+                  " [4] Liste des matchs d'un tournoi\n"
+                  " [5] Sortie du menu\n"
+                  "_________________________________________________________________________________________________")
+            choix_utilisateur = int(input("Entrez le chiffre correspondant à l'action voulue :\n"))
+            return choix_utilisateur
+        except TypeError:
+            print("Choix non reconnu...\n")
+            return 0
+
+
     def menu_rapport(self):
         """ Affichage du menu général"""
 
