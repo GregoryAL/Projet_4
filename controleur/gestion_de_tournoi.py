@@ -82,14 +82,9 @@ class GestionDeTournoi:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
                 elif choix_utilisateur == 7:
-                    players_table.get(doc_id=5)
-
-
                     joueur = Query()
-                    id_joueur = players_table.search((joueur.nom == "Nom19") &
-                                                              (joueur.prenom == "prénom19"))
-                    valeur_test = id_joueur[0].doc_id
-                    input(valeur_test)
+                    id_joueur = tournaments_table["nom"].all()
+                    input(id_joueur)
                 else:
                     # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
                     MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -284,7 +279,9 @@ class GestionDeTournoi:
                                                               choix_type_tournoi)
             ronde_actuelle = self.depart_d_une_ronde(ronde_actuelle)
             ronde_actuelle = self.fin_d_une_ronde(ronde_actuelle, instance_de_tournoi)
-            self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table)
+            if int(numero_de_ronde_active == int(instance_de_tournoi.nombre_de_tour_du_tournoi)):
+                self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table,
+                                           numero_de_ronde_active)
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
@@ -323,13 +320,16 @@ class GestionDeTournoi:
         return ronde_serial
 
 
-    def recuperation_ronde_db(self, ronde, instance_de_tournoi, tournaments_table, players_table):
+    def recuperation_ronde_db(self, rondes, instance_de_tournoi, tournaments_table, players_table, ronde_active):
         """ serialise la ronde, la stock dans la base tournaments, puis reserialise """
-        ronde_serial = self.serialisation_ronde_objet(ronde, players_table)
+        liste_ronde_serial = []
+        if ronde_active > 1:
+            for ronde in instance_de_tournoi.rondes:
+                liste_ronde_serial.append(self.serialisation_ronde_objet(ronde, players_table))
+        liste_ronde_serial.append(self.serialisation_ronde_objet(rondes, players_table))
         tournoi = Query()
-
-        tournaments_table.insert({"rondes": ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
-        # ronde = self.deserialisation_ronde(ronde)
+        tournaments_table.update({"rondes": liste_ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
+            # ronde = self.deserialisation_ronde(ronde)
 
 
     def deserialisation_ronde(self, ronde):
