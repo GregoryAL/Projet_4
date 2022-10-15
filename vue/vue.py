@@ -82,6 +82,7 @@ class Vue:
     def affichage_liste_des_matchs(self, ronde, players_table):
         i = 0
         for ronde_tour in ronde["rondes"]:
+            print(ronde_tour["nom_de_la_ronde"] + " : ")
             for match in ronde_tour["liste_match"]:
                 i += 1
                 joueur1_match = players_table.get(doc_id=match["joueur1"])

@@ -29,6 +29,7 @@ class GestionDeRapport:
             return "nom"
 
     def choix_du_type_de_classement_tournoi(self, instance_de_tournoi):
+        """ Methode recuperant le type de tri voulu et renvoyant la liste triée"""
         choix_de_tri = int(self.choix_classement_ou_alphabetique())
         if choix_de_tri == 1:
             return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, instance_de_tournoi.participants, "nom")
@@ -42,6 +43,7 @@ class GestionDeRapport:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
     def affichage_rapport_tours(self, tournaments_table):
+        """ Recupere l id du tournoi dont les tours doivent etre affiché puis lance l'affichage"""
         try:
             id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
                                                                      "liste des tours.\n:"))
@@ -53,6 +55,7 @@ class GestionDeRapport:
             input()
 
     def affichage_rapport_matchs(self, tournaments_table, players_table):
+        """ Recupere l id du tournoi dont les matchs doivent etre affiché puis lance l'affichage"""
         try:
             id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
                                                                      "liste des matchs.\n:"))
