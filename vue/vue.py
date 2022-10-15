@@ -23,7 +23,10 @@ class Vue:
         if numero_de_ronde_active != "":
             print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
         for player in liste_db_triee:
-            print(player)
+            print(player["prenom"] + " " + player["nom"] +
+                  " || Date de naissance : " + player["date_de_naissance"] +
+                  " || Sexe : " + player["sexe"] +
+                  " || Classement elo : " + str(player["classement_elo"]))
 
     def affichage_classement_participants(self, numero_de_ronde_active, liste_db_triee):
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
