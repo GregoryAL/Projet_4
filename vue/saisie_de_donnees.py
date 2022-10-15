@@ -156,6 +156,10 @@ class SaisieDeDonnees:
         """ Recupère le nombre de joueurs participants au tournoi """
         return input("Merci de saisir le nombre de participants au tournoi. \n")
 
+    def recuperation_id_tournoi(self, attribut):
+        """ Recupere l' ID du tournoi choisi """
+        return input("__________________________________________________________________________________________ \n"
+                     "Merci de saisir l'ID du tournoi dont vous voulez la " + str(attribut))
 
     def recuperation_participant_du_tournoi(self, numero_de_joueur):
         """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """

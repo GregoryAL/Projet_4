@@ -70,4 +70,32 @@ class Vue:
 
             except:
                 input("erreur")
-        input()
+
+    def affichage_liste_des_tours(self, ronde):
+        i = 0
+        for ronde_tour in ronde["rondes"]:
+            i += 1
+            print("[" + str(i) + "]" + " Nom de la ronde : " + ronde_tour["nom_de_la_ronde"] + " |" +
+                  " Date et Heure de début de la ronde : " + ronde_tour["date_heure_debut_ronde"] + " |"
+                  + "Date et Heure de fin de la ronde : " + ronde_tour["date_heure_fin_ronde"] + " |")
+
+    def affichage_liste_des_matchs(self, ronde, players_table):
+        i = 0
+        for ronde_tour in ronde["rondes"]:
+            for match in ronde_tour["liste_match"]:
+                i += 1
+                joueur1_match = players_table.get(doc_id=match["joueur1"])
+                joueur1_string_nom_prenom = (joueur1_match["prenom"] + " " + joueur1_match["nom"])
+                joueur2_match = players_table.get(doc_id=match["joueur2"])
+                joueur2_string_nom_prenom = (joueur2_match["prenom"] + " " + joueur2_match["nom"])
+                if int(match["resultat_joueur1"]) == 1:
+                    print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
+                          joueur2_string_nom_prenom + " | Vainqueur : " + joueur1_string_nom_prenom)
+                elif int(match["resultat_joueur1"]) == 0:
+                    print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
+                          joueur2_string_nom_prenom + " | Vainqueur : " + joueur2_string_nom_prenom)
+                elif int(match["resultat_joueur1"]) == 0.5:
+                    print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
+                          joueur2_string_nom_prenom + " | Match Nul ")
+                else:
+                    input("erreur")
