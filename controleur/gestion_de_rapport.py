@@ -41,6 +41,29 @@ class GestionDeRapport:
         else:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
+    def affichage_rapport_tours(self, tournaments_table):
+        try:
+            id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
+                                                                     "liste des tours.\n:"))
+        except TypeError:
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
+        else:
+            resultat_tour = tournaments_table.get(doc_id=id_tournoi)
+            Vue.affichage_liste_des_tours(self.vue_instance, resultat_tour)
+            input()
+
+    def affichage_rapport_matchs(self, tournaments_table, players_table):
+        try:
+            id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
+                                                                     "liste des matchs.\n:"))
+        except TypeError:
+            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
+        else:
+            resultat_tour = tournaments_table.get(doc_id=id_tournoi)
+            Vue.affichage_liste_des_matchs(self.vue_instance, resultat_tour, players_table)
+            input()
+
+
     def choix_du_type_de_classement_db(self, liste_joueurs):
         choix_de_tri = int(self.choix_classement_ou_alphabetique())
         if choix_de_tri == 1:

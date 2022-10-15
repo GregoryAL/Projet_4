@@ -100,6 +100,7 @@ class GestionDeTournoi:
             self.gestion_du_tournoi(liste_joueurs, players_table, tournaments_table)
 
     def menu_rapport_light(self, players_table, tournaments_table, numero_de_ronde_active):
+        """ menu du choix de quel rapport afficher, version light, s'affiche lorsque aucun tournoi n'est en cours"""
         # Initialise la variable récupérant le choix utilisateur
         choix_rapport = 0
         # Gere la sortie du menu
@@ -113,33 +114,16 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des tournois
-                # Affiche la liste des tournois
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
                 input()
             elif choix_rapport == 3:
                 # Affiche la liste des tours d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                try:
-                    id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
-                                                                             "liste des tours.\n:"))
-                except TypeError:
-                    MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-                else:
-                    resultat_tour = tournaments_table.get(doc_id=id_tournoi)
-                    Vue.affichage_liste_des_tours(self.vue_instance, resultat_tour)
-                    input()
+                GestionDeRapport.affichage_rapport_tours(self.objet_gestion_rapport, tournaments_table)
             elif choix_rapport == 4:
                 # Affiche la liste des matchs d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                try:
-                    id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
-                                                                             "liste des matchs.\n:"))
-                except TypeError:
-                    MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-                else:
-                    resultat_tour = tournaments_table.get(doc_id=id_tournoi)
-                    Vue.affichage_liste_des_matchs(self.vue_instance, resultat_tour, players_table)
-                    input()
+                GestionDeRapport.affichage_rapport_matchs(self.objet_gestion_rapport, tournaments_table, players_table)
             elif choix_rapport == 5:
                 # sort du sous menu rapport
                 print("en construction...")
@@ -148,6 +132,7 @@ class GestionDeTournoi:
                 MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
 
     def menu_rapport(self, players_table, tournaments_table, numero_de_ronde_active, instance_de_tournoi):
+        """ menu du choix de quel rapport afficher, complet, s'affiche lorsqu'un tournoi est en cours"""
         # Initialise la variable récupérant le choix utilisateur
         choix_rapport = 0
         # Gere la sortie du menu
@@ -181,27 +166,11 @@ class GestionDeTournoi:
             elif choix_rapport == 4:
                 # Affiche la liste des tours d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                try:
-                    id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
-                                                                             "liste des tours.\n:"))
-                except TypeError:
-                    MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-                else:
-                    resultat_tour = tournaments_table.get(doc_id=id_tournoi)
-                    Vue.affichage_liste_des_tours(self.vue_instance, resultat_tour)
-                    input()
+                GestionDeRapport.affichage_rapport_tours(self.objet_gestion_rapport, tournaments_table)
             elif choix_rapport == 5:
                 # Affiche la liste des matchs d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                try:
-                    id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
-                                                                             "liste des matchs.\n:"))
-                except TypeError:
-                    MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-                else:
-                    resultat_tour = tournaments_table.get(doc_id=id_tournoi)
-                    Vue.affichage_liste_des_matchs(self.vue_instance, resultat_tour, players_table)
-                    input()
+                GestionDeRapport.affichage_rapport_matchs(self.objet_gestion_rapport, tournaments_table, players_table)
             elif choix_rapport == 6:
                 # sort du sous menu rapport
                 print("en construction...")
