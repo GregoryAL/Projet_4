@@ -113,17 +113,8 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des tournois
-                for tournament in tournaments_table:
-                    try:
-                        print("ID : " + str(tournament.doc_id) +
-                              " Nom du Tournoi : " + str(tournament["nom"]) + " Lieu : " + str(tournament["lieu"]) +
-                              " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
-                              " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
-                              " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
-                              " Commentaires : " + str(tournament["commentaire"]))
-
-                    except:
-                        input("erreur")
+                # Affiche la liste des tournois
+                Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
                 input()
             elif choix_rapport == 3:
                 # Affiche la liste des tours d'un tournoi
@@ -185,17 +176,7 @@ class GestionDeTournoi:
                     input()
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
-                for tournament in tournaments_table:
-                    try:
-                        print("ID : " + str(tournament.doc_id) +
-                              " Nom du Tournoi : " + str(tournament["nom"]) + " Lieu : " + str(tournament["lieu"]) +
-                              " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
-                              " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
-                              " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
-                              " Commentaires : " + str(tournament["commentaire"]))
-
-                    except:
-                        input("erreur")
+                Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
                 input()
             elif choix_rapport == 4:
                 # Affiche la liste des tours d'un tournoi
