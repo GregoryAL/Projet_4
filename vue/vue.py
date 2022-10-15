@@ -61,6 +61,10 @@ class Vue:
         """ Affiche un message de sortie et quitte le programme"""
         sys.exit("Vous quittez la gestion du tournoi")
 
+    def message_de_sortie_3(self):
+        """ Affiche un message de sortie et quitte le menu rapport"""
+        print("Vous quittez le menu Rapport ")
+
     def affichage_des_matchs(self, instance_de_match):
         """ Affiche le match """
         print(instance_de_match.joueur1[0].nom + " affronte " + instance_de_match.joueur2[0].nom)
@@ -70,7 +74,7 @@ class Vue:
         for tournament in tournaments_table:
             try:
                 print("ID : " + str(tournament.doc_id) +
-                      " Nom du Tournoi : " + str(tournament["nom"]) + " Lieu : " + str(tournament["lieu"]) +
+                      " Nom du Tournoi [" + str(tournament["nom"]) + "] Lieu : " + str(tournament["lieu"]) +
                       " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
                       " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
                       " Nombre de participant : " + str(tournament["nombre_de_participants"]) +

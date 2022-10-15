@@ -2,7 +2,7 @@ from modele.tournoi import Tournoi
 from modele.joueur import Joueur
 from modele.ronde import Ronde
 from modele.match import Match
-import datetime
+from datetime import datetime
 from controleur.type_de_tournoi import TypeDeTournoi
 from tinydb import Query
 from vue.vue import Vue
@@ -85,7 +85,12 @@ class GestionDeTournoi:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
                 elif choix_utilisateur == 7:
-                    print("")
+                    print(" a faire : \n 1/ date time \n 2/probleme tri joueur points tournoi")
+                    valeur_testee = datetime.now()
+                    input("date time : " + str(valeur_testee))
+                    input(" date : "+ str(valeur_testee.date))
+                    input("heure : " + str(valeur_testee.time()))
+                    input(" isoformat : " + str(valeur_testee.strftime("%d/%m/%Y %H:%M:%S")))
                 else:
                     # Prise en charge du cas ou l'utilisateur entre un chiffre au dela de 6
                     MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -173,7 +178,7 @@ class GestionDeTournoi:
                 GestionDeRapport.affichage_rapport_matchs(self.objet_gestion_rapport, tournaments_table, players_table)
             elif choix_rapport == 6:
                 # sort du sous menu rapport
-                print("en construction...")
+                Vue.message_de_sortie_3(self.vue_instance)
             else:
                 # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
                 MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -246,13 +251,15 @@ class GestionDeTournoi:
     def depart_d_une_ronde(self, ronde_a_lancer):
         """ lance une ronde """
         SaisieDeDonnees.depart_de_la_ronde(self.vue_saisie_de_donnees)
-        ronde_a_lancer.date_heure_debut_du_match = datetime.datetime.now()
+        objet_date_heure_debut_ronde = datetime.now()
+        ronde_a_lancer.date_heure_debut_de_ronde = str(objet_date_heure_debut_ronde.strftime("%d/%m/%Y %H:%M:%S"))
         return ronde_a_lancer
 
     def fin_d_une_ronde(self, ronde_a_clore, instance_tournoi):
         """ Clos une ronde et saisie les resultats"""
         SaisieDeDonnees.fin_de_la_ronde(self.vue_saisie_de_donnees)
-        ronde_a_clore.date_heure_fin_du_match = datetime.datetime.now()
+        objet_date_heure_fin_ronde = datetime.now()
+        ronde_a_clore.date_heure_fin_de_ronde = str(objet_date_heure_fin_ronde.strftime("%d/%m/%Y %H:%M:%S"))
         for match_de_ronde in ronde_a_clore.liste_matchs:
             resultat_du_match = SaisieDeDonnees.recuperation_des_resultats_d_un_match(self.vue_saisie_de_donnees,
                                                                                       match_de_ronde)
@@ -316,19 +323,17 @@ class GestionDeTournoi:
             if int(numero_de_ronde_active == int(instance_de_tournoi.nombre_de_tour_du_tournoi)):
                 self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table,
                                            numero_de_ronde_active)
+
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
             input()
 
-    def serialisation_ronde_objet(self, ronde, players_table):
-        """ serialise tous les objets contenu dans une ronde"""
+    def serialisation_ronde_objet(self, rondes, players_table):
+        """ serialise tous les objets contenus dans une ronde"""
         liste_match_serialized = []
-
-        for match in ronde.liste_matchs:
-            joueur1_serialized = Joueur.serialisation_participant(match.joueur1[0], match.joueur1[1])
+        for match in rondes.liste_matchs:
             recherche = Query()
-            joueur2_serialized = Joueur.serialisation_participant(match.joueur2[0], match.joueur2[1])
             match_serialized = Match.serialisation_match(match)
             resultat_rech_joueur1_dans_table = players_table.search((recherche.nom == match.joueur1[0].nom) &
                                                                (recherche.prenom == match.joueur1[0].prenom) &
@@ -349,7 +354,7 @@ class GestionDeTournoi:
             match_serialized["tuple_match"] = ([match_serialized["joueur1"], match_serialized["resultat_joueur1"]],
                                                [match_serialized["joueur2"], match_serialized["resultat_joueur2"]])
             liste_match_serialized.append(match_serialized)
-        ronde_serial = Ronde.serialisation_ronde(ronde)
+        ronde_serial = Ronde.serialisation_ronde(rondes)
         ronde_serial["liste_match"] = liste_match_serialized
         return ronde_serial
 
@@ -360,25 +365,8 @@ class GestionDeTournoi:
         if ronde_active > 1:
             for ronde in instance_de_tournoi.rondes:
                 liste_ronde_serial.append(self.serialisation_ronde_objet(ronde, players_table))
-        liste_ronde_serial.append(self.serialisation_ronde_objet(rondes, players_table))
+        serial_ronde = self.serialisation_ronde_objet(rondes, players_table)
+        liste_ronde_serial.append(serial_ronde)
         tournoi = Query()
         tournaments_table.update({"rondes": liste_ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
-            # ronde = self.deserialisation_ronde(ronde)
-
-
-    def deserialisation_ronde(self, ronde):
-        """ deserialise tous les objets contenu dans une ronde """
-        for match in ronde["liste_match"]:
-            match = self.deserialisation_match(match)
-            match.joueur1 = GestionDeJoueur.deserialisation_joueur(self.objet_gestion_joueur, match.joueur1)
-            match.joueur2 = GestionDeJoueur.deserialisation_joueur(self.objet_gestion_joueur, match.joueur2)
-        return ronde
-
-    def deserialisation_match(self, match):
-        """ deserialise le match, retourne en objet """
-        joueur1 = match["joueur1"]
-        joueur2 = match["joueur2"]
-        match_deserialise = Match(joueur1, joueur2)
-        match_deserialise.resultat_joueur1 = match["resultat_joueur1"]
-        match_deserialise.resultat_joueur2 = match["resultat_joueur2"]
-        return match_deserialise
+        # ronde = self.deserialisation_ronde(ronde)
