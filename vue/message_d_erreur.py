@@ -43,3 +43,11 @@ class MessageDErreur:
     def message_de_demande_recommencer_ajout_joueur(self):
         """ Demande à l utilisateur de recommencer la création du tournoi"""
         print("Merci de recommencer la création du tournoi\n")
+
+    def message_aucune_information_entree(self):
+        """ Informe l utilisateur que rien n'a été saisie, Demande à l utilisateur d entrer la donnée demandée"""
+        print("Aucune information n'a été saisie. Merci de saisir l'information demandée.")
+
+    def message_aucun_choix_entre(self):
+        """ Informe l utilisateur que rien n'a été saisie, Demande à l utilisateur d entrer la donnée demandée"""
+        print("Aucun choix n'a été saisi. Merci de saisir le choix demandée.")

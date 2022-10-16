@@ -90,19 +90,22 @@ class SaisieDeDonnees:
             return 0
 
     def recuperation_choix_type_tournoi(self):
-        try:
+        test_de_choix_valide = False
+        while test_de_choix_valide is False:
             Vue.clean_screen(self.vue)
-            print("_________________________________________________________________________________________________\n"
-                  " Merci de sélectionner le type de tournoi : \n"
-                  " [1] Methode Suisse\n"
-                  " [2] ??? \n")
-            choix_type_tournoi = int(input("Entrez le chiffre correspondant :\n"))
+            choix_type_tournoi = self.verification_champs_est_nombre("________________________________________________"
+                                                                     "_____________________________________________"
+                                                                     "____\n"
+                                                                     " Merci de sélectionner le type de tournoi : \n"
+                                                                     " [1] Methode Suisse\n"
+                                                                     " [2] ??? \n Veuillez entrer le chiffre "
+                                                                     "correspondant :\n")
             if choix_type_tournoi == 1:
                 return "MethodeSuisse"
             else:
-                print("Choix non reconnu...\n")
-        except ValueError:
-            print("Merci d'entrer un chiffre.")
+                MessageDErreur.message_d_erreur_d_input_hors_choix(self.message_d_erreur)
+                input()
+                test_de_choix_valide = False
 
 
     def menu_rapport_light(self):
@@ -180,18 +183,48 @@ class SaisieDeDonnees:
                                match.joueur2[0].nom + " (1/N/2) : \n")
         return resultat_match
 
+    def verification_champs_non_vide(self, type_valeur_recherchee):
+        valeur_recherchee = input("Entrez " + type_valeur_recherchee +" : \n")
+        while valeur_recherchee == "":
+            print("Vous n'avez pas entré de valeur, merci d'entrer " + str(type_valeur_recherchee))
+            valeur_recherchee = input("Entrez " + type_valeur_recherchee +" : \n")
+        return valeur_recherchee
+
+    def test_si_variable_un_nombre(self, variable):
+        """ Test si une variable est un nombre et renvoie true / false"""
+        try :
+            variable = int(variable)
+            return True
+        except (TypeError, ValueError):
+            return False
+
+    def verification_champs_est_nombre(self, type_valeur_recherchee):
+        """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle
+        jusqu'à ce que la valeur entree soit un chiffre"""
+        test_si_valeur_est_nombre = False
+        valeur_recherchee = ""
+        while test_si_valeur_est_nombre is False:
+            valeur_recherchee = input(type_valeur_recherchee)
+            test_si_valeur_est_nombre = self.test_si_variable_un_nombre(valeur_recherchee)
+            if test_si_valeur_est_nombre is False:
+                MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
+                Vue.clean_screen(self.vue)
+        else:
+            return int(valeur_recherchee)
+
+
+
+
     def recuperation_des_informations_du_tournoi(self, nombre_de_participant):
         """ Creation du tournoi """
         # Vide l'écran
         Vue.clean_screen(self.vue)
         informations_de_tournoi = {}
-        # Recupere le nombre de participants au tournoi défini dans la sélection des joueurs
-        informations_de_tournoi["nombre_de_participant"] = int(nombre_de_participant)
         # Demande le nom du tournoi
-        nom_du_tournoi = input("Entre le nom du tournoi à créer : \n")
+        nom_du_tournoi = self.verification_champs_non_vide("le nom du tournoi à créer")
         informations_de_tournoi["nom_du_tournoi"] = nom_du_tournoi
         # Demande la location du tournoi
-        lieu_du_tournoi = input("Entrez la localisation du tournoi à créer : \n")
+        lieu_du_tournoi = self.verification_champs_non_vide("la localisation du tournoi à créer")
         informations_de_tournoi["lieu_du_tournoi"] = lieu_du_tournoi
         # Demande les dates du tournoi
         date_de_debut = input("Entrez la date de début du tournoi à créer au format JJ/MM/AAAA : \n")
@@ -202,7 +235,8 @@ class SaisieDeDonnees:
             date_de_tournoi = [date_de_debut, date_de_fin]
         informations_de_tournoi["date_de_tournoi"] = date_de_tournoi
         # Demande le nombre de tours du tournoi
-        nombre_de_tour = input("Entrez le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
+        self.verification_champs_est_nombre(
+            "le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
         if nombre_de_tour != "":
             informations_de_tournoi["nombre_de_tour"] = int(nombre_de_tour)
         else:
