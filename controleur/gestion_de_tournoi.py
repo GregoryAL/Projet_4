@@ -85,8 +85,17 @@ class GestionDeTournoi:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
                 elif choix_utilisateur == 7:
-                    valeurtest = "top"
-                    valeurtest2 = int(valeurtest)
+                    testboucle = "No"
+                    #while testboucle != "Yes":
+                    valeurtest = input("quelle est la date à tester")
+                    try:
+                        datetest = datetime.strptime(valeurtest, "%d/%m/%Y")
+                        testboucle = "Yes"
+                        input("gagne")
+                    except ValueError:
+                        input("rate")
+                        testboucle = "No"
+                    input("sortie de 7")
                 else:
                     # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                     MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -289,7 +298,8 @@ class GestionDeTournoi:
         liste_participants_tournoi = self.selection_des_participants_db(players_table, nombre_de_participants)
         if len(liste_participants_tournoi) == nombre_de_participants:
             info_instance_tournoi_a_creer = SaisieDeDonnees.\
-                recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees, nombre_de_participants)
+                recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees)
+            info_instance_tournoi_a_creer["nombre_de_participant"] = nombre_de_participants
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
             tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
             instance_de_tournoi.participants = liste_participants_tournoi

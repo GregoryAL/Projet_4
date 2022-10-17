@@ -1,5 +1,6 @@
 from vue.vue import Vue
 from vue.message_d_erreur import MessageDErreur
+from datetime import datetime
 
 
 
@@ -215,7 +216,7 @@ class SaisieDeDonnees:
 
 
 
-    def recuperation_des_informations_du_tournoi(self, nombre_de_participant):
+    def recuperation_des_informations_du_tournoi(self):
         """ Creation du tournoi """
         # Vide l'écran
         Vue.clean_screen(self.vue)
@@ -227,15 +228,15 @@ class SaisieDeDonnees:
         lieu_du_tournoi = self.verification_champs_non_vide("la localisation du tournoi à créer")
         informations_de_tournoi["lieu_du_tournoi"] = lieu_du_tournoi
         # Demande les dates du tournoi
-        date_de_debut = input("Entrez la date de début du tournoi à créer au format JJ/MM/AAAA : \n")
-        date_de_fin = input("Entrez la date de fin du tournoi à créer au format JJ/MM/AAAA : \n")
+        date_de_debut = self.verification_si_valeur_est_date("la date de début du tournoi à créer")
+        date_de_fin = self.verification_si_valeur_est_date("la date de fin du tournoi à créer")
         if date_de_debut == date_de_fin:
             date_de_tournoi = [date_de_debut]
         else:
             date_de_tournoi = [date_de_debut, date_de_fin]
         informations_de_tournoi["date_de_tournoi"] = date_de_tournoi
         # Demande le nombre de tours du tournoi
-        self.verification_champs_est_nombre(
+        nombre_de_tour = self.verification_champs_est_nombre(
             "le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
         if nombre_de_tour != "":
             informations_de_tournoi["nombre_de_tour"] = int(nombre_de_tour)
@@ -285,6 +286,20 @@ class SaisieDeDonnees:
         """ Annonce que le joueur est inexistant, demande si le joueur doit être créé """
         reponse_creation_joueur = input("Joueur inexistant : Voulez vous créer le joueur? (Oui/Non)")
         return reponse_creation_joueur
+
+    def verification_si_valeur_est_date(self, prompt_recherche):
+        date_au_format_ok = False
+        while date_au_format_ok == False:
+            date_saisie = input("Entrez " + prompt_recherche + " au format JJ/MM/AAAA : \n")
+            try:
+                datetest = datetime.strptime(date_saisie, "%d/%m/%Y")
+                date_au_format_ok = True
+                return date_saisie
+            except ValueError:
+                input("la date n'est pas au bon format. Veuillez réessayer. ")
+                date_au_format_ok = False
+
+
 
     def ajout_des_informations_d_un_joueur(self, info_joueur_inexistant):
         """ Recupère les informations d'un joueur à ajouter """
