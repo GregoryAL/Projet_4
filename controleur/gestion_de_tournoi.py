@@ -44,7 +44,6 @@ class GestionDeTournoi:
                         ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
                                                           choix_type_tournoi, tournaments_table)
                         instance_de_tournoi.rondes.append(ronde)
-
                     except UnboundLocalError:
                         MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
                 elif choix_utilisateur == 3:

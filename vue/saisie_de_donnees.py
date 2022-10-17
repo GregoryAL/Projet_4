@@ -237,14 +237,13 @@ class SaisieDeDonnees:
         informations_de_tournoi["date_de_tournoi"] = date_de_tournoi
         # Demande le nombre de tours du tournoi
         nombre_de_tour = self.verification_champs_est_nombre(
-            "le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
+            "Entrez le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
         if nombre_de_tour != "":
             informations_de_tournoi["nombre_de_tour"] = int(nombre_de_tour)
         else:
             informations_de_tournoi["nombre_de_tour"] = 4
         # Demande le type du contrôle de temps du tournoi
-        type_de_controle_du_temps = input("Entrez le type de controle de temps du tournoi ( bullet, blitz ou coup "
-                                          "rapide): \n")
+        type_de_controle_du_temps = self.recuperation_type_de_tournoi()
         informations_de_tournoi["type_de_controle_du_temps"] = type_de_controle_du_temps
         # Demande s'il y a des commentaires à ajouter pour le tournoi
         commentaires = input("Entrez des commentaires si nécessaire : \n")
@@ -253,6 +252,23 @@ class SaisieDeDonnees:
         else:
             informations_de_tournoi["commentaires"] = ""
         return informations_de_tournoi
+
+    def recuperation_type_de_tournoi(self):
+        valeur_test = False
+        while valeur_test is False:
+            type_de_tournoi = self.verification_champs_est_nombre("Entrez le type de controle de temps du tournoi \n"
+                                                                  "[1] Bullet \n"
+                                                                  "[2] Blitz \n"
+                                                                  "[3] Coup rapide \n:")
+            if int(type_de_tournoi) == 1:
+                return "Bullet"
+            elif int(type_de_tournoi) == 2:
+                return "Blitz"
+            elif int(type_de_tournoi) == 3:
+                return "Coup rapide"
+            else:
+                MessageDErreur.message_d_erreur_d_input_hors_choix(self.message_d_erreur)
+                valeur_test = False
 
     def depart_de_la_ronde(self):
         """ Affiche l'annonce de départ de ronde après appuie sur Entrer """
