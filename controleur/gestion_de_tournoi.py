@@ -309,7 +309,6 @@ class GestionDeTournoi:
             tournoi = Query()
             tournaments_table.update({"participants": participants_db}, tournoi.
                                       nom == instance_de_tournoi.nom_du_tournoi)
-            input()
             return instance_de_tournoi
         else:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)

@@ -2,14 +2,16 @@
 from os import system
 from os import name
 import sys
+from vue.message_d_erreur import MessageDErreur
 
 
 class Vue:
     """ Vue du tournoi d'échec """
 
-    def __init__(self):
+    def __init__(self, objet_message_erreur):
         """ Initialise un objet vue"""
         self.liste_des_joueurs = []
+        self.objet_message_erreur = objet_message_erreur
 
     def clean_screen(self):
         """ Efface l'écran """
@@ -101,14 +103,15 @@ class Vue:
                 joueur1_string_nom_prenom = (joueur1_match["prenom"] + " " + joueur1_match["nom"])
                 joueur2_match = players_table.get(doc_id=match["joueur2"])
                 joueur2_string_nom_prenom = (joueur2_match["prenom"] + " " + joueur2_match["nom"])
-                if int(match["resultat_joueur1"]) == 1:
+                if (int(match["resultat_joueur1"]) == 1) & (int(match["resultat_joueur2"]) == 0):
                     print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
                           joueur2_string_nom_prenom + " | Vainqueur : " + joueur1_string_nom_prenom)
-                elif int(match["resultat_joueur1"]) == 0:
+                elif (int(match["resultat_joueur1"]) == 0) & (int(match["resultat_joueur2"]) == 1):
                     print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
                           joueur2_string_nom_prenom + " | Vainqueur : " + joueur2_string_nom_prenom)
-                elif int(match["resultat_joueur1"]) == 0.5:
+                elif match["resultat_joueur1"] == match["resultat_joueur2"]:
                     print(" Match " + str(i) + " : Entre " + joueur1_string_nom_prenom + " et " +
                           joueur2_string_nom_prenom + " | Match Nul ")
                 else:
-                    input("erreur")
+                    MessageDErreur.message_d_erreur(self.objet_message_erreur)
+        input()

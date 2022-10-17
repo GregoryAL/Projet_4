@@ -14,8 +14,8 @@ class Controleur:
 
     def __init__(self):
         """ initialise le controleur. """
-        self.vue_instance = Vue()
         self.vue_message_d_erreur = MessageDErreur()
+        self.vue_instance = Vue(self.vue_message_d_erreur)
         self.vue_saisie_de_donnees = SaisieDeDonnees(self.vue_instance, self.vue_message_d_erreur)
         self.gestion_joueur = GestionDeJoueur(self.vue_instance, self.vue_message_d_erreur, self.vue_saisie_de_donnees)
         self.gestion_rapport = GestionDeRapport(self.vue_instance, self.gestion_joueur, self.vue_message_d_erreur,
