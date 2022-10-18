@@ -54,34 +54,10 @@ class GestionDeTournoi:
                     # Modification d'un joueur / participant
                     base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
                     if base_a_modifier == 1:
-                        joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-                        joueur_a_modifier_complet = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
-                                                                                    players_table, joueur_a_modifier)
-                        print(joueur_a_modifier_complet)
-                        parametre_a_modifier = GestionDeJoueur.\
-                            recuperation_du_parametre_a_modifier_db_joueur(self.objet_gestion_joueur)
-                        nouvelle_valeur_parametre = SaisieDeDonnees.\
-                            entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
-                        GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table,
-                                                                    joueur_a_modifier_complet, parametre_a_modifier,
-                                                                    nouvelle_valeur_parametre)
+                        self.modification_du_joueur_dans_db_player(players_table)
                     elif base_a_modifier == 2:
-                        try:
-                            print(instance_de_tournoi.nom_du_tournoi)
-                            indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
-                                                                                         instance_de_tournoi)
-                            parametre_a_modifier = GestionDeJoueur. \
-                                recuperation_du_parametre_a_modifier(self.objet_gestion_joueur)
-                            nouvelle_valeur_parametre = SaisieDeDonnees. \
-                                entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
-                            instance_de_tournoi = GestionDeJoueur.modification_d_un_participant(
-                                self.objet_gestion_joueur,
-                                instance_de_tournoi, indice_participant,
-                                parametre_a_modifier,
-                                nouvelle_valeur_parametre)
-                        except UnboundLocalError:
-                            # Renvoi un message d'erreur si aucun tournoi n'existe
-                            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+                        instance_de_tournoi = self.modification_du_participant_dans_instance_tournoi(
+                            instance_de_tournoi)
                 elif choix_utilisateur == 5:
                     # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
                     try:
@@ -92,17 +68,6 @@ class GestionDeTournoi:
                     # Cas du choix de sortie du programme
                     Vue.message_de_sortie_1(self.vue_instance)
                 elif choix_utilisateur == 7:
-                    testboucle = "No"
-                    #while testboucle != "Yes":
-                    valeurtest = input("quelle est la date à tester")
-                    try:
-                        datetest = datetime.strptime(valeurtest, "%d/%m/%Y")
-                        testboucle = "Yes"
-                        input("gagne")
-                    except ValueError:
-                        input("rate")
-                        testboucle = "No"
-                    input("sortie de 7")
                 else:
                     # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                     MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -115,6 +80,38 @@ class GestionDeTournoi:
         except TypeError:
             MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
             self.gestion_du_tournoi(liste_joueurs, players_table, tournaments_table)
+
+    def modification_du_joueur_dans_db_player(self, players_table):
+        joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
+        joueur_a_modifier_complet = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
+                                                                                players_table, joueur_a_modifier)
+        print(joueur_a_modifier_complet)
+        parametre_a_modifier = GestionDeJoueur. \
+            recuperation_du_parametre_a_modifier_db_joueur(self.objet_gestion_joueur)
+        nouvelle_valeur_parametre = SaisieDeDonnees. \
+            entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+        GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table,
+                                                    joueur_a_modifier_complet, parametre_a_modifier,
+                                                    nouvelle_valeur_parametre)
+
+    def modification_du_participant_dans_instance_tournoi(self, instance_de_tournoi):
+        try:
+            print(instance_de_tournoi.nom_du_tournoi)
+            indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
+                                                                         instance_de_tournoi)
+            parametre_a_modifier = GestionDeJoueur. \
+                recuperation_du_parametre_a_modifier(self.objet_gestion_joueur)
+            nouvelle_valeur_parametre = SaisieDeDonnees. \
+                entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+            instance_de_tournoi = GestionDeJoueur.modification_d_un_participant(
+                self.objet_gestion_joueur,
+                instance_de_tournoi, indice_participant,
+                parametre_a_modifier,
+                nouvelle_valeur_parametre)
+            return instance_de_tournoi
+        except UnboundLocalError:
+            # Renvoi un message d'erreur si aucun tournoi n'existe
+            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
 
     def menu_rapport_light(self, players_table, tournaments_table, numero_de_ronde_active):
         """ menu du choix de quel rapport afficher, version light, s'affiche lorsque aucun tournoi n'est en cours"""
