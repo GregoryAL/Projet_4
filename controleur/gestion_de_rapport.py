@@ -14,6 +14,12 @@ class GestionDeRapport:
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
+    def selection_participants(self, instance_tournoi):
+        self.affichage_classmement_participant_indexee_triee(instance_tournoi, "non")
+        choix_index = SaisieDeDonnees.verification_champs_est_nombre(self.vue_saisie_de_donnees,
+                                                                     "Merci de sélectionner le joueur à modifier \n :")
+        return int(choix_index)
+
     def choix_classement_ou_alphabetique(self):
         """ Recupere le choix de l'utilisateur entre un tri alphabetique ou par classement """
         choix_classement = int(input("Voulez vous un tri : \n [1] Alphabetique \n [2] Par Classement elo\n "
@@ -87,6 +93,21 @@ class GestionDeRapport:
         liste_joueur_triee = GestionDeJoueur.classement_des_joueurs_db(self.gestion_joueur, players_table, type_tri)
         Vue.affichage_classement(self.vue_instance, numero_de_ronde_active, liste_joueur_triee)
         MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+
+    def affichage_classmement_participant_indexee_triee(self, instance_de_tournoi, tri_oui_non):
+        try:
+            test_instance_tournoi = instance_de_tournoi.nom_du_tournoi
+        except AttributeError:
+            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+        else:
+            if tri_oui_non == "oui":
+                choix_type_de_tri = self.choix_classement_ou_alphabetique()
+                instance_de_tournoi.participants = GestionDeJoueur. \
+                    fonction_decorateurs_pour_tri_participants(self.gestion_joueur,
+                                                               instance_de_tournoi.participants,
+                                                               choix_type_de_tri)
+            Vue.affichage_classement_participants(self.vue_instance, len(instance_de_tournoi.rondes),
+                                                  instance_de_tournoi.participants)
 
     def affichage_du_classement_elo_dict(self, liste_joueur_a_trier):
         """ Affiche le classement en fonction des points elo d'un dictionnaire de joueur"""

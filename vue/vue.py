@@ -35,8 +35,11 @@ class Vue:
         self.clean_screen()
         if numero_de_ronde_active != "":
             print(" \n Numéro de Ronde " + str(numero_de_ronde_active) + " :")
+        i=0
         for player in liste_db_triee:
-            print(player[0].prenom + " " + player[0].nom +
+            i += 1
+            print("[" + str(i) + "] " +
+                  player[0].prenom + " " + player[0].nom +
                   " || Date de naissance : " + player[0].date_de_naissance +
                   " || Sexe : " + player[0].sexe +
                   " || Classement elo : " + str(player[0].classement_elo) +

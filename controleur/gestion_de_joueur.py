@@ -2,7 +2,6 @@ from modele.joueur import Joueur
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
 from tinydb import Query
-from vue.vue import Vue
 
 
 class GestionDeJoueur:
@@ -24,10 +23,6 @@ class GestionDeJoueur:
 
     def selection_d_un_joueur_a_modifier(self):
         choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-        return choix_du_joueur_a_modifier
-
-    def selection_d_un_joueur_a_modifier_elo(self):
-        choix_du_joueur_a_modifier = int(SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees))
         return choix_du_joueur_a_modifier
 
     def modification_d_un_joueur(self, participants):
@@ -84,10 +79,23 @@ class GestionDeJoueur:
         elif creation_joueur_oui_non == "Non":
             return ""
 
+    def recuperation_du_parametre_a_modifier_db_joueur(self):
+        parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier_joueur(self.vue_saisie_de_donnees)
+        if parametre_a_modifier == 1:
+            return "nom"
+        elif parametre_a_modifier == 2:
+            return "prenom"
+        elif parametre_a_modifier == 3:
+            return "date_de_naissance"
+        elif parametre_a_modifier == 4:
+            return "sexe"
+        elif parametre_a_modifier == 5:
+            return "classement_elo"
+        else:
+            MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
 
-
-    def recuperation_du_parametre_a_modifier_db(self):
+    def recuperation_du_parametre_a_modifier(self):
         parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier(self.vue_saisie_de_donnees)
         if parametre_a_modifier == 1:
             return "nom"
@@ -113,27 +121,27 @@ class GestionDeJoueur:
                                                              joueur_a_modif["date_de_naissance"]) &
                                                             (joueurmodif.sexe == joueur_a_modif["sexe"]) &
                                                             (joueurmodif.classement_elo ==
-                                                             joueur_a_modif["classement_elo"]) &
-                                                            (joueurmodif.points_tournoi ==
-                                                             joueur_a_modif["points_tournoi"])
+                                                             joueur_a_modif["classement_elo"])
                                                             )
                              )
         input("Changement effectué...")
 
-
-    def modification_d_un_joueur_elo(self, liste_joueurs, players_table):
-        indice_joueur_a_modifier = 0
-        try:
-            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier_elo())-1
-        except TypeError:
-            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-        # change le classement elo
-        liste_joueurs[indice_joueur_a_modifier].classement_elo = \
-            int(SaisieDeDonnees.modification_classement_elo(self.vue_saisie_de_donnees,
-                                                            liste_joueurs[indice_joueur_a_modifier]))
-        joueur_cherche_db = Query()
-        players_table.search(joueur_cherche_db.nom == liste_joueurs[indice_joueur_a_modifier].nom)
-        return liste_joueurs
+    def modification_d_un_participant(self, instance_tournoi, indice_participant, parametre_a_modifier,
+                                      nouveau_parametre):
+        """ Modifie un parametre d'un participant """
+        if parametre_a_modifier == "nom":
+            instance_tournoi.participants[indice_participant-1][0].nom = nouveau_parametre
+        elif parametre_a_modifier == "prenom":
+            instance_tournoi.participants[indice_participant-1][0].prenom = nouveau_parametre
+        elif parametre_a_modifier == "date_de_naissance":
+            instance_tournoi.participants[indice_participant-1][0].date_de_naissance = nouveau_parametre
+        elif parametre_a_modifier == "sexe":
+            instance_tournoi.participants[indice_participant-1][0].sexe = nouveau_parametre
+        elif parametre_a_modifier == "classement_elo":
+            instance_tournoi.participants[indice_participant-1][0].classement_elo = nouveau_parametre
+        elif parametre_a_modifier == "points_tournoi":
+            instance_tournoi.participants[indice_participant-1][1] = nouveau_parametre
+        return instance_tournoi
 
     def ajout_des_joueurs(self, players_table):
         """ Ajout des joueurs """

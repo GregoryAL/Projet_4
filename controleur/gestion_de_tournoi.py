@@ -59,18 +59,26 @@ class GestionDeTournoi:
                                                                                     players_table, joueur_a_modifier)
                         print(joueur_a_modifier_complet)
                         parametre_a_modifier = GestionDeJoueur.\
-                            recuperation_du_parametre_a_modifier_db(self.objet_gestion_joueur)
+                            recuperation_du_parametre_a_modifier_db_joueur(self.objet_gestion_joueur)
                         nouvelle_valeur_parametre = SaisieDeDonnees.\
                             entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
-                        GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table, joueur_a_modifier_complet,
-                                                                    parametre_a_modifier, nouvelle_valeur_parametre)
+                        GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table,
+                                                                    joueur_a_modifier_complet, parametre_a_modifier,
+                                                                    nouvelle_valeur_parametre)
                     elif base_a_modifier == 2:
                         try:
                             print(instance_de_tournoi.nom_du_tournoi)
-                            joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
-                            doc_id_joueur = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
-                                                                                        players_table,joueur_a_modifier,
-                                                                                        tournaments_table)
+                            indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
+                                                                                         instance_de_tournoi)
+                            parametre_a_modifier = GestionDeJoueur. \
+                                recuperation_du_parametre_a_modifier(self.objet_gestion_joueur)
+                            nouvelle_valeur_parametre = SaisieDeDonnees. \
+                                entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+                            instance_de_tournoi = GestionDeJoueur.modification_d_un_participant(
+                                self.objet_gestion_joueur,
+                                instance_de_tournoi, indice_participant,
+                                parametre_a_modifier,
+                                nouvelle_valeur_parametre)
                         except UnboundLocalError:
                             # Renvoi un message d'erreur si aucun tournoi n'existe
                             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
@@ -155,19 +163,8 @@ class GestionDeTournoi:
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
                 # Affiche la liste des participants
-                try:
-                    test_instance_tournoi = instance_de_tournoi.nom_du_tournoi
-                except AttributeError:
-                    MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
-                else:
-                    choix_type_de_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
-                    instance_de_tournoi.participants = GestionDeJoueur. \
-                        fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
-                                                                   instance_de_tournoi.participants,
-                                                                   choix_type_de_tri)
-                    Vue.affichage_classement_participants(self.vue_instance, numero_de_ronde_active,
-                                                          instance_de_tournoi.participants)
-                    input()
+                GestionDeRapport.affichage_classmement_participant_indexee_triee(self.objet_gestion_rapport,
+                                                                                 instance_de_tournoi, "oui")
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)

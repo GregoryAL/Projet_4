@@ -20,37 +20,48 @@ class SaisieDeDonnees:
         return joueur_a_modifier
 
     def selection_base_a_modifier(self):
-        base_a_modifier = input("Voulez vous modifier un joueur de la liste des joueurs ? (1)\n"
-                                "Ou  un joueur de la liste des participants du tournoi? (2) \n"
+        base_a_modifier = input("Sélectionnez l'option desirée : \n"
+                                "[1] Modifier un joueur de la liste des joueurs \n"
+                                "[2] Modifier un joueur de la liste des participants du tournoi \n"
                                 ": ")
         return base_a_modifier
 
     def selection_du_parametre_a_modifier(self):
-        parametre_a_modifier = input("Quel paramètre du joueur souhaitez vous modifier?\n"
-                                     "[1] Nom\n"
-                                     "[2] Prénom\n"
-                                     "[3] Date de naissance\n"
-                                     "[4] Sexe \n"
-                                     "[5] Points elo \n"
-                                     "[6] Points tournoi \n"
-                                     "Veuillez entrer le chiffre correspondant : \n")
+        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
+                                                                   "[1] Nom\n"
+                                                                   "[2] Prénom\n"
+                                                                   "[3] Date de naissance\n"
+                                                                   "[4] Sexe \n"
+                                                                   "[5] Points elo \n"
+                                                                   "[6] Points tournoi \n"
+                                                                   "Veuillez entrer le chiffre correspondant : \n")
+        return int(parametre_a_modifier)
+
+
+
+    def selection_du_parametre_a_modifier_joueur(self):
+        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
+                                                                   "[1] Nom\n"
+                                                                   "[2] Prénom\n"
+                                                                   "[3] Date de naissance\n"
+                                                                   "[4] Sexe \n"
+                                                                   "[5] Points elo \n"
+                                                                   "Veuillez entrer le chiffre correspondant : \n")
         return int(parametre_a_modifier)
 
     def entree_nouvelle_valeur_parametre(self, parametre):
         if parametre == "nom":
-            return input("Quel est le nouveau Nom?\n:")
+            return self.verification_champs_non_vide("le nouveau Nom")
         elif parametre == "prenom":
-            return input("Quel est le nouveau Prenom?\n:")
+            return self.verification_champs_non_vide("le nouveau Prenom")
         elif parametre == "date_de_naissance":
-            return input("Quelle est la nouvelle date de naissance?\n:")
+            return self.verification_si_valeur_est_date("la nouvelle date de naissance")
         elif parametre == "sexe":
-            return input("Quel est le nouveau sexe?\n:")
+            return self.verification_champs_non_vide("le nouveau sexe")
         elif parametre == "classement_elo":
-            return int(input("Quel est le nouveau nombre de points elo?\n:"))
+            return self.verification_champs_est_nombre("Entrez le nouveau nombre de points elo :\n")
         elif parametre == "points_tournoi":
-            return int(input("Quel est le nouveau nombre de points tournoi?\n:"))
-
-
+            return self.verification_champs_est_nombre("Entrez le nouveau nombre de points tournoi :\n")
 
     def modification_classement_elo(self, joueur):
         print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " +
@@ -185,10 +196,10 @@ class SaisieDeDonnees:
         return resultat_match
 
     def verification_champs_non_vide(self, type_valeur_recherchee):
-        valeur_recherchee = input("Entrez " + type_valeur_recherchee +" : \n")
+        valeur_recherchee = input("Entrez " + type_valeur_recherchee + " : \n")
         while valeur_recherchee == "":
             print("Vous n'avez pas entré de valeur, merci d'entrer " + str(type_valeur_recherchee))
-            valeur_recherchee = input("Entrez " + type_valeur_recherchee +" : \n")
+            valeur_recherchee = input("Entrez " + type_valeur_recherchee + " : \n")
         return valeur_recherchee
 
     def test_si_variable_un_nombre(self, variable):
