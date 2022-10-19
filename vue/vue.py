@@ -30,6 +30,9 @@ class Vue:
                   " || Sexe : " + player["sexe"] +
                   " || Classement elo : " + str(player["classement_elo"]))
 
+    def affichage_creation_tournoi_en_cours(self):
+        print("Création du tournoi en cours...")
+
     def affichage_classement_participants(self, numero_de_ronde_active, liste_db_triee):
         """ Affiche le classement des joueurs en fonction des resultats du tournoi """
         self.clean_screen()

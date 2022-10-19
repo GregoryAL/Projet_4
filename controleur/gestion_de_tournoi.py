@@ -1,3 +1,4 @@
+import modele.tournoi
 from modele.tournoi import Tournoi
 from modele.joueur import Joueur
 from modele.ronde import Ronde
@@ -25,61 +26,70 @@ class GestionDeTournoi:
 
     def gestion_du_tournoi(self, liste_joueurs, players_table, tournaments_table):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
-        try:
-            choix_utilisateur = 0
-            numero_de_ronde_active = 0
-            choix_type_tournoi = ""
-            while choix_utilisateur != 6:
-                choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
-                if choix_utilisateur == 1:
-                    numero_de_ronde_active = 0
-                    # Recupere le type de tournoi qui sera lancé (Ex: Suisse)
-                    choix_type_tournoi = SaisieDeDonnees.recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
-                    # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
-                    instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
-                elif choix_utilisateur == 2:
-                    # Lancement de la ronde suivante
-                    try:
-                        numero_de_ronde_active += 1
-                        ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
-                                                          choix_type_tournoi, tournaments_table)
-                        instance_de_tournoi.rondes.append(ronde)
-                    except UnboundLocalError:
-                        MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
-                elif choix_utilisateur == 3:
-                    # Ajout d'un joueur
-                    joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
-                    GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
-                elif choix_utilisateur == 4:
-                    # Modification d'un joueur / participant
-                    base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
-                    if base_a_modifier == 1:
-                        self.modification_du_joueur_dans_db_player(players_table)
-                    elif base_a_modifier == 2:
-                        instance_de_tournoi = self.modification_du_participant_dans_instance_tournoi(
-                            instance_de_tournoi)
-                elif choix_utilisateur == 5:
-                    # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
-                    try:
-                        self.menu_rapport(players_table, tournaments_table, numero_de_ronde_active, instance_de_tournoi)
-                    except UnboundLocalError :
-                        self.menu_rapport_light(players_table, tournaments_table, numero_de_ronde_active)
-                elif choix_utilisateur == 6:
-                    # Cas du choix de sortie du programme
-                    Vue.message_de_sortie_1(self.vue_instance)
-                elif choix_utilisateur == 7:
+        sortie_tournoi = "Non"
+        instance_de_tournoi = "Aucun"
+        numero_de_ronde_active = 0
+        choix_utilisateur = 0
+        choix_type_tournoi = ""
+        while sortie_tournoi == "Non":
+            try:
+                while choix_utilisateur != 6:
+                    choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
+                    if choix_utilisateur == 1:
+                        numero_de_ronde_active = 0
+                        # Recupere le type de tournoi qui sera lancé (Ex: Suisse)
+                        choix_type_tournoi = SaisieDeDonnees.recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
+                        # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
+                        instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
+                    elif choix_utilisateur == 2:
+                        # Lancement de la ronde suivante
+                        if not isinstance(instance_de_tournoi, Tournoi):
+                            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+                        else:
+                            numero_de_ronde_active += 1
+                            ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi, players_table,
+                                                              choix_type_tournoi, tournaments_table)
+                            instance_de_tournoi.rondes.append(ronde)
+                    elif choix_utilisateur == 3:
+                        # Ajout d'un joueur
+                        joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
+                        GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
+                    elif choix_utilisateur == 4:
+                        # Modification d'un joueur / participant
+                        base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
+                        if base_a_modifier == 1:
+                            self.modification_du_joueur_dans_db_player(players_table)
+                        elif base_a_modifier == 2:
+                            instance_de_tournoi = self.modification_du_participant_dans_instance_tournoi(
+                                instance_de_tournoi)
+                    elif choix_utilisateur == 5:
+                        # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
+                        if not isinstance(instance_de_tournoi, Tournoi):
+                            self.menu_rapport_light(players_table, tournaments_table, numero_de_ronde_active)
+                        else:
+                            self.menu_rapport(players_table, tournaments_table, numero_de_ronde_active, instance_de_tournoi)
+                    elif choix_utilisateur == 6:
+                        # Cas du choix de sortie du programme
+                        Vue.message_de_sortie_1(self.vue_instance)
+                    elif choix_utilisateur == 7:
+                        print("choix de test")
+                        if not isinstance(instance_de_tournoi, Tournoi):
+                            input("instance en cours")
+                        else:
+                            input("pas d instance en cours")
+                    else:
+                        # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
+                        MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
                 else:
-                    # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
-                    MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
-            else:
-                Vue.message_de_sortie_2(self.vue_instance)
-                # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
-        except ValueError:
-            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-            self.gestion_du_tournoi(liste_joueurs, players_table, tournaments_table)
-        except TypeError:
-            MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
-            self.gestion_du_tournoi(liste_joueurs, players_table, tournaments_table)
+                    Vue.message_de_sortie_2(self.vue_instance)
+                    # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
+                    sortie_tournoi = "Oui"
+            except ValueError:
+                MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
+                sortie_tournoi = "Non"
+            except TypeError:
+                MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
+                sortie_tournoi = "Non"
 
     def modification_du_joueur_dans_db_player(self, players_table):
         joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
@@ -95,7 +105,9 @@ class GestionDeTournoi:
                                                     nouvelle_valeur_parametre)
 
     def modification_du_participant_dans_instance_tournoi(self, instance_de_tournoi):
-        try:
+        if not isinstance(instance_de_tournoi, Tournoi):
+            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+        else:
             print(instance_de_tournoi.nom_du_tournoi)
             indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
                                                                          instance_de_tournoi)
@@ -109,9 +121,6 @@ class GestionDeTournoi:
                 parametre_a_modifier,
                 nouvelle_valeur_parametre)
             return instance_de_tournoi
-        except UnboundLocalError:
-            # Renvoi un message d'erreur si aucun tournoi n'existe
-            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
 
     def menu_rapport_light(self, players_table, tournaments_table, numero_de_ronde_active):
         """ menu du choix de quel rapport afficher, version light, s'affiche lorsque aucun tournoi n'est en cours"""
@@ -162,10 +171,11 @@ class GestionDeTournoi:
                 # Affiche la liste des participants
                 GestionDeRapport.affichage_classmement_participant_indexee_triee(self.objet_gestion_rapport,
                                                                                  instance_de_tournoi, "oui")
+                MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
             elif choix_rapport == 3:
                 # Affiche la liste des tournois
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                input()
+                MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
             elif choix_rapport == 4:
                 # Affiche la liste des tours d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
@@ -294,6 +304,7 @@ class GestionDeTournoi:
                 recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees)
             info_instance_tournoi_a_creer["nombre_de_participant"] = nombre_de_participants
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+            Vue.affichage_creation_tournoi_en_cours(self.vue_instance)
             tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
             instance_de_tournoi.participants = liste_participants_tournoi
             participants_db = []
@@ -359,9 +370,13 @@ class GestionDeTournoi:
         liste_ronde_serial = []
         if ronde_active > 1:
             for ronde in instance_de_tournoi.rondes:
+                input(ronde.nom_de_la_ronde)
                 liste_ronde_serial.append(self.serialisation_ronde_objet(ronde, players_table))
+        input("fin boucle enregistrement ronde precedentes")
         serial_ronde = self.serialisation_ronde_objet(rondes, players_table)
+        input("fin de la serialisation de la ronde actuelle")
         liste_ronde_serial.append(serial_ronde)
+        input("fin de l ajout de la ronde actuelle à la liste des rondes serialisé")
         tournoi = Query()
         tournaments_table.update({"rondes": liste_ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
-        # ronde = self.deserialisation_ronde(ronde)
+

@@ -2,6 +2,7 @@ from vue.vue import Vue
 from controleur.gestion_de_joueur import GestionDeJoueur
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
+from modele.tournoi import Tournoi
 
 
 class GestionDeRapport:
@@ -95,9 +96,7 @@ class GestionDeRapport:
         MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
 
     def affichage_classmement_participant_indexee_triee(self, instance_de_tournoi, tri_oui_non):
-        try:
-            test_instance_tournoi = instance_de_tournoi.nom_du_tournoi
-        except AttributeError:
+        if not isinstance(instance_de_tournoi, Tournoi):
             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
         else:
             if tri_oui_non == "oui":
@@ -109,12 +108,5 @@ class GestionDeRapport:
             Vue.affichage_classement_participants(self.vue_instance, len(instance_de_tournoi.rondes),
                                                   instance_de_tournoi.participants)
 
-    def affichage_du_classement_elo_dict(self, liste_joueur_a_trier):
-        """ Affiche le classement en fonction des points elo d'un dictionnaire de joueur"""
-        liste_joueur_liste = []
-        for objet in liste_joueur_a_trier.values():
-            liste_joueur_liste.append(objet)
-        liste_triee = self.choix_du_type_de_classement_elo(liste_joueur_liste)
-        nombre_de_joueurs = len(liste_joueur_a_trier)
-        Vue.affichage_classement(self.vue_instance, "", players_table)
+
 
