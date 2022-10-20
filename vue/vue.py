@@ -6,10 +6,10 @@ from vue.message_d_erreur import MessageDErreur
 
 
 class Vue:
-    """ Vue du tournoi d'échec """
+    """ Vue du tournoi d'échec gérant l'affichage """
 
     def __init__(self, objet_message_erreur):
-        """ Initialise un objet vue"""
+        """ Initialise la Vue"""
         self.liste_des_joueurs = []
         self.objet_message_erreur = objet_message_erreur
 
@@ -21,7 +21,7 @@ class Vue:
             _ = system("clear")
 
     def affichage_classement(self, numero_de_ronde_active, liste_db_triee):
-        """ Affiche le classement des joueurs en fonction des resultats du tournoi """
+        """ Affiche le classement des joueurs en fonction des résultats du tournoi """
         if numero_de_ronde_active != "":
             print("Numéro de Ronde : " + str(numero_de_ronde_active) + " : \n")
         for player in liste_db_triee:
@@ -34,11 +34,11 @@ class Vue:
         print("Création du tournoi en cours...")
 
     def affichage_classement_participants(self, numero_de_ronde_active, liste_db_triee):
-        """ Affiche le classement des joueurs en fonction des resultats du tournoi """
+        """ Affiche le classement des joueurs en fonction des résultats du tournoi """
         self.clean_screen()
         if numero_de_ronde_active != "":
             print(" \n Numéro de Ronde " + str(numero_de_ronde_active) + " :")
-        i=0
+        i = 0
         for player in liste_db_triee:
             i += 1
             print("[" + str(i) + "] " +
@@ -48,12 +48,8 @@ class Vue:
                   " || Classement elo : " + str(player[0].classement_elo) +
                   " || Nombre de point dans le tournoi en cours : " + str(player[1]))
 
-    def affichage_choix_liste_participants(self, liste_participants):
-        nombre_de_participants = len(liste_participants)
-        for i in range(nombre_de_participants):
-            print(" | " + str((i+1)) + " | : " + str(liste_participants[i]))
-
     def affichage_duplicate(self, liste_duplicate):
+        """ Affiche la liste des homonymes """
         print("Il y a plus d'un joueur avec ces noms et prénoms. \n")
         for i in range(len(liste_duplicate)):
             print(" [" + str(i) + "] : " + str(liste_duplicate[i].prenom) + " " + str(liste_duplicate[i].nom) +
@@ -66,19 +62,19 @@ class Vue:
         print("Merci d'avoir utilisé le logiciel de gestion de tournoi d'échec.\n")
 
     def message_de_sortie_2(self):
-        """ Affiche un message de sortie et quitte le programme"""
+        """ Affiche un message de sortie et quitte le programme """
         sys.exit("Vous quittez la gestion du tournoi")
 
     def message_de_sortie_3(self):
-        """ Affiche un message de sortie et quitte le menu rapport"""
+        """ Affiche un message de sortie et quitte le menu rapport """
         print("Vous quittez le menu Rapport ")
 
     def affichage_des_matchs(self, instance_de_match):
         """ Affiche le match """
         print(instance_de_match.joueur1[0].nom + " affronte " + instance_de_match.joueur2[0].nom)
 
-
     def affichage_liste_de_tournoi(self, tournaments_table):
+        """ Affiche la liste des tournois """
         for tournament in tournaments_table:
             try:
                 print("ID : " + str(tournament.doc_id) +
@@ -87,12 +83,11 @@ class Vue:
                       " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
                       " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
                       " Commentaires : " + str(tournament["commentaire"]))
-
-            except:
-                input("erreur")
+            except (ValueError, TypeError):
+                MessageDErreur.message_d_erreur(self.objet_message_erreur)
 
     def affichage_classement_final_tournoi(self, instance_de_tournoi):
-        """ Affiche le classement final"""
+        """ Affiche le classement final """
         self.clean_screen()
         print("_________________________________________________________________________________________________\n"
               "                                Tournoi Terminé !\n"
@@ -101,7 +96,7 @@ class Vue:
         if len(instance_de_tournoi.participants) > 0:
             print("  Vainqueur : " + instance_de_tournoi.participants[0][0].prenom + " " +
                   instance_de_tournoi.participants[0][0].nom + " , avec " + str(instance_de_tournoi.participants[0][1])
-                  + " points \n" )
+                  + " points \n")
         if len(instance_de_tournoi.participants) > 1:
             print(" 2ème place : " + instance_de_tournoi.participants[1][0].prenom + " " +
                   instance_de_tournoi.participants[1][0].nom + " , avec " + str(instance_de_tournoi.participants[1][1])
@@ -112,7 +107,7 @@ class Vue:
                   + " points \n"
                   "______________________________________________________________________________________________"
                   "__\n")
-        if len(instance_de_tournoi.participants) >3:
+        if len(instance_de_tournoi.participants) > 3:
             i = 3
             while i+1 <= len(instance_de_tournoi.participants):
                 print(str(i+1) + "ème place : " + instance_de_tournoi.participants[i][0].prenom + " " +
@@ -122,6 +117,7 @@ class Vue:
         MessageDErreur.appuyer_sur_entrer_pour_continuer(self.objet_message_erreur)
 
     def affichage_liste_des_tours(self, ronde):
+        """ Affiche la liste des tours/rondes """
         i = 0
         for ronde_tour in ronde["rondes"]:
             i += 1
@@ -130,6 +126,7 @@ class Vue:
                   + "Date et Heure de fin de la ronde : " + ronde_tour["date_heure_fin_ronde"] + " |")
 
     def affichage_liste_des_matchs(self, ronde, players_table):
+        """ Affiche la liste des matchs """
         i = 0
         for ronde_tour in ronde["rondes"]:
             print(ronde_tour["nom_de_la_ronde"] + " : ")

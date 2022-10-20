@@ -3,17 +3,16 @@ from vue.message_d_erreur import MessageDErreur
 from datetime import datetime
 
 
-
 class SaisieDeDonnees:
+    """ Vue du tournoi d'échec gérant les saisies """
 
     def __init__(self, vue, message_d_erreur):
-        """ initialiste un objet Saisie de données """
+        """ Initialise un objet Saisie de données """
         self.vue = vue
         self.message_d_erreur = message_d_erreur
 
-
-
     def selection_joueur_a_modifier(self):
+        """ Récupère les informations du joueur à modifier """
         nom_joueur_a_modifier = self.verification_champs_non_vide("entrer le nom du joueur à modifier")
         prenom_joueur_a_modifier = self.verification_champs_non_vide(
             "Veuillez entrer le prénom du joueur à modifier : \n")
@@ -21,7 +20,8 @@ class SaisieDeDonnees:
         return joueur_a_modifier
 
     def selection_base_a_modifier(self):
-        base_a_modifier = self.verification_champs_est_nombre("Sélectionnez l'option desirée : \n"
+        """ Permet la sélection de la liste à modifier (joueur ou participant) """
+        base_a_modifier = self.verification_champs_est_nombre("Sélectionnez l'option désirée : \n"
                                                               "[1] Modifier un joueur de la liste des joueurs \n"
                                                               "[2] Modifier un joueur de la liste des participants du "
                                                               "tournoi \n"
@@ -29,6 +29,7 @@ class SaisieDeDonnees:
         return base_a_modifier
 
     def selection_du_parametre_a_modifier(self):
+        """ Sélection du paramètre du participant à modifier """
         parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
                                                                    "[1] Nom\n"
                                                                    "[2] Prénom\n"
@@ -39,9 +40,8 @@ class SaisieDeDonnees:
                                                                    "Veuillez entrer le chiffre correspondant : \n")
         return int(parametre_a_modifier)
 
-
-
     def selection_du_parametre_a_modifier_joueur(self):
+        """ Sélection du paramètre du joueur à modifier """
         parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
                                                                    "[1] Nom\n"
                                                                    "[2] Prénom\n"
@@ -52,10 +52,11 @@ class SaisieDeDonnees:
         return int(parametre_a_modifier)
 
     def entree_nouvelle_valeur_parametre(self, parametre):
+        """ Récupère la nouvelle valeur du paramètre Joueur sélectionné """
         if parametre == "nom":
             return self.verification_champs_non_vide("le nouveau Nom")
         elif parametre == "prenom":
-            return self.verification_champs_non_vide("le nouveau Prenom")
+            return self.verification_champs_non_vide("le nouveau Prénom")
         elif parametre == "date_de_naissance":
             return self.verification_si_valeur_est_date("la nouvelle date de naissance")
         elif parametre == "sexe":
@@ -65,23 +66,9 @@ class SaisieDeDonnees:
         elif parametre == "points_tournoi":
             return self.verification_champs_est_nombre("Entrez le nouveau nombre de points tournoi :\n")
 
-    def modification_classement_elo(self, joueur):
-        print("Le classement elo de " + str(joueur.prenom) + " " + str(joueur.nom) + " est " +
-              str(joueur.classement_elo) + ".\n")
-        nouveau_classement = self.verification_champs_est_nombre("A combien voulez-vous changer le classement elo? \n"
-                                                                 " : ")
-        return nouveau_classement
-
-    def modification_point_tournoi(self, joueur):
-        print("Le joueur " + str(joueur.prenom) + " " + str(joueur.nom) + " a " +
-              str(joueur.points_tournoi) + " points dans le tournoi.")
-        nouveaux_points_tournois = self.verification_champs_est_nombre("A combien voulez-vous changer les points du "
-                                                                       "tournoi? \n : ")
-        return nouveaux_points_tournois
-
     def choisir_un_joueur(self):
+        """ Récupère l'id du joueur choisi """
         return int(self.verification_champs_est_nombre("Veuillez renseignez le numéro du joueur choisi : \n"))
-
 
     def menu(self):
         """ Affichage du menu général"""
@@ -107,6 +94,7 @@ class SaisieDeDonnees:
             return 0
 
     def recuperation_choix_type_tournoi(self):
+        """ Récupération du choix de type de tournoi """
         test_de_choix_valide = False
         while test_de_choix_valide is False:
             Vue.clean_screen(self.vue)
@@ -124,9 +112,8 @@ class SaisieDeDonnees:
                 input()
                 test_de_choix_valide = False
 
-
     def menu_rapport_light(self):
-        """ Affichage du menu général"""
+        """ Affichage du menu général """
 
         # Vide l'écran
         Vue.clean_screen(self.vue)
@@ -149,10 +136,8 @@ class SaisieDeDonnees:
             print("Choix non reconnu...\n")
             return 0
 
-
     def menu_rapport(self):
-        """ Affichage du menu général"""
-
+        """ Affichage du menu général """
         # Vide l'écran
         Vue.clean_screen(self.vue)
         # Affiche le menu
@@ -175,18 +160,18 @@ class SaisieDeDonnees:
             return 0
 
     def recuperation_nombre_de_participants_du_tournoi(self):
-        """ Recupère le nombre de joueurs participants au tournoi """
+        """ Récupère le nombre de joueurs participants au tournoi """
         return self.verification_champs_est_nombre("Merci de saisir le nombre de participants au tournoi. \n")
 
     def recuperation_id_tournoi(self, attribut):
-        """ Recupere l' ID du tournoi choisi """
+        """ Récupère l'ID du tournoi choisi """
         return self.verification_champs_est_nombre("___________________________________________________________________"
                                                    "_______________________ \n"
                                                    "Merci de saisir l'ID du tournoi dont vous voulez la " +
                                                    str(attribut))
 
     def recuperation_participant_du_tournoi(self, numero_de_joueur):
-        """ Recupère le nom et le prenom du joueur à ajouter à la liste des participants """
+        """ Récupère le nom et le prénom du joueur à ajouter à la liste des participants """
         joueur_a_ajouter = {}
         if numero_de_joueur == 0:
             joueur_a_ajouter["nom"] = self.verification_champs_non_vide("le nom du premier joueur à ajouter")
@@ -195,16 +180,17 @@ class SaisieDeDonnees:
             joueur_a_ajouter["nom"] = self.verification_champs_non_vide("le nom du " + str(numero_de_joueur+1) +
                                                                         "ème joueur à ajouter")
             joueur_a_ajouter["prenom"] = self.verification_champs_non_vide("le prenom du " + str(numero_de_joueur+1) +
-                                     "ème joueur à ajouter")
+                                                                           "ème joueur à ajouter")
         return joueur_a_ajouter
 
     def recuperation_des_resultats_d_un_match(self, match):
-        """ Récupère les résultats d'un joueur d'un match d'une ronde"""
+        """ Récupère les résultats d'un joueur d'un match d'une ronde """
         resultat_match = self.verification_champs_non_vide("le résultat du match entre 1:" + match.joueur1[0].nom +
                                                            " et 2:" + match.joueur2[0].nom + " (1/N/2)")
         return resultat_match
 
     def verification_champs_non_vide(self, type_valeur_recherchee):
+        """ Vérifie que l'utilisateur a bien saisi une valeur """
         valeur_recherchee = input("Entrez " + type_valeur_recherchee + " : \n")
         while valeur_recherchee == "":
             print("Vous n'avez pas entré de valeur, merci d'entrer " + str(type_valeur_recherchee))
@@ -212,8 +198,8 @@ class SaisieDeDonnees:
         return valeur_recherchee
 
     def test_si_variable_un_nombre(self, variable):
-        """ Test si une variable est un nombre et renvoie true / false"""
-        try :
+        """ Test si une variable est un nombre et renvoie true / false """
+        try:
             variable = int(variable)
             return True
         except (TypeError, ValueError):
@@ -221,7 +207,7 @@ class SaisieDeDonnees:
 
     def verification_champs_est_nombre(self, type_valeur_recherchee):
         """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle
-        jusqu'à ce que la valeur entree soit un chiffre"""
+        jusqu'à ce que la valeur entree soit un chiffre """
         test_si_valeur_est_nombre = False
         valeur_recherchee = ""
         while test_si_valeur_est_nombre is False:
@@ -233,11 +219,8 @@ class SaisieDeDonnees:
         else:
             return int(valeur_recherchee)
 
-
-
-
     def recuperation_des_informations_du_tournoi(self):
-        """ Creation du tournoi """
+        """ Création du tournoi """
         # Vide l'écran
         Vue.clean_screen(self.vue)
         informations_de_tournoi = {}
@@ -267,10 +250,11 @@ class SaisieDeDonnees:
         informations_de_tournoi["type_de_controle_du_temps"] = type_de_controle_du_temps
         # Demande s'il y a des commentaires à ajouter pour le tournoi
         commentaires = input("Entrez des commentaires si nécessaire : \n")
-        informations_de_tournoi["commentaires"] = ""
+        informations_de_tournoi["commentaires"] = commentaires
         return informations_de_tournoi
 
     def recuperation_type_de_tournoi(self):
+        """ Récupère le type de contrôle du temps du tournoi """
         valeur_test = False
         while valeur_test is False:
             type_de_tournoi = self.verification_champs_est_nombre("Entrez le type de controle de temps du tournoi \n"
@@ -296,12 +280,13 @@ class SaisieDeDonnees:
         input("Appuyer sur 'Entrer' lorsque tous les matchs sont terminés")
 
     def selection_duplicate(self, liste_duplicate):
-        """ Demande de selectionner le joueur dans un choix d homonyme. Recupere le choix """
+        """ Demande de sélectionner le joueur dans un choix d'homonyme. Récupère le choix """
         confirmation_choix_homonyme = ""
         while confirmation_choix_homonyme != "Oui":
             choix_homonyme = ""
             try:
-                choix_homonyme = int(input("Merci d'entrer le numéro du joueur à ajouter à la liste de participants \n"))
+                choix_homonyme = int(input("Merci d'entrer le numéro du joueur à ajouter à la liste de "
+                                           "participants \n"))
             except TypeError:
                 MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
             confirmation_choix_homonyme = input("Est ce que le choix : \n " +
@@ -310,10 +295,10 @@ class SaisieDeDonnees:
                                                 str(liste_duplicate[choix_homonyme].nom) + " | Date de naissance : " +
                                                 str(liste_duplicate[choix_homonyme].date_de_naissance) + " | Sexe : " +
                                                 str(liste_duplicate[choix_homonyme].sexe) + " | Classement elo : " +
-                                                str(liste_duplicate[choix_homonyme].classement_elo) + "\nEst correct (Oui/Non)? \n:")
+                                                str(liste_duplicate[choix_homonyme].classement_elo) + "\nEst correct "
+                                                                                                      "(Oui/Non)? \n:")
         else:
             return liste_duplicate[choix_homonyme]
-
 
     def joueur_inexistant(self):
         """ Annonce que le joueur est inexistant, demande si le joueur doit être créé """
@@ -321,8 +306,9 @@ class SaisieDeDonnees:
         return reponse_creation_joueur
 
     def verification_si_valeur_est_date(self, prompt_recherche):
+        """ Vérifie si la valeur saisie est une date """
         date_au_format_ok = False
-        while date_au_format_ok == False:
+        while date_au_format_ok is False:
             date_saisie = input("Entrez " + prompt_recherche + " au format JJ/MM/AAAA : \n")
             try:
                 datetest = datetime.strptime(date_saisie, "%d/%m/%Y")
@@ -332,10 +318,8 @@ class SaisieDeDonnees:
                 input("la date n'est pas au bon format. Veuillez réessayer. ")
                 date_au_format_ok = False
 
-
-
     def ajout_des_informations_d_un_joueur(self, info_joueur_inexistant):
-        """ Recupère les informations d'un joueur à ajouter """
+        """ Récupère les informations d'un joueur à ajouter """
         joueur_a_ajouter = {}
         if info_joueur_inexistant != "":
             recuperation_info_joueur_inexistant = input(" Voulez vous ajouter le joueur " +
@@ -362,5 +346,3 @@ class SaisieDeDonnees:
         classement_elo_a_ajouter = int(input("Entrez le classement elo du joueur à ajouter:\n"))
         joueur_a_ajouter["classement_elo"] = classement_elo_a_ajouter
         return joueur_a_ajouter
-
-
