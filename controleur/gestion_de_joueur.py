@@ -43,10 +43,13 @@ class GestionDeJoueur:
         resultat_recherche = players_table.search((joueur.nom == joueur_a_rechercher["nom"]) &
                                                   (joueur.prenom == joueur_a_rechercher["prenom"]))
         i=0
-        for resultat in resultat_recherche:
-            print("[" + str(i) + "] | " + str(resultat))
-            i += 1
         if len(resultat_recherche)>1:
+            for resultat in resultat_recherche:
+                print("[" + str(i) + "] | " + resultat["prenom"] + " " + resultat["nom"] +
+                      " || Date de naissance : " + resultat["date_de_naissance"] +
+                      " || Sexe : " + resultat["sexe"] +
+                      " || Classement elo : " + str(resultat["classement_elo"]))
+                i += 1
             joueur_choisi = SaisieDeDonnees.choisir_un_joueur(self.vue_saisie_de_donnees)
             return resultat_recherche[joueur_choisi]
         elif len(resultat_recherche) == 1:

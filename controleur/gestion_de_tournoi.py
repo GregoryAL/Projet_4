@@ -71,24 +71,6 @@ class GestionDeTournoi:
                     elif choix_utilisateur == 6:
                         # Cas du choix de sortie du programme
                         Vue.message_de_sortie_1(self.vue_instance)
-                    elif choix_utilisateur == 7:
-                        instance_de_tournoi = Tournoi("TOURNOI", "LIEU", "01/01/2022", "Blitz", 2, 2, "")
-                        liste_participants = []
-                        liste_participants.append([Joueur("Nom04", "prénom04","01/01/1922", "M",
-                                                          1983), 0])
-                        liste_participants.append([Joueur("Nom05", "prénom05", "01/01/1922", "F",
-                                                          1988), 0])
-                        liste_participants.append([Joueur("Nom06", "prénom06", "01/01/1922", "M",
-                                                          1983), 0])
-                        liste_participants.append([Joueur("Nom07", "prénom07", "01/01/1922", "F",
-                                                          1988), 0])
-                        liste_participants.append([Joueur("Nom14", "prénom14", "01/01/1922", "M",
-                                                          1983), 0])
-                        liste_participants.append([Joueur("Nom15", "prénom15", "01/01/1922", "F",
-                                                          1988), 0])
-                        instance_de_tournoi.participants = liste_participants
-                        print(instance_de_tournoi.participants[0][1])
-                        Vue.affichage_classement_final_tournoi(self.vue_instance, instance_de_tournoi)
                     else:
                         # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                         MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
