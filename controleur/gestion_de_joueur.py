@@ -8,42 +8,23 @@ class GestionDeJoueur:
     """ Classe gérant les joueurs"""
 
     def __init__(self, vue_instance, vue_message_d_erreur, vue_saisie_de_donnees):
-        """ crée l'objet type de joueur """
+        """ Crée l'objet type de joueur """
         self.vue_instance = vue_instance
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
-    def deserialisation_joueur(self, joueur):
-        nom = joueur["nom"]
-        prenom = joueur["prenom"]
-        date_de_naissance = joueur["date_de_naissance"]
-        sexe = joueur["sexe"]
-        classement_elo = joueur["classement_elo"]
-        return Joueur(nom, prenom, date_de_naissance, sexe, classement_elo)
-
     def selection_d_un_joueur_a_modifier(self):
+        """ Récupère les informations du joueur à modifier"""
         choix_du_joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
         return choix_du_joueur_a_modifier
 
-    def modification_d_un_joueur(self, participants):
-        indice_joueur_a_modifier = 0
-        try:
-            indice_joueur_a_modifier = int(self.selection_d_un_joueur_a_modifier())-1
-        except TypeError:
-            MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
-        # change le classement tournoi
-        participants[indice_joueur_a_modifier].points_tournoi = \
-            int(SaisieDeDonnees.modification_point_tournoi(self.vue_saisie_de_donnees,
-                                                           participants[indice_joueur_a_modifier]))
-        return participants
-
     def recherche_correspondance_db(self, players_table, joueur_a_rechercher):
-        """ Recherche toutes les correspondances d'un couple Nom/Prenom dans une base"""
+        """ Recherche toutes les correspondances d'un couple Nom/Prénom dans une base"""
         joueur = Query()
         resultat_recherche = players_table.search((joueur.nom == joueur_a_rechercher["nom"]) &
                                                   (joueur.prenom == joueur_a_rechercher["prenom"]))
-        i=0
-        if len(resultat_recherche)>1:
+        i = 0
+        if len(resultat_recherche) > 1:
             for resultat in resultat_recherche:
                 print("[" + str(i) + "] | " + resultat["prenom"] + " " + resultat["nom"] +
                       " || Date de naissance : " + resultat["date_de_naissance"] +
@@ -59,15 +40,15 @@ class GestionDeJoueur:
             if joueur_cree != "":
                 joueur_cree_recherche = Query()
                 joueur_cree_liste = players_table.search((joueur_cree_recherche.nom == joueur_cree.nom) &
-                                                      (joueur_cree_recherche.prenom == joueur_cree.prenom))
+                                                         (joueur_cree_recherche.prenom == joueur_cree.prenom))
                 return joueur_cree_liste[0]
             else:
                 return ""
 
     def creation_joueur_si_inexistant(self, players_table, joueur_a_rechercher):
-        """ Demande si l'utilisateur veut creer le joueur inexistant, si oui renvoi le joueur cree apres ajout
+        """ Demande si l'utilisateur veut créer le joueur inexistant, si oui renvoi le joueur cree apres ajout
         dans db """
-        # Annonce que le joueur n'existe pas et demande si le joueur doit etre créé.
+        # Informe que le joueur n'existe pas et demande si le joueur doit être créé.
         creation_joueur_oui_non = SaisieDeDonnees.joueur_inexistant(self.vue_saisie_de_donnees)
         if creation_joueur_oui_non == "Oui":
             # Recupere les informations du joueur à ajouter à la liste, recupere automatiquement Nom/Prenom
@@ -83,6 +64,8 @@ class GestionDeJoueur:
             return ""
 
     def recuperation_du_parametre_a_modifier_db_joueur(self):
+        """ Affiche une liste de choix et demande à l'utilisateur d'entrer le chiffre correspondant à son choix,
+        converti ensuite le chiffre récupéré en string du choix correspondant"""
         parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier_joueur(self.vue_saisie_de_donnees)
         if parametre_a_modifier == 1:
             return "nom"
@@ -97,8 +80,8 @@ class GestionDeJoueur:
         else:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
-
     def recuperation_du_parametre_a_modifier(self):
+        """ Récupération du paramètre à modifier """
         parametre_a_modifier = SaisieDeDonnees.selection_du_parametre_a_modifier(self.vue_saisie_de_donnees)
         if parametre_a_modifier == 1:
             return "nom"
@@ -131,7 +114,7 @@ class GestionDeJoueur:
 
     def modification_d_un_participant(self, instance_tournoi, indice_participant, parametre_a_modifier,
                                       nouveau_parametre):
-        """ Modifie un parametre d'un participant """
+        """ Modifie un paramètre d'un participant """
         if parametre_a_modifier == "nom":
             instance_tournoi.participants[indice_participant-1][0].nom = nouveau_parametre
         elif parametre_a_modifier == "prenom":
@@ -187,6 +170,7 @@ class GestionDeJoueur:
         return liste_joueurs
 
     def fonction_decorateurs_pour_tri_participants(self, liste_participants, type_tri):
+        """ Ajout d'un indice à la liste des participants, la trie, puis supprime l'indice et renvoi la liste triée"""
         liste_de_liste_a_trie = []
         if type_tri == "nom":
             for participant in liste_participants:
@@ -211,10 +195,9 @@ class GestionDeJoueur:
                 del item[0]
         return liste_de_liste_a_trie
 
-
     def classement_des_joueurs(self, liste_participant, facteur_tri):
-        """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
-        tournoi pour les rondes suivantes."""
+        """ Classe les joueurs en fonction de leur classement elo, classement
+        tournoi ou alphabétique """
         if facteur_tri == "classement_elo":
             liste_participant.sort(key=lambda x: x.classement_elo, reverse=True)
         elif facteur_tri == "points_tournoi":
@@ -227,10 +210,11 @@ class GestionDeJoueur:
         """ Classe les joueurs en fonction de leur classement elo pour la première ronde, ou par leur classement
         tournoi pour les rondes suivantes."""
         if facteur_tri == "points_tournoi":
-            table_sorted = sorted(players_table.all(), key=lambda x: (x[facteur_tri], x["classement_elo"]), reverse=True)
+            table_sorted = sorted(players_table.all(), key=lambda x: (x[facteur_tri], x["classement_elo"]),
+                                  reverse=True)
         elif facteur_tri == "nom":
             table_sorted = sorted(players_table.all(), key=lambda x: x[facteur_tri])
-        else :
+        else:
             table_sorted = sorted(players_table.all(), key=lambda x: x[facteur_tri], reverse=True)
         return table_sorted
 
@@ -247,7 +231,6 @@ class GestionDeJoueur:
                                   infos_joueur_a_ajouter["classement_elo"])
         return joueur_a_ajouter
 
-
     def ajout_joueur_db(self, joueur_a_ajouter, players_table):
-        """ Ajoute un objet joueur à la db joueur apres l'avoir serialisé"""
+        """ Ajoute un objet joueur à la db joueur apres l'avoir sérialisé """
         players_table.insert(Joueur.serialisation_joueur(joueur_a_ajouter))

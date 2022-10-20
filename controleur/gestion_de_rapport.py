@@ -9,22 +9,23 @@ class GestionDeRapport:
     """ Classe gérant les rapports """
 
     def __init__(self, vue_instance, gestion_joueur, vue_message_d_erreur, vue_saisie_de_donnees):
-        """ crée l'objet type de joueur """
+        """ Crée l'objet joueur """
         self.vue_instance = vue_instance
         self.gestion_joueur = gestion_joueur
         self.vue_message_d_erreur = vue_message_d_erreur
         self.vue_saisie_de_donnees = vue_saisie_de_donnees
 
     def selection_participants(self, instance_tournoi):
-        self.affichage_classmement_participant_indexee_triee(instance_tournoi, "non")
+        """ Affiche les participants et demande de saisir l'index du participant à modifier """
+        self.affichage_classement_participant_indexee_triee(instance_tournoi, "non")
         choix_index = SaisieDeDonnees.verification_champs_est_nombre(self.vue_saisie_de_donnees,
                                                                      "Merci de sélectionner le joueur à modifier \n :")
         return int(choix_index)
 
     def choix_classement_ou_alphabetique(self):
-        """ Recupere le choix de l'utilisateur entre un tri alphabetique ou par classement """
-        choix_classement = int(input("Voulez vous un tri : \n [1] Alphabetique \n [2] Par Classement elo\n "
-                                     "[3] par classement tournoi\n:"))
+        """ Recupère le choix de l'utilisateur entre un tri alphabétique ou par classement """
+        choix_classement = int(input("Voulez vous un tri : \n [1] Alphabétique \n [2] Par classement elo\n "
+                                     "[3] Par classement tournoi\n:"))
         if choix_classement == 1:
             return "nom"
         elif choix_classement == 2:
@@ -36,7 +37,7 @@ class GestionDeRapport:
             return "nom"
 
     def choix_du_type_de_classement_tournoi(self, instance_de_tournoi):
-        """ Methode recuperant le type de tri voulu et renvoyant la liste triée"""
+        """ Methode récupérant le type de tri voulu et renvoyant la liste triée"""
         choix_de_tri = int(self.choix_classement_ou_alphabetique())
         if choix_de_tri == 1:
             return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, instance_de_tournoi.participants, "nom")
@@ -50,7 +51,7 @@ class GestionDeRapport:
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
 
     def affichage_rapport_tours(self, tournaments_table):
-        """ Recupere l id du tournoi dont les tours doivent etre affiché puis lance l'affichage"""
+        """ Récupère l'id du tournoi dont les tours doivent être affichés puis affiche la liste des tours"""
         try:
             id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
                                                                      "liste des tours.\n:"))
@@ -62,7 +63,7 @@ class GestionDeRapport:
             input()
 
     def affichage_rapport_matchs(self, tournaments_table, players_table):
-        """ Recupere l id du tournoi dont les matchs doivent etre affiché puis lance l'affichage"""
+        """ Récupère l'id du tournoi dont les matchs doivent être affiché puis lance l'affichage"""
         try:
             id_tournoi = int(SaisieDeDonnees.recuperation_id_tournoi(self.vue_saisie_de_donnees,
                                                                      "liste des matchs.\n:"))
@@ -73,29 +74,15 @@ class GestionDeRapport:
             Vue.affichage_liste_des_matchs(self.vue_instance, resultat_tour, players_table)
             input()
 
-
-    def choix_du_type_de_classement_db(self, liste_joueurs):
-        choix_de_tri = int(self.choix_classement_ou_alphabetique())
-        if choix_de_tri == 1:
-            return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, liste_joueurs, "nom")
-        elif choix_de_tri == 2:
-            return GestionDeJoueur.classement_des_joueurs(self.gestion_joueur, liste_joueurs, "classement_elo")
-        else:
-            MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
-
-    def affichage_du_classement_tournoi(self, instance_de_tournoi, numero_de_ronde_active):
-        """ Affiche le classement du tournoi """
-        instance_de_tournoi.participants = self.choix_du_type_de_classement_tournoi(instance_de_tournoi)
-        nombre_de_participants = len(instance_de_tournoi.participants)
-        Vue.affichage_classement(self.vue_instance, numero_de_ronde_active, players_table)
-
     def affichage_du_classement_db(self, numero_de_ronde_active, players_table, type_tri):
         """ Affiche le classement en fonction des points elo """
         liste_joueur_triee = GestionDeJoueur.classement_des_joueurs_db(self.gestion_joueur, players_table, type_tri)
         Vue.affichage_classement(self.vue_instance, numero_de_ronde_active, liste_joueur_triee)
         MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
 
-    def affichage_classmement_participant_indexee_triee(self, instance_de_tournoi, tri_oui_non):
+    def affichage_classement_participant_indexee_triee(self, instance_de_tournoi, tri_oui_non):
+        """ Affiche la liste des participants, si besoin triée en fonction du paramètre choisi par
+        l'utilisateur"""
         if not isinstance(instance_de_tournoi, Tournoi):
             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
         else:
@@ -107,6 +94,3 @@ class GestionDeRapport:
                                                                choix_type_de_tri)
             Vue.affichage_classement_participants(self.vue_instance, len(instance_de_tournoi.rondes),
                                                   instance_de_tournoi.participants)
-
-
-
