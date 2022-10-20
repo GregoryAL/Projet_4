@@ -1,5 +1,5 @@
 class Tournoi:
-    """ Contient les informations du tournoi """
+    """ Contient les informations du tournoi. """
     def __init__(self,  nom_du_tournoi, lieu_du_tournoi,
                  date_du_tournoi, type_de_controle_du_temps,
                  nombre_de_participants, nombre_de_tour_du_tournoi=4,
@@ -15,6 +15,7 @@ class Tournoi:
         self.rondes = []
 
     def serialisation_tournoi(self):
+        """ Sérialise le tournoi. """
         return {
             "nom": self.nom_du_tournoi,
             "lieu": self.lieu_du_tournoi,

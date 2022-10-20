@@ -13,9 +13,11 @@ class Match:
         self.tuple_match = ([self.joueur1, self.resultat_joueur1], [self.joueur2, self.resultat_joueur2])
 
     def __str__(self):
+        """ Affichage personnalisé du str match """
         return self.joueur1, " a obtenu : ", self.resultat_joueur1, self.joueur2, " a obtenu : ", self.resultat_joueur2
 
     def serialisation_match(self):
+        """ Sérialisation du match """
         return {
             "joueur1": self.joueur1,
             "joueur2": self.joueur2,

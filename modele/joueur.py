@@ -14,6 +14,7 @@ class Joueur:
         self.classement_elo = classement_elo
 
     def serialisation_joueur(self):
+        """ Sérialise le joueur """
         return {
             "nom": self.nom,
             "prenom": self.prenom,
@@ -23,6 +24,7 @@ class Joueur:
         }
 
     def serialisation_participant(self, points_tournoi):
+        """ Sérialise le joueur et ajoute les points tournoi """
         return {
             "nom": self.nom,
             "prenom": self.prenom,
@@ -32,6 +34,6 @@ class Joueur:
             "points_tournoi": points_tournoi
         }
 
-
     def __str__(self):
+        """ Affichage personnalisé du str joueur """
         return self.prenom + " " + self.nom + " | classement elo : " + str(self.classement_elo)
