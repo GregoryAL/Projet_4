@@ -72,11 +72,23 @@ class GestionDeTournoi:
                         # Cas du choix de sortie du programme
                         Vue.message_de_sortie_1(self.vue_instance)
                     elif choix_utilisateur == 7:
-                        print("choix de test")
-                        if not isinstance(instance_de_tournoi, Tournoi):
-                            input("instance en cours")
-                        else:
-                            input("pas d instance en cours")
+                        instance_de_tournoi = Tournoi("TOURNOI", "LIEU", "01/01/2022", "Blitz", 2, 2, "")
+                        liste_participants = []
+                        liste_participants.append([Joueur("Nom04", "prénom04","01/01/1922", "M",
+                                                          1983), 0])
+                        liste_participants.append([Joueur("Nom05", "prénom05", "01/01/1922", "F",
+                                                          1988), 0])
+                        liste_participants.append([Joueur("Nom06", "prénom06", "01/01/1922", "M",
+                                                          1983), 0])
+                        liste_participants.append([Joueur("Nom07", "prénom07", "01/01/1922", "F",
+                                                          1988), 0])
+                        liste_participants.append([Joueur("Nom14", "prénom14", "01/01/1922", "M",
+                                                          1983), 0])
+                        liste_participants.append([Joueur("Nom15", "prénom15", "01/01/1922", "F",
+                                                          1988), 0])
+                        instance_de_tournoi.participants = liste_participants
+                        print(instance_de_tournoi.participants[0][1])
+                        Vue.affichage_classement_final_tournoi(self.vue_instance, instance_de_tournoi)
                     else:
                         # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                         MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -329,11 +341,14 @@ class GestionDeTournoi:
             if int(numero_de_ronde_active == int(instance_de_tournoi.nombre_de_tour_du_tournoi)):
                 self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table,
                                            numero_de_ronde_active)
-
+                instance_de_tournoi.participants = GestionDeJoueur. \
+                    fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
+                                                               instance_de_tournoi.participants,
+                                                               "points_tournoi")
+                Vue.affichage_classement_final_tournoi(self.vue_instance, instance_de_tournoi)
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
-            input()
 
     def serialisation_ronde_objet(self, rondes, players_table):
         """ serialise tous les objets contenus dans une ronde"""
@@ -370,13 +385,9 @@ class GestionDeTournoi:
         liste_ronde_serial = []
         if ronde_active > 1:
             for ronde in instance_de_tournoi.rondes:
-                input(ronde.nom_de_la_ronde)
                 liste_ronde_serial.append(self.serialisation_ronde_objet(ronde, players_table))
-        input("fin boucle enregistrement ronde precedentes")
         serial_ronde = self.serialisation_ronde_objet(rondes, players_table)
-        input("fin de la serialisation de la ronde actuelle")
         liste_ronde_serial.append(serial_ronde)
-        input("fin de l ajout de la ronde actuelle à la liste des rondes serialisé")
         tournoi = Query()
         tournaments_table.update({"rondes": liste_ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
 

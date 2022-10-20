@@ -91,6 +91,36 @@ class Vue:
             except:
                 input("erreur")
 
+    def affichage_classement_final_tournoi(self, instance_de_tournoi):
+        """ Affiche le classement final"""
+        self.clean_screen()
+        print("_________________________________________________________________________________________________\n"
+              "                                Tournoi Terminé !\n"
+              "                          Classement du tournoi " + instance_de_tournoi.nom_du_tournoi + "\n"
+              "_________________________________________________________________________________________________\n")
+        if len(instance_de_tournoi.participants) > 0:
+            print("  Vainqueur : " + instance_de_tournoi.participants[0][0].prenom + " " +
+                  instance_de_tournoi.participants[0][0].nom + " , avec " + str(instance_de_tournoi.participants[0][1])
+                  + " points \n" )
+        if len(instance_de_tournoi.participants) > 1:
+            print(" 2ème place : " + instance_de_tournoi.participants[1][0].prenom + " " +
+                  instance_de_tournoi.participants[1][0].nom + " , avec " + str(instance_de_tournoi.participants[1][1])
+                  + " points \n")
+        if len(instance_de_tournoi.participants) > 2:
+            print(" 3ème place : " + instance_de_tournoi.participants[2][0].prenom + " " +
+                  instance_de_tournoi.participants[2][0].nom + " , avec " + str(instance_de_tournoi.participants[0][1])
+                  + " points \n"
+                  "______________________________________________________________________________________________"
+                  "__\n")
+        if len(instance_de_tournoi.participants) >3:
+            i = 3
+            while i+1 <= len(instance_de_tournoi.participants):
+                print(str(i+1) + "ème place : " + instance_de_tournoi.participants[i][0].prenom + " " +
+                      instance_de_tournoi.participants[i][0].nom + " | " + str(instance_de_tournoi.participants[i][1])
+                      + " points")
+                i += 1
+        MessageDErreur.appuyer_sur_entrer_pour_continuer(self.objet_message_erreur)
+
     def affichage_liste_des_tours(self, ronde):
         i = 0
         for ronde_tour in ronde["rondes"]:
