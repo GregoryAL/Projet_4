@@ -129,7 +129,7 @@ class GestionDeTournoi:
             choix_rapport = int(SaisieDeDonnees.menu_rapport_light(self.vue_saisie_de_donnees))
             if choix_rapport == 1:
                 # Affiche la liste des joueurs
-                choix_type_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                choix_type_tri = GestionDeRapport.choix_classement_elo_ou_alpha(self.objet_gestion_rapport)
                 GestionDeRapport.affichage_du_classement_db(self.objet_gestion_rapport, "",
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:
@@ -161,7 +161,7 @@ class GestionDeTournoi:
             choix_rapport = int(SaisieDeDonnees.menu_rapport(self.vue_saisie_de_donnees))
             if choix_rapport == 1:
                 # Affiche la liste des joueurs
-                choix_type_tri = GestionDeRapport.choix_classement_ou_alphabetique(self.objet_gestion_rapport)
+                choix_type_tri = GestionDeRapport.choix_classement_elo_ou_alpha(self.objet_gestion_rapport)
                 GestionDeRapport.affichage_du_classement_db(self.objet_gestion_rapport, "",
                                                             players_table, choix_type_tri)
             elif choix_rapport == 2:

@@ -22,10 +22,21 @@ class GestionDeRapport:
                                                                      "Merci de sélectionner le joueur à modifier \n :")
         return int(choix_index)
 
+    def choix_classement_elo_ou_alpha(self):
+        """ Recupère le choix de l'utilisateur entre un tri alphabétique ou par classement """
+        choix_classement = SaisieDeDonnees.recuperation_type_tri_liste_joueur(self.vue_saisie_de_donnees)
+        if choix_classement == 1:
+            return "nom"
+        elif choix_classement == 2:
+            return "classement_elo"
+        else:
+            MessageDErreur.message_d_erreur_option_tri_alpha(self.vue_message_d_erreur)
+            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+            return "nom"
+
     def choix_classement_ou_alphabetique(self):
         """ Recupère le choix de l'utilisateur entre un tri alphabétique ou par classement """
-        choix_classement = int(input("Voulez vous un tri : \n [1] Alphabétique \n [2] Par classement elo\n "
-                                     "[3] Par classement tournoi\n:"))
+        choix_classement = SaisieDeDonnees.recuperation_type_tri_liste_participant(self.vue_saisie_de_donnees)
         if choix_classement == 1:
             return "nom"
         elif choix_classement == 2:
@@ -34,6 +45,7 @@ class GestionDeRapport:
             return "points_tournoi"
         else:
             MessageDErreur.message_d_erreur_option_tri_alpha(self.vue_message_d_erreur)
+            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
             return "nom"
 
     def choix_du_type_de_classement_tournoi(self, instance_de_tournoi):

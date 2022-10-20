@@ -188,6 +188,20 @@ class SaisieDeDonnees:
         resultat_match = self.verification_champs_non_vide("le résultat du match entre 1:" + match.joueur1[0].nom +
                                                            " et 2:" + match.joueur2[0].nom + " (1/N/2)")
         return resultat_match
+    def recuperation_type_tri_liste_joueur(self):
+        return int(self.verification_champs_est_nombre("Merci de choisir le type de tri : \n "
+                                                       "[1] Alphabétique \n "
+                                                       "[2] Classement elo\n"
+                                                       " :"))
+
+    def recuperation_type_tri_liste_participant(self):
+        return int(self.verification_champs_est_nombre("Merci de choisir le type de tri : \n "
+                                                       "[1] Alphabétique \n "
+                                                       "[2] Classement elo \n "
+                                                       "[3] Points tournois \n"
+                                                       " :"))
+
+
 
     def verification_champs_non_vide(self, type_valeur_recherchee):
         """ Vérifie que l'utilisateur a bien saisi une valeur """
