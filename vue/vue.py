@@ -148,3 +148,15 @@ class Vue:
                 else:
                     MessageDErreur.message_d_erreur(self.objet_message_erreur)
         input()
+
+    def affichage_du_nom_du_tournoi(self, instance_de_tournoi):
+        print(instance_de_tournoi.nom_du_tournoi)
+
+    def affichage_changement_effectue(self):
+        input("Changement effectué...")
+
+    def affichage_resultat_recherche(self, resultat):
+        print("[" + str(i) + "] | " + resultat["prenom"] + " " + resultat["nom"] +
+              " || Date de naissance : " + resultat["date_de_naissance"] +
+              " || Sexe : " + resultat["sexe"] +
+              " || Classement elo : " + str(resultat["classement_elo"]))

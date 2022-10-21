@@ -91,7 +91,6 @@ class GestionDeTournoi:
         joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
         joueur_a_modifier_complet = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
                                                                                 players_table, joueur_a_modifier)
-        print(joueur_a_modifier_complet)
         parametre_a_modifier = GestionDeJoueur. \
             recuperation_du_parametre_a_modifier_db_joueur(self.objet_gestion_joueur)
         nouvelle_valeur_parametre = SaisieDeDonnees. \
@@ -106,7 +105,7 @@ class GestionDeTournoi:
         if not isinstance(instance_de_tournoi, Tournoi):
             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
         else:
-            print(instance_de_tournoi.nom_du_tournoi)
+            Vue.affichage_du_nom_du_tournoi(self.vue_instance, instance_de_tournoi)
             indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
                                                                          instance_de_tournoi)
             parametre_a_modifier = GestionDeJoueur. \
@@ -147,7 +146,7 @@ class GestionDeTournoi:
                 GestionDeRapport.affichage_rapport_matchs(self.objet_gestion_rapport, tournaments_table, players_table)
             elif choix_rapport == 5:
                 # sort du sous menu rapport
-                print("en construction...")
+                Vue.message_de_sortie_3(self.vue_instance)
             else:
                 # gere le cas ou le choix entré n'est pas dans la liste des choix disponibles.
                 MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -241,7 +240,7 @@ class GestionDeTournoi:
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
         # Creation de l'objet instancié tournoi nécessaire
-        objet_type_de_tournoi = TypeDeTournoi(self.objet_gestion_joueur)
+        objet_type_de_tournoi = TypeDeTournoi(self.objet_gestion_joueur, self.vue_message_d_erreur)
         ronde_actuelle = TypeDeTournoi.choix_type_tournoi(objet_type_de_tournoi, type_de_tournoi, numero_de_ronde,
                                                           instance_de_tournoi)
         # pour chaque match de la liste des matchs de la ronde

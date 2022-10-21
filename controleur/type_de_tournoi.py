@@ -1,20 +1,22 @@
 from modele.ronde import Ronde
 from modele.match import Match
 from controleur.gestion_de_joueur import GestionDeJoueur
+from vue.message_d_erreur import MessageDErreur
 
 
 class TypeDeTournoi:
     """ Classe gérant les types de tournoi"""
 
-    def __init__(self, objet_gestion_joueur):
+    def __init__(self, objet_gestion_joueur, objet_message_d_erreur):
         """ Crée l'objet type de tournoi """
         self.objet_gestion_joueur = objet_gestion_joueur
+        self.objet_message_d_erreur = objet_message_d_erreur
 
     def choix_type_tournoi(self, type_de_tournoi, numero_de_ronde, instance_tournoi):
         if type_de_tournoi == "MethodeSuisse":
             return self.creation_des_matchs_methode_suisse(numero_de_ronde, instance_tournoi)
         else:
-            print("Type de tournoi non pris en charge.")
+            MessageDErreur.message_type_tournoi_non_pris_en_charge(self.objet_message_d_erreur)
 
     def creation_des_matchs_methode_suisse(self, numero_de_ronde, instance_tournoi):
         # Tri des joueurs
@@ -35,6 +37,4 @@ class TypeDeTournoi:
             id_joueur_2 = moitie_des_participants + i
             match_pairing = Match(instance_tournoi.participants[i], instance_tournoi.participants[id_joueur_2])
             ronde_actuelle.liste_matchs.append(match_pairing)
-            print("match entre " + instance_tournoi.participants[i][0].nom + " et " +
-                  instance_tournoi.participants[id_joueur_2][0].nom)
         return ronde_actuelle

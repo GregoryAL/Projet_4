@@ -81,13 +81,15 @@ class SaisieDeDonnees:
         try:
             entete = "Menu pour la gestion d'un tournoi d'échec"
             separateur = ""
-            creation_tournoi = "[1] Selection des joueurs participants au tournoi puis création et lancement du tournoi"
+            creation_tournoi = "[1] Selection des joueurs participants au tournoi puis création et lancement du " \
+                               "tournoi"
             lancement_ronde = "[2] Lancement de la ronde suivante                                                     "
             ajout_joueur = "[3] Ajout d'un joueur dans la liste des joueurs                                        "
             modification_joueur = "[4] Modification d'un joueur ou d'un participant                                " \
                                   "       "
             rapport = "[5] Rapport                                                                            "
-            sortie_programme = "[6] Sortie du Programme                                                                "
+            sortie_programme = "[6] Sortie du Programme                                                            " \
+                               "    "
             print(entete.center(119) + "\n" +
                   separateur.center(119, "_") + "\n" +
                   creation_tournoi.center(119) + "\n" +
@@ -191,8 +193,8 @@ class SaisieDeDonnees:
 
     def recuperation_id_tournoi(self, attribut):
         """ Récupère l'ID du tournoi choisi """
-        return self.verification_champs_est_nombre("___________________________________________________________________"
-                                                   "_______________________ \n"
+        return self.verification_champs_est_nombre("_______________________________________________________________"
+                                                   "___________________________ \n"
                                                    "Merci de saisir l'ID du tournoi dont vous voulez la " +
                                                    str(attribut))
 
@@ -350,7 +352,7 @@ class SaisieDeDonnees:
         while date_au_format_ok is False:
             date_saisie = input("Entrez " + prompt_recherche + " au format JJ/MM/AAAA : \n")
             try:
-                datetest = datetime.strptime(date_saisie, "%d/%m/%Y")
+                datetime.strptime(date_saisie, "%d/%m/%Y")
                 date_au_format_ok = True
                 return date_saisie
             except ValueError:

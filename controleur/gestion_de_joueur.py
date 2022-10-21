@@ -26,10 +26,7 @@ class GestionDeJoueur:
         i = 0
         if len(resultat_recherche) > 1:
             for resultat in resultat_recherche:
-                print("[" + str(i) + "] | " + resultat["prenom"] + " " + resultat["nom"] +
-                      " || Date de naissance : " + resultat["date_de_naissance"] +
-                      " || Sexe : " + resultat["sexe"] +
-                      " || Classement elo : " + str(resultat["classement_elo"]))
+                Vue.affichage_resultat_recherche(self.vue_instance, resultat)
                 i += 1
             joueur_choisi = SaisieDeDonnees.choisir_un_joueur(self.vue_saisie_de_donnees)
             return resultat_recherche[joueur_choisi]
@@ -110,7 +107,7 @@ class GestionDeJoueur:
                                                              joueur_a_modif["classement_elo"])
                                                             )
                              )
-        input("Changement effectué...")
+        Vue.affichage_changement_effectue(self.vue_message_d_erreur)
 
     def modification_d_un_participant(self, instance_tournoi, indice_participant, parametre_a_modifier,
                                       nouveau_parametre):

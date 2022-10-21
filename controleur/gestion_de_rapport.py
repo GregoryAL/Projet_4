@@ -72,7 +72,7 @@ class GestionDeRapport:
         else:
             resultat_tour = tournaments_table.get(doc_id=id_tournoi)
             Vue.affichage_liste_des_tours(self.vue_instance, resultat_tour)
-            input()
+            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
 
     def affichage_rapport_matchs(self, tournaments_table, players_table):
         """ Récupère l'id du tournoi dont les matchs doivent être affiché puis lance l'affichage"""
@@ -84,7 +84,7 @@ class GestionDeRapport:
         else:
             resultat_tour = tournaments_table.get(doc_id=id_tournoi)
             Vue.affichage_liste_des_matchs(self.vue_instance, resultat_tour, players_table)
-            input()
+            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
 
     def affichage_du_classement_db(self, numero_de_ronde_active, players_table, type_tri):
         """ Affiche le classement en fonction des points elo """

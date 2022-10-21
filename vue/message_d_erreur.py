@@ -52,3 +52,6 @@ class MessageDErreur:
     def message_aucun_choix_entre(self):
         """ Informe l'utilisateur que rien n'a été saisie, Demande à l'utilisateur d'entrer la donnée demandée """
         print("Aucun choix n'a été saisi. Merci de saisir votre choix.")
+
+    def message_type_tournoi_non_pris_en_charge(self):
+        print("Type de tournoi non pris en charge...")
