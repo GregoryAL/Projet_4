@@ -27,5 +27,5 @@ class Controleur:
         db = TinyDB('db.json')
         players_table = db.table('players')
         tournaments_table = db.table('tournaments')
-        liste_joueurs = GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur, players_table)
+        GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur, players_table)
         GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, players_table, tournaments_table)

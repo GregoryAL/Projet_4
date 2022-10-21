@@ -38,7 +38,8 @@ class GestionDeTournoi:
                     if choix_utilisateur == 1:
                         numero_de_ronde_active = 0
                         # Récupère le type de tournoi qui sera lancé (Ex : Suisse)
-                        choix_type_tournoi = SaisieDeDonnees.recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
+                        choix_type_tournoi = SaisieDeDonnees.\
+                            recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
                         # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                         instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
                     elif choix_utilisateur == 2:

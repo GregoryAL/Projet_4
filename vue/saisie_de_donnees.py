@@ -30,7 +30,8 @@ class SaisieDeDonnees:
 
     def selection_du_parametre_a_modifier(self):
         """ Sélection du paramètre du participant à modifier """
-        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
+        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier"
+                                                                   "?\n"
                                                                    "[1] Nom\n"
                                                                    "[2] Prénom\n"
                                                                    "[3] Date de naissance\n"
@@ -42,7 +43,8 @@ class SaisieDeDonnees:
 
     def selection_du_parametre_a_modifier_joueur(self):
         """ Sélection du paramètre du joueur à modifier """
-        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier?\n"
+        parametre_a_modifier = self.verification_champs_est_nombre("Quel paramètre du joueur souhaitez vous modifier"
+                                                                   "?\n"
                                                                    "[1] Nom\n"
                                                                    "[2] Prénom\n"
                                                                    "[3] Date de naissance\n"
@@ -77,15 +79,24 @@ class SaisieDeDonnees:
         Vue.clean_screen(self.vue)
         # Affiche le menu
         try:
-            print("                     Menu pour la gestion d'un tournoi d'échec\n"
-                  "_________________________________________________________________________________________________\n"
-                  " [1] Selection des joueurs participants au tournoi puis création et lancement du tournoi\n"
-                  " [2] Lancement de la ronde suivante\n"
-                  " [3] Ajout d'un joueur dans la liste des joueurs\n"
-                  " [4] Modification d'un joueur ou d'un participant\n"
-                  " [5] Rapport\n"
-                  " [6] Sortie du Programme\n"
-                  "_________________________________________________________________________________________________")
+            entete = "Menu pour la gestion d'un tournoi d'échec"
+            separateur = ""
+            creation_tournoi = "[1] Selection des joueurs participants au tournoi puis création et lancement du tournoi"
+            lancement_ronde = "[2] Lancement de la ronde suivante                                                     "
+            ajout_joueur = "[3] Ajout d'un joueur dans la liste des joueurs                                        "
+            modification_joueur = "[4] Modification d'un joueur ou d'un participant                                " \
+                                  "       "
+            rapport = "[5] Rapport                                                                            "
+            sortie_programme = "[6] Sortie du Programme                                                                "
+            print(entete.center(119) + "\n" +
+                  separateur.center(119, "_") + "\n" +
+                  creation_tournoi.center(119) + "\n" +
+                  lancement_ronde.center(119) + "\n" +
+                  ajout_joueur.center(119) + "\n" +
+                  modification_joueur.center(119) + "\n" +
+                  rapport.center(119) + "\n" +
+                  sortie_programme.center(119) + "\n" +
+                  separateur.center(119, "_"))
             choix_utilisateur = int(self.verification_champs_est_nombre("Entrez le chiffre correspondant à l'action "
                                                                         "voulue :\n"))
             return choix_utilisateur
@@ -119,16 +130,23 @@ class SaisieDeDonnees:
         Vue.clean_screen(self.vue)
         # Affiche le menu
         try:
-            print("                     Menu pour la gestion d'un tournoi d'échec\n"
-                  "                                     Rapport\n"
-                  "         !!!!!    Menu Réduit car aucune instance de tournoi en cours !!!!! \n"  
-                  "_________________________________________________________________________________________________\n"
-                  " [1] Liste des joueurs\n"
-                  " [2] Liste des tournois\n"
-                  " [3] Liste des tours d'un tournoi\n"
-                  " [4] Liste des matchs d'un tournoi\n"
-                  " [5] Sortie du menu\n"
-                  "_________________________________________________________________________________________________")
+            entete1 = "Menu pour la gestion d'un tournoi d'échec"
+            entete2 = "Rapport"
+            entete3 = "!  Menu Réduit car aucune instance de tournoi en cours  !"
+            separateur = "_"
+            liste_joueur = " [1] Liste des joueurs            "
+            liste_tournoi = " [2] Liste des tournois           "
+            liste_tour = " [3] Liste des tours d'un tournoi "
+            liste_match = " [4] Liste des matchs d'un tournoi"
+            sortie_menu = " [5] Sortie du menu               "
+            print(entete1.center(119) + "\n" + entete2.center(119) + "\n" + entete3.center(119) + "\n" +
+                  separateur.center(119, "_") + "\n" +
+                  liste_joueur.center(119) + "\n" +
+                  liste_tournoi.center(119) + "\n" +
+                  liste_tour.center(119) + "\n" +
+                  liste_match.center(119) + "\n" +
+                  sortie_menu.center(119) + "\n" +
+                  separateur.center(119, "_"))
             choix_utilisateur = int(self.verification_champs_est_nombre("Entrez le chiffre correspondant à l'action "
                                                                         "voulue :\n"))
             return choix_utilisateur
@@ -142,16 +160,24 @@ class SaisieDeDonnees:
         Vue.clean_screen(self.vue)
         # Affiche le menu
         try:
-            print("                     Menu pour la gestion d'un tournoi d'échec\n"
-                  "                                     Rapport\n"
-                  "_________________________________________________________________________________________________\n"
-                  " [1] Liste des joueurs\n"
-                  " [2] Liste des participants\n"
-                  " [3] Liste des tournois\n"
-                  " [4] Liste des tours d'un tournoi\n"
-                  " [5] Liste des matchs d'un tournoi\n"
-                  " [6] Sortie du menu\n"
-                  "_________________________________________________________________________________________________")
+            entete1 = "Menu pour la gestion d'un tournoi d'échec"
+            entete2 = "Rapport"
+            separateur = "_"
+            liste_joueur = " [1] Liste des joueurs            "
+            liste_participant = " [2] Liste des participants       "
+            liste_tournoi = " [3] Liste des tournois           "
+            liste_tour = " [4] Liste des tours d'un tournoi "
+            liste_match = " [5] Liste des matchs d'un tournoi"
+            sortie_menu = " [6] Sortie du menu               "
+            print(entete1.center(119) + "\n" + entete2.center(119) + "\n" +
+                  separateur.center(119, "_") + "\n" +
+                  liste_joueur.center(119) + "\n" +
+                  liste_participant.center(119) + "\n" +
+                  liste_tournoi.center(119) + "\n" +
+                  liste_tour.center(119) + "\n" +
+                  liste_match.center(119) + "\n" +
+                  sortie_menu.center(119) + "\n" +
+                  separateur.center(119, "_"))
             choix_utilisateur = int(self.verification_champs_est_nombre("Entrez le chiffre correspondant à l'action "
                                                                         "voulue :\n"))
             return choix_utilisateur
@@ -188,6 +214,7 @@ class SaisieDeDonnees:
         resultat_match = self.verification_champs_non_vide("le résultat du match entre 1:" + match.joueur1[0].nom +
                                                            " et 2:" + match.joueur2[0].nom + " (1/N/2)")
         return resultat_match
+
     def recuperation_type_tri_liste_joueur(self):
         return int(self.verification_champs_est_nombre("Merci de choisir le type de tri : \n "
                                                        "[1] Alphabétique \n "
@@ -200,8 +227,6 @@ class SaisieDeDonnees:
                                                        "[2] Classement elo \n "
                                                        "[3] Points tournois \n"
                                                        " :"))
-
-
 
     def verification_champs_non_vide(self, type_valeur_recherchee):
         """ Vérifie que l'utilisateur a bien saisi une valeur """
