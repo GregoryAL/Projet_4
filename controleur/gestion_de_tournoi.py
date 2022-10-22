@@ -72,6 +72,18 @@ class GestionDeTournoi:
                     elif choix_utilisateur == 6:
                         # Cas du choix de sortie du programme
                         Vue.message_de_sortie_1(self.vue_instance)
+                    elif choix_utilisateur == 7:
+                        # code test
+                        valeurtest = False
+                        while valeurtest == False:
+                            variable = input("entre chiffre")
+                            print(float(variable))
+                            try:
+                                variable = float(variable)
+                                input("est float")
+                            except (ValueError, TypeError):
+                                input('n est pas float')
+                                valeurtest = False
                     else:
                         # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                         MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)

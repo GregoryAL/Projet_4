@@ -2,6 +2,7 @@ from modele.joueur import Joueur
 from vue.message_d_erreur import MessageDErreur
 from vue.saisie_de_donnees import SaisieDeDonnees
 from tinydb import Query
+from vue.vue import Vue
 
 
 class GestionDeJoueur:
@@ -26,7 +27,7 @@ class GestionDeJoueur:
         i = 0
         if len(resultat_recherche) > 1:
             for resultat in resultat_recherche:
-                Vue.affichage_resultat_recherche(self.vue_instance, resultat)
+                Vue.affichage_resultat_recherche(self.vue_instance, resultat, i)
                 i += 1
             joueur_choisi = SaisieDeDonnees.choisir_un_joueur(self.vue_saisie_de_donnees)
             return resultat_recherche[joueur_choisi]

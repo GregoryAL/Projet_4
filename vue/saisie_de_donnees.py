@@ -66,7 +66,7 @@ class SaisieDeDonnees:
         elif parametre == "classement_elo":
             return self.verification_champs_est_nombre("Entrez le nouveau nombre de points elo :\n")
         elif parametre == "points_tournoi":
-            return self.verification_champs_est_nombre("Entrez le nouveau nombre de points tournoi :\n")
+            return self.verification_champs_est_float("Entrez le nouveau nombre de points tournoi :\n")
 
     def choisir_un_joueur(self):
         """ Récupère l'id du joueur choisi """
@@ -245,6 +245,28 @@ class SaisieDeDonnees:
             return True
         except (TypeError, ValueError):
             return False
+
+    def test_si_variable_un_float(self, variable):
+        """ Test si une variable est un float et renvoie true / false """
+        try:
+            variable = float(variable)
+            return True
+        except (TypeError, ValueError):
+            return False
+
+    def verification_champs_est_float(self, type_valeur_recherchee):
+        """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle
+        jusqu'à ce que la valeur entree soit un chiffre """
+        test_si_valeur_est_float = False
+        valeur_recherchee = ""
+        while test_si_valeur_est_float is False:
+            valeur_recherchee = input(type_valeur_recherchee)
+            if "," in valeur_recherchee:
+                valeur_recherchee = valeur_recherchee.replace(",", ".")
+            test_si_valeur_est_float = self.test_si_variable_un_float(valeur_recherchee)
+            if test_si_valeur_est_float is False:
+                MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
+        return float(valeur_recherchee)
 
     def verification_champs_est_nombre(self, type_valeur_recherchee):
         """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle

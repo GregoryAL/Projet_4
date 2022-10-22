@@ -155,7 +155,7 @@ class Vue:
     def affichage_changement_effectue(self):
         input("Changement effectué...")
 
-    def affichage_resultat_recherche(self, resultat):
+    def affichage_resultat_recherche(self, resultat, i):
         print("[" + str(i) + "] | " + resultat["prenom"] + " " + resultat["nom"] +
               " || Date de naissance : " + resultat["date_de_naissance"] +
               " || Sexe : " + resultat["sexe"] +
