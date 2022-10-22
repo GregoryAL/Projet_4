@@ -345,14 +345,11 @@ class SaisieDeDonnees:
     def selection_duplicate(self, liste_duplicate):
         """ Demande de sélectionner le joueur dans un choix d'homonyme. Récupère le choix """
         confirmation_choix_homonyme = ""
+        choix_homonyme = ""
         while confirmation_choix_homonyme != "Oui":
-            choix_homonyme = ""
-            try:
-                choix_homonyme = int(input("Merci d'entrer le numéro du joueur à ajouter à la liste de "
-                                           "participants \n"))
-            except TypeError:
-                MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
-            confirmation_choix_homonyme = input("Est ce que le choix : \n " +
+            choix_homonyme = int(self.verification_champs_est_nombre("Merci d'entrer le numéro du joueur à ajouter"
+                                                                     " à la liste de participants \n"))
+            confirmation_choix_homonyme = self.verification_si_valeur_est_oui_non("Est ce que le choix : \n " +
                                                 "[" + str(choix_homonyme) + "] : " +
                                                 str(liste_duplicate[choix_homonyme].prenom) + " " +
                                                 str(liste_duplicate[choix_homonyme].nom) + " | Date de naissance : " +
@@ -365,7 +362,8 @@ class SaisieDeDonnees:
 
     def joueur_inexistant(self):
         """ Annonce que le joueur est inexistant, demande si le joueur doit être créé """
-        reponse_creation_joueur = input("Joueur inexistant : Voulez vous créer le joueur? (Oui/Non)")
+        reponse_creation_joueur = self.verification_si_valeur_est_oui_non("Joueur inexistant : Voulez vous créer le "
+                                                                          "joueur? (Oui/Non)")
         return reponse_creation_joueur
 
     def verification_si_valeur_est_date(self, prompt_recherche):
@@ -381,14 +379,25 @@ class SaisieDeDonnees:
                 input("la date n'est pas au bon format. Veuillez réessayer. ")
                 date_au_format_ok = False
 
+    def verification_si_valeur_est_oui_non(self, recherche):
+        test_condition = False
+        while test_condition is False:
+            variable = input(recherche + "\n")
+            if (variable == "Oui") or (variable == "Non"):
+                return variable
+            else:
+                MessageDErreur.message_d_erreur_d_input_hors_choix(self.message_d_erreur)
+                test_condition = False
+
     def ajout_des_informations_d_un_joueur(self, info_joueur_inexistant):
         """ Récupère les informations d'un joueur à ajouter """
         joueur_a_ajouter = {}
         if info_joueur_inexistant != "":
-            recuperation_info_joueur_inexistant = input(" Voulez vous ajouter le joueur " +
+            recuperation_info_joueur_inexistant = \
+                self.verification_si_valeur_est_oui_non(" Voulez vous ajouter le joueur " +
                                                         info_joueur_inexistant["prenom"] + " " +
                                                         info_joueur_inexistant["nom"] + " à la liste des "
-                                                                                        "joueurs?(Oui/Non)")
+                                                        "joueurs?(Oui/Non)")
             if recuperation_info_joueur_inexistant == "Oui":
                 joueur_a_ajouter["nom"] = info_joueur_inexistant["nom"]
                 joueur_a_ajouter["prenom"] = info_joueur_inexistant["prenom"]

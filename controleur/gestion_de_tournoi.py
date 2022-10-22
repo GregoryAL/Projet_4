@@ -75,7 +75,7 @@ class GestionDeTournoi:
                     elif choix_utilisateur == 7:
                         # code test
                         valeurtest = False
-                        while valeurtest == False:
+                        while valeurtest is False:
                             variable = input("entre chiffre")
                             print(float(variable))
                             try:
