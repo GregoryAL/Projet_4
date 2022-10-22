@@ -13,6 +13,7 @@ class Controleur:
 
     def __init__(self):
         """ Initialise le contrôleur. """
+        # Crée les objets initialisateur des classes qui seront utilisées
         self.vue_message_d_erreur = MessageDErreur()
         self.vue_instance = Vue(self.vue_message_d_erreur)
         self.vue_saisie_de_donnees = SaisieDeDonnees(self.vue_instance, self.vue_message_d_erreur)
@@ -24,8 +25,13 @@ class Controleur:
 
     def execute(self):
         """ Lance le programme """
+        # Initialise la base de donnée
         db = TinyDB('db.json')
+        # Initialise la table joueur
         players_table = db.table('players')
+        # Initialise la table tournoi
         tournaments_table = db.table('tournaments')
+        # Ajoute les joueurs prédéfinis à la table joueur
         GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur, players_table)
+        # Lance la gestion du tournoi
         GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, players_table, tournaments_table)

@@ -17,7 +17,8 @@ class GestionDeTournoi:
 
     def __init__(self, vue_instance, objet_gestion_joueur, objet_gestion_rapport, vue_message_d_erreur,
                  vue_saisie_de_donnees):
-        """ crée l'objet type de tournoi """
+        """ Crée l'objet type de tournoi """
+        # Récupère les objets initialisateur des classes qui seront utilisées
         self.vue_instance = vue_instance
         self.objet_gestion_joueur = objet_gestion_joueur
         self.objet_gestion_rapport = objet_gestion_rapport
@@ -26,15 +27,22 @@ class GestionDeTournoi:
 
     def gestion_du_tournoi(self, players_table, tournaments_table):
         """ Gestion du tournoi en fonction du choix de l'utilisateur"""
+        # Initialise les variables qui seront utilisées dans la boucle de gestion de tournoi
         sortie_tournoi = "Non"
         instance_de_tournoi = "Aucun"
         numero_de_ronde_active = 0
         choix_utilisateur = 0
         choix_type_tournoi = ""
+        # Lance la boucle gérant le menu principal du tournoi
         while sortie_tournoi == "Non":
             try:
+                # Tant que l'utilisateur ne signale pas vouloir sortir du programme en saisissant 6 quand le menu
+                # s'affiche, reste dans la boucle du menu principal du tournoi.
                 while choix_utilisateur != 6:
+                    # Appel la vue proposant les choix disponibles dans le menu principal et récupère le choix
+                    # utilisateur.
                     choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
+                    # Création du tournoi
                     if choix_utilisateur == 1:
                         numero_de_ronde_active = 0
                         # Récupère le type de tournoi qui sera lancé (Ex : Suisse)
@@ -42,48 +50,48 @@ class GestionDeTournoi:
                             recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
                         # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                         instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
+                    # Lancement de la ronde suivante
                     elif choix_utilisateur == 2:
-                        # Lancement de la ronde suivante
+                        # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire
                         if not isinstance(instance_de_tournoi, Tournoi):
                             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
                         else:
+                            # Incrémente le numéro de la ronde de 1
                             numero_de_ronde_active += 1
+                            # Lance le déroulement de la ronde
                             ronde = self.initialisation_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                               players_table, choix_type_tournoi, tournaments_table)
+                            # Ajout les informations de la ronde à l'instance de tournoi en cours
                             instance_de_tournoi.rondes.append(ronde)
+                    # Ajoute un joueur dans la base des joueurs
                     elif choix_utilisateur == 3:
                         # Ajout d'un joueur
                         joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
                         GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
+                    # Modifie un paramètre d'un joueur ou d'un participant
                     elif choix_utilisateur == 4:
-                        # Modification d'un joueur / participant
+                        # Demande à l'utilisateur de sélectionner si c'est un joueur de la base joueur ou un
+                        # participant du tournoi à modifier
                         base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
+                        # Cas où c'est un joueur à modifier
                         if base_a_modifier == 1:
                             self.modification_du_joueur_dans_db_player(players_table)
+                        # Cas où c'est un participant à modifier
                         elif base_a_modifier == 2:
                             instance_de_tournoi = self.modification_du_participant_dans_instance_tournoi(
                                 instance_de_tournoi)
+                    # Affichage rapports joueurs, participants, tournoi, tours d'un tournoi, matchs d'un tournoi
                     elif choix_utilisateur == 5:
-                        # Affichage rapports tournoi, des tours d'un tournoi, des matchs d'un tournoi
+                        # Vérifie si un tournoi est en cours et affiche un menu des rapports disponibles réduit
+                        # (sans la liste des participants) si ce n'est pas le cas
                         if not isinstance(instance_de_tournoi, Tournoi):
                             self.menu_rapport_light(players_table, tournaments_table)
                         else:
                             self.menu_rapport(players_table, tournaments_table, instance_de_tournoi)
+                    # Sortie du programme
                     elif choix_utilisateur == 6:
-                        # Cas du choix de sortie du programme
+                        # Affiche un message de sortie
                         Vue.message_de_sortie_1(self.vue_instance)
-                    elif choix_utilisateur == 7:
-                        # code test
-                        valeurtest = False
-                        while valeurtest is False:
-                            variable = input("entre chiffre")
-                            print(float(variable))
-                            try:
-                                variable = float(variable)
-                                input("est float")
-                            except (ValueError, TypeError):
-                                input('n est pas float')
-                                valeurtest = False
                     else:
                         # Prise en charge du cas ou l'utilisateur entre un chiffre au dela des choix
                         MessageDErreur.message_d_erreur_d_input(self.vue_message_d_erreur)
@@ -91,6 +99,7 @@ class GestionDeTournoi:
                     Vue.message_de_sortie_2(self.vue_instance)
                     # Sortie du programme à la demande de l'utilisateur (choix sortie dans la boucle)
                     sortie_tournoi = "Oui"
+            # Gère les cas où l'utilisateur saisi une donnée qui ne correspond pas aux choix proposés
             except ValueError:
                 MessageDErreur.message_d_erreur_d_input_chiffre(self.vue_message_d_erreur)
                 sortie_tournoi = "Non"
@@ -100,13 +109,19 @@ class GestionDeTournoi:
 
     def modification_du_joueur_dans_db_player(self, players_table):
         """ Choisi un joueur à modifier, puis change le paramètre désiré dans players_base"""
+        # Demande au joueur de rentrer le nom et prénom du joueur à modifier dans la base
         joueur_a_modifier = SaisieDeDonnees.selection_joueur_a_modifier(self.vue_saisie_de_donnees)
+        # Récupère les joueurs correspondants à ces nom/prénom dans la base et demande à l'utilisateur de choisir le
+        # joueur désiré en cas d'homonyme
         joueur_a_modifier_complet = GestionDeJoueur.recherche_correspondance_db(self.objet_gestion_joueur,
                                                                                 players_table, joueur_a_modifier)
+        # Récupère le type du paramètre que l'utilisateur souhaite modifier
         parametre_a_modifier = GestionDeJoueur. \
             recuperation_du_parametre_a_modifier_db_joueur(self.objet_gestion_joueur)
+        # Récupère la nouvelle valeur du paramètre à modifier
         nouvelle_valeur_parametre = SaisieDeDonnees. \
             entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+        # Fais la modification du paramètre dans la base
         GestionDeJoueur.modification_d_un_joueur_db(self.objet_gestion_joueur, players_table,
                                                     joueur_a_modifier_complet, parametre_a_modifier,
                                                     nouvelle_valeur_parametre)
@@ -114,21 +129,28 @@ class GestionDeTournoi:
     def modification_du_participant_dans_instance_tournoi(self, instance_de_tournoi):
         """ Choisi un participant à modifier, puis change le paramètre désire dans la liste des participants de l'objet
         instance_de_tournoi.participants"""
+        # Vérifie qu'un tournoi est en cours
         if not isinstance(instance_de_tournoi, Tournoi):
             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
         else:
+            # Affiche le nom du tournoi
             Vue.affichage_du_nom_du_tournoi(self.vue_instance, instance_de_tournoi)
+            # Récupère le choix de quel participant modifier
             indice_participant = GestionDeRapport.selection_participants(self.objet_gestion_rapport,
                                                                          instance_de_tournoi)
+            # Récupère le paramètre à modifier
             parametre_a_modifier = GestionDeJoueur. \
                 recuperation_du_parametre_a_modifier(self.objet_gestion_joueur)
+            # Récupère la nouvelle valeur du paramètre
             nouvelle_valeur_parametre = SaisieDeDonnees. \
                 entree_nouvelle_valeur_parametre(self.vue_saisie_de_donnees, parametre_a_modifier)
+            # Modifie le paramètre du joueur dans l'instance de tournoi
             instance_de_tournoi = GestionDeJoueur.modification_d_un_participant(
                 self.objet_gestion_joueur,
                 instance_de_tournoi, indice_participant,
                 parametre_a_modifier,
                 nouvelle_valeur_parametre)
+            # Retourne l'instance de tournoi modifiée
             return instance_de_tournoi
 
     def menu_rapport_light(self, players_table, tournaments_table):
@@ -202,14 +224,17 @@ class GestionDeTournoi:
 
     def recuperation_du_nombre_de_participants(self):
         """ Récupère le nombre de participants au tournoi """
-
+        # Récupère le nombre de participants
         nombre_de_participants = SaisieDeDonnees.\
             recuperation_nombre_de_participants_du_tournoi(self.vue_saisie_de_donnees)
+        # Retourne le nombre de participants
         return nombre_de_participants
 
     def selection_des_participants_db(self, players_table, nombre_de_participants):
         """ Selection des participants dans le pool de joueurs connus de la base table_players"""
+        # Initialise la liste de participant
         liste_participants = []
+        # Crée une boucle qui s'itérera autant de fois qu'il y a de participants
         for i in range(nombre_de_participants):
             # Récupère le nom et prénom du joueur à ajouter au tournoi :
             participant_nom_prenom = SaisieDeDonnees.recuperation_participant_du_tournoi(self.vue_saisie_de_donnees, i)
