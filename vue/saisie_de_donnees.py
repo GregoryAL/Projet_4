@@ -241,7 +241,7 @@ class SaisieDeDonnees:
     def test_si_variable_un_nombre(self, variable):
         """ Test si une variable est un nombre et renvoie true / false """
         try:
-            variable = int(variable)
+            int(variable)
             return True
         except (TypeError, ValueError):
             return False
@@ -249,7 +249,7 @@ class SaisieDeDonnees:
     def test_si_variable_un_float(self, variable):
         """ Test si une variable est un float et renvoie true / false """
         try:
-            variable = float(variable)
+            float(variable)
             return True
         except (TypeError, ValueError):
             return False
@@ -349,14 +349,18 @@ class SaisieDeDonnees:
         while confirmation_choix_homonyme != "Oui":
             choix_homonyme = int(self.verification_champs_est_nombre("Merci d'entrer le numéro du joueur à ajouter"
                                                                      " à la liste de participants \n"))
-            confirmation_choix_homonyme = self.verification_si_valeur_est_oui_non("Est ce que le choix : \n " +
-                                                "[" + str(choix_homonyme) + "] : " +
-                                                str(liste_duplicate[choix_homonyme].prenom) + " " +
-                                                str(liste_duplicate[choix_homonyme].nom) + " | Date de naissance : " +
-                                                str(liste_duplicate[choix_homonyme].date_de_naissance) + " | Sexe : " +
-                                                str(liste_duplicate[choix_homonyme].sexe) + " | Classement elo : " +
-                                                str(liste_duplicate[choix_homonyme].classement_elo) + "\nEst correct "
-                                                                                                      "(Oui/Non)? \n:")
+            confirmation_choix_homonyme = \
+                self.verification_si_valeur_est_oui_non("Est ce que le choix : \n " +
+                                                        "[" + str(choix_homonyme) + "] : " +
+                                                        str(liste_duplicate[choix_homonyme].prenom) + " " +
+                                                        str(liste_duplicate[choix_homonyme].nom) +
+                                                        " | Date de naissance : " +
+                                                        str(liste_duplicate[choix_homonyme].date_de_naissance) +
+                                                        " | Sexe : " +
+                                                        str(liste_duplicate[choix_homonyme].sexe) +
+                                                        " | Classement elo : " +
+                                                        str(liste_duplicate[choix_homonyme].classement_elo) +
+                                                        "\nEst correct (Oui/Non)? \n:")
         else:
             return liste_duplicate[choix_homonyme]
 
@@ -402,19 +406,30 @@ class SaisieDeDonnees:
                 joueur_a_ajouter["nom"] = info_joueur_inexistant["nom"]
                 joueur_a_ajouter["prenom"] = info_joueur_inexistant["prenom"]
             else:
-                nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
+                nom_a_ajouter = self.verification_champs_non_vide("le nom du joueur à ajouter")
                 joueur_a_ajouter["nom"] = nom_a_ajouter
-                prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
+                prenom_a_ajouter = self.verification_champs_non_vide("le prenom du joueur à ajouter")
                 joueur_a_ajouter["prenom"] = prenom_a_ajouter
         else:
-            nom_a_ajouter = input("Entrez le nom du joueur à ajouter:\n")
+            nom_a_ajouter = self.verification_champs_non_vide("le nom du joueur à ajouter")
             joueur_a_ajouter["nom"] = nom_a_ajouter
-            prenom_a_ajouter = input("Entrez le prenom du joueur à ajouter:\n")
+            prenom_a_ajouter = self.verification_champs_non_vide("le prénom du joueur à ajouter")
             joueur_a_ajouter["prenom"] = prenom_a_ajouter
-        date_de_naissance_a_ajouter = input("Entre la date de naissance du joueur à ajouter:\n")
+        date_de_naissance_a_ajouter = self.verification_si_valeur_est_date("la date de naissance du joueur à ajouter")
         joueur_a_ajouter["date_de_naissance"] = date_de_naissance_a_ajouter
-        sexe_a_ajouter = input("Entre le sexe du joueur à ajouter:\n")
+        sexe_a_ajouter = self.verification_saisie_est_sexe("Entrez le sexe du joueur à ajouter(M/F/U):")
         joueur_a_ajouter["sexe"] = sexe_a_ajouter
-        classement_elo_a_ajouter = int(input("Entrez le classement elo du joueur à ajouter:\n"))
+        classement_elo_a_ajouter = int(self.verification_champs_est_nombre("Entrez le classement elo du joueur à "
+                                                                           "ajouter:\n"))
         joueur_a_ajouter["classement_elo"] = classement_elo_a_ajouter
         return joueur_a_ajouter
+
+    def verification_saisie_est_sexe(self, demande_saisie):
+        test_condition = False
+        while test_condition is False:
+            variable = input(demande_saisie + "\n")
+            if (variable == "M") or (variable == "F") or (variable == "U"):
+                return variable
+            else:
+                MessageDErreur.message_d_erreur_d_input_hors_choix(self.message_d_erreur)
+                test_condition = False
