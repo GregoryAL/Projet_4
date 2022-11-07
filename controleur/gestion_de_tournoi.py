@@ -291,24 +291,36 @@ class GestionDeTournoi:
 
     def depart_d_une_ronde(self, ronde_a_lancer):
         """ Lance une ronde """
+        # Prompt l'utilisateur à démarrer la ronde en appuyant sur entrée
         SaisieDeDonnees.depart_de_la_ronde(self.vue_saisie_de_donnees)
+        # Récupère la date et l'heure lorsque l'utilisateur appuie sur entrée
         objet_date_heure_debut_ronde = datetime.now()
+        # Stock l'heure de depart de la ronde dans l'entité ronde
         ronde_a_lancer.date_heure_debut_de_ronde = str(objet_date_heure_debut_ronde.strftime("%d/%m/%Y %H:%M:%S"))
+        # Retourne l'entité ronde
         return ronde_a_lancer
 
     def fin_d_une_ronde(self, ronde_a_clore):
         """ Clos une ronde et saisie les resultats"""
+        # Prompt l'utilisateur à signaler la fin de la ronde en appuyant sur entrée
         SaisieDeDonnees.fin_de_la_ronde(self.vue_saisie_de_donnees)
+        # Récupère la date et l'heure lorsque l'utilisateur appuie sur entrée
         objet_date_heure_fin_ronde = datetime.now()
+        # Stock l'heure de fin de la ronde dans l'entité ronde
         ronde_a_clore.date_heure_fin_de_ronde = str(objet_date_heure_fin_ronde.strftime("%d/%m/%Y %H:%M:%S"))
+        # Boucle sur tous les matchs de la ronde contenus dans la liste des matchs de l'entité ronde
         for match_de_ronde in ronde_a_clore.liste_matchs:
+            # Récupère le résultat du match
             resultat_du_match = SaisieDeDonnees.recuperation_des_resultats_d_un_match(self.vue_saisie_de_donnees,
                                                                                       match_de_ronde)
+            # Gère le cas ou le résultat entré par l'utilisateur n'est pas dans la liste des choix
             while resultat_du_match not in ["1", "2", "N"]:
                 MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
                 resultat_du_match = SaisieDeDonnees.recuperation_des_resultats_d_un_match(self.vue_saisie_de_donnees,
                                                                                           match_de_ronde)
+            # Gère le cas où le résultat entré par l'utilisateur est dans la liste des choix
             else:
+                # Stocke les résultats dans l'entité match en fonction du résultat
                 if resultat_du_match == "1":
                     match_de_ronde.resultat_joueur1 = 1
                     match_de_ronde.joueur1[1] += 1
@@ -332,23 +344,35 @@ class GestionDeTournoi:
         nombre_de_participants = SaisieDeDonnees.verification_champs_est_nombre(self.vue_saisie_de_donnees,
                                                                                 "Veuillez entrez le nombre "
                                                                                 "de participants : \n")
+        # Récupère la liste des participants
         liste_participants_tournoi = self.selection_des_participants_db(players_table, nombre_de_participants)
+        # Gère le cas où un problème serait arrivé dans la sélection de la liste des participants
         if len(liste_participants_tournoi) == nombre_de_participants:
+            # Récupère les infos du tournoi à créer
             info_instance_tournoi_a_creer = SaisieDeDonnees.\
                 recuperation_des_informations_du_tournoi(self.vue_saisie_de_donnees)
+            # Ajoute le nombre de participant dans le dictionnaire contenant des infos du tournoi à créer
             info_instance_tournoi_a_creer["nombre_de_participant"] = nombre_de_participants
+            # Crée l'instance de tournoi avec les informations récupérées
             instance_de_tournoi = self.creation_du_tournoi(info_instance_tournoi_a_creer)
+            # Affiche un message indiquant que le tournoi est en cours de création, le stockage du tournoi pouvant
+            # prendre quelques secondes
             Vue.affichage_creation_tournoi_en_cours(self.vue_instance)
+            # Stocke le tournoi en DB
             tournaments_table.insert(Tournoi.serialisation_tournoi(instance_de_tournoi))
+            # Stocke la liste des participants dans l'instance de tournoi
             instance_de_tournoi.participants = liste_participants_tournoi
+            # Stocke la liste des participants en DB
             participants_db = []
             for participants in liste_participants_tournoi:
                 participants_db.append(Joueur.serialisation_joueur(participants[0]))
             tournoi = Query()
             tournaments_table.update({"participants": participants_db}, tournoi.nom ==
                                      instance_de_tournoi.nom_du_tournoi)
+            # Renvoi l'instance du tournoi
             return instance_de_tournoi
         else:
+            # Affiche un message d'erreur en cas de problème avec la récupération des participants
             MessageDErreur.message_d_erreur(self.vue_message_d_erreur)
             return ""
 
@@ -357,19 +381,29 @@ class GestionDeTournoi:
         """ Determine les appairages de match, lance une ronde et récupère les résultats des matchs, puis affiche les
         résultats du tournoi si c'est la dernière ronde."""
         # Lancement de la ronde suivante
+        # Vérifie si la dernière ronde a été jouée et renvoi un message indiquant que le tournoi est terminé si c'est
+        # le cas
         if int(numero_de_ronde_active) <= int(instance_de_tournoi.nombre_de_tour_du_tournoi):
+            # Défini les appairages de match et les stocks dans la variable ronde
             ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                               choix_type_tournoi)
+            # Prompt le départ de la ronde et stock l'heure de début
             ronde_actuelle = self.depart_d_une_ronde(ronde_actuelle)
+            # Prompt la fin de la ronde et stock l'heure de fin
             ronde_actuelle = self.fin_d_une_ronde(ronde_actuelle)
+            # Gère le cas ou la ronde est la dernière du tournoi
             if int(numero_de_ronde_active == int(instance_de_tournoi.nombre_de_tour_du_tournoi)):
+                # Inscrit les informations de toutes les rondes en DB
                 self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table,
                                            numero_de_ronde_active)
+                # Tri la liste des participants en fonction du nombre de points tournoi
                 instance_de_tournoi.participants = GestionDeJoueur. \
                     fonction_decorateurs_pour_tri_participants(self.objet_gestion_joueur,
                                                                instance_de_tournoi.participants,
                                                                "points_tournoi")
+                # Affiche le classsement final du tournoi
                 Vue.affichage_classement_final_tournoi(self.vue_instance, instance_de_tournoi)
+            # Renvoi l'entité ronde_actuelle
             return ronde_actuelle
         else:
             MessageDErreur.message_d_erreur_tournoi_termine(self.vue_message_d_erreur)
@@ -377,7 +411,9 @@ class GestionDeTournoi:
     def serialisation_ronde_objet(self, rondes, players_table):
         """ Sérialise tous les objets contenus dans une ronde. """
         liste_match_serialized = []
+        # Boucle dans les matchs de la liste de matchs
         for match in rondes.liste_matchs:
+            # Recherche le joueur en DB correspondant aux nom et prénom entrés
             recherche = Query()
             match_serialized = Match.serialisation_match(match)
             resultat_rech_joueur1_dans_table = players_table.search((recherche.nom == match.joueur1[0].nom) &
@@ -387,7 +423,7 @@ class GestionDeTournoi:
                                                                     (recherche.sexe == match.joueur1[0].sexe) &
                                                                     (recherche.classement_elo == match.joueur1[0].
                                                                     classement_elo))
-
+            # Stocke dans la variable match sérialisé les informations du joueur récupérées en db
             match_serialized["joueur1"] = resultat_rech_joueur1_dans_table[0].doc_id
             match_serialized["joueur2"] = (players_table.search((recherche.nom == match.joueur2[0].nom) &
                                                                 (recherche.prenom == match.joueur2[0].prenom) &
@@ -396,20 +432,29 @@ class GestionDeTournoi:
                                                                 (recherche.sexe == match.joueur2[0].sexe) &
                                                                 (recherche.classement_elo == match.joueur2[0].
                                                                 classement_elo)))[0].doc_id
+            # Stocke dans la variable match sérialisé le tuple du match
             match_serialized["tuple_match"] = ([match_serialized["joueur1"], match_serialized["resultat_joueur1"]],
                                                [match_serialized["joueur2"], match_serialized["resultat_joueur2"]])
             liste_match_serialized.append(match_serialized)
+        # Sérialise la ronde
         ronde_serial = Ronde.serialisation_ronde(rondes)
+        # Stocke la liste des matchs dans la ronde sérialisée
         ronde_serial["liste_match"] = liste_match_serialized
+        # Retourne la ronde sérialisée
         return ronde_serial
 
     def recuperation_ronde_db(self, rondes, instance_de_tournoi, tournaments_table, players_table, ronde_active):
         """ Sérialise la ronde, la stocke dans la base tournaments, puis re-sérialise """
         liste_ronde_serial = []
+        # Vérifie si une ronde est en cours
         if ronde_active > 1:
+            # Stocke les rondes du tournoi dans la variable de liste de rondes sérialisées
             for ronde in instance_de_tournoi.rondes:
                 liste_ronde_serial.append(self.serialisation_ronde_objet(ronde, players_table))
+        # Serialise la ronde en cours
         serial_ronde = self.serialisation_ronde_objet(rondes, players_table)
+        # Ajout la ronde serialisée à la liste des autres rondes
         liste_ronde_serial.append(serial_ronde)
+        # Met à jour le tournoi avec la liste des rondes sérialisées en DB
         tournoi = Query()
         tournaments_table.update({"rondes": liste_ronde_serial}, (tournoi.nom == instance_de_tournoi.nom_du_tournoi))
