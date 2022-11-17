@@ -31,7 +31,5 @@ class Controleur:
         players_table = db.table('players')
         # Initialise la table tournoi
         tournaments_table = db.table('tournaments')
-        # Ajoute les joueurs prédéfinis à la table joueur
-        GestionDeJoueur.ajout_des_joueurs(self.gestion_joueur, players_table)
         # Lance la gestion du tournoi
         GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, players_table, tournaments_table)
