@@ -13,12 +13,15 @@ class TypeDeTournoi:
         self.objet_message_d_erreur = objet_message_d_erreur
 
     def choix_type_tournoi(self, type_de_tournoi, numero_de_ronde, instance_tournoi):
+        """ Compte les points et appaire les joueurs en fonction du type de tournoi choisi """
+        # Il n'y a que la methode suisse définie pour le moment
         if type_de_tournoi == "MethodeSuisse":
             return self.creation_des_matchs_methode_suisse(numero_de_ronde, instance_tournoi)
         else:
             MessageDErreur.message_type_tournoi_non_pris_en_charge(self.objet_message_d_erreur)
 
     def creation_des_matchs_methode_suisse(self, numero_de_ronde, instance_tournoi):
+        """ Cas de la methode suisse """
         # Tri des joueurs
         if int(numero_de_ronde) == 1:
             instance_tournoi.participants = \

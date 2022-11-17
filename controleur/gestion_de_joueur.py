@@ -22,17 +22,22 @@ class GestionDeJoueur:
     def recherche_correspondance_db(self, players_table, joueur_a_rechercher):
         """ Recherche toutes les correspondances d'un couple Nom/Prénom dans une base"""
         joueur = Query()
+        # Recherche dans la base players_table les entrées correspondant au nom et prénom défini
         resultat_recherche = players_table.search((joueur.nom == joueur_a_rechercher["nom"]) &
                                                   (joueur.prenom == joueur_a_rechercher["prenom"]))
+        # Réinitialise la variable utilisé pour l'itération des différents résultats
         i = 0
+        # Traite le cas où il y a plus d'un résultat correspondant au couple nom/prénom
         if len(resultat_recherche) > 1:
             for resultat in resultat_recherche:
                 Vue.affichage_resultat_recherche(self.vue_instance, resultat, i)
                 i += 1
             joueur_choisi = SaisieDeDonnees.choisir_un_joueur(self.vue_saisie_de_donnees)
             return resultat_recherche[joueur_choisi]
+        # Traite le cas où il y a un résultat correspondant au couple nom/prénom
         elif len(resultat_recherche) == 1:
             return resultat_recherche[0]
+        # Traite le cas où il n'y a pas de résultat correspondant au couple nom/prénom
         else:
             joueur_cree = self.creation_joueur_si_inexistant(players_table, joueur_a_rechercher)
             if joueur_cree != "":
@@ -126,46 +131,6 @@ class GestionDeJoueur:
         elif parametre_a_modifier == "points_tournoi":
             instance_tournoi.participants[indice_participant-1][1] = nouveau_parametre
         return instance_tournoi
-
-    def ajout_des_joueurs(self, players_table):
-        """ Ajout des joueurs """
-        # Pool de 28 joueurs statiques
-        players_table.truncate()
-        liste_joueurs = [Joueur("Nom01", "prénom01", "11/11/11", "M", 1650),
-                         Joueur("Nom02", "prénom02", "10/10/10", "F", 1435),
-                         Joueur("Nom03", "prénom03", "9/9/9", "U", 1983),
-                         Joueur("Nom04", "prénom04", "08/08/08", "M", 1945),
-                         Joueur("Nom05", "prénom05", "04/05/06", "F", 1345),
-                         Joueur("Nom06", "prénom06", "11/5/11", "M", 1580),
-                         Joueur("Nom07", "prénom07", "10/9/10", "F", 1415),
-                         Joueur("Nom17", "prénom17", "10/9/10", "F", 1615),
-                         Joueur("Nom18", "prénom18", "9/4/9", "U", 1153),
-                         Joueur("Nom19", "prénom19", "11/11/11", "M", 1258),
-                         Joueur("Nom20", "prénom20", "10/10/10", "F", 1338),
-                         Joueur("Nom21", "prénom21", "11/11/11", "M", 1250),
-                         Joueur("Nom22", "prénom22", "10/10/10", "F", 1335),
-                         Joueur("Nom08", "prénom08", "9/4/9", "U", 1953),
-                         Joueur("Nom01", "prénom01", "10/10/10", "F", 1222),
-                         Joueur("Nom09", "prénom09", "11/11/11", "M", 1454),
-                         Joueur("Nom10", "prénom10", "10/10/10", "F", 1536),
-                         Joueur("Nom11", "prénom11", "11/11/11", "M", 1450),
-                         Joueur("Nom12", "prénom12", "10/10/10", "F", 1535),
-                         Joueur("Nom13", "prénom13", "9/9/9", "U", 1783),
-                         Joueur("Nom14", "prénom14", "08/08/08", "M", 1245),
-                         Joueur("Nom15", "prénom15", "04/05/06", "F", 1545),
-                         Joueur("Nom01", "prénom01", "09/09/09", "M", 1502),
-                         Joueur("Nom16", "prénom16", "11/5/11", "M", 1380),
-                         Joueur("Nom23", "prénom23", "9/9/9", "U", 1483),
-                         Joueur("Nom24", "prénom24", "08/08/08", "M", 1545),
-                         Joueur("Nom25", "prénom25", "04/05/06", "F", 1645),
-                         Joueur("Nom26", "prénom26", "11/5/11", "M", 1780),
-                         Joueur("Nom27", "prénom27", "10/9/10", "F", 1815),
-                         Joueur("Nom28", "prénom28", "9/4/9", "U", 1053)]
-        liste_joueurs_db = []
-        for joueur in liste_joueurs:
-            liste_joueurs_db.append(Joueur.serialisation_joueur(joueur))
-        players_table.insert_multiple(liste_joueurs_db)
-        return liste_joueurs
 
     def fonction_decorateurs_pour_tri_participants(self, liste_participants, type_tri):
         """ Ajout d'un indice à la liste des participants, la trie, puis supprime l'indice et renvoi la liste triée"""
