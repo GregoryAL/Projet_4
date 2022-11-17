@@ -27,9 +27,9 @@ class Controleur:
         """ Lance le programme """
         # Initialise la base de donnée
         db = TinyDB('db.json')
-        # Initialise la table joueur
+        # Initialise la table des joueurs
         players_table = db.table('players')
-        # Initialise la table tournoi
+        # Initialise la table des tournois
         tournaments_table = db.table('tournaments')
         # Lance la gestion du tournoi
         GestionDeTournoi.gestion_du_tournoi(self.gestion_tournoi, players_table, tournaments_table)
