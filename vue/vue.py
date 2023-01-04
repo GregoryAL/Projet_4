@@ -103,7 +103,7 @@ class Vue:
                   + " points \n")
         if len(instance_de_tournoi.participants) > 2:
             print(" 3ème place : " + instance_de_tournoi.participants[2][0].prenom + " " +
-                  instance_de_tournoi.participants[2][0].nom + " , avec " + str(instance_de_tournoi.participants[0][1])
+                  instance_de_tournoi.participants[2][0].nom + " , avec " + str(instance_de_tournoi.participants[2][1])
                   + " points \n"
                   "______________________________________________________________________________________________"
                   "__\n")

@@ -332,9 +332,9 @@ class GestionDeTournoi:
                     match_de_ronde.joueur1[1] += 0
                     match_de_ronde.resultat_joueur1 = 0
                 elif resultat_du_match == "N":
-                    match_de_ronde.resultat_joueur2 = 0.5
-                    match_de_ronde.joueur1[1] += 0.5
                     match_de_ronde.resultat_joueur1 = 0.5
+                    match_de_ronde.joueur1[1] += 0.5
+                    match_de_ronde.resultat_joueur2 = 0.5
                     match_de_ronde.joueur2[1] += 0.5
         return ronde_a_clore
 
