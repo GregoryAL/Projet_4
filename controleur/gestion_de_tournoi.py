@@ -68,7 +68,19 @@ class GestionDeTournoi:
                             instance_de_tournoi.rondes.append(ronde)
                     # Enregistre le tournoi en cours
                     elif choix_utilisateur == 4:
-                        input("Enregistrement de tournoi en construction")
+                        # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire
+                        if not isinstance(instance_de_tournoi, Tournoi):
+                            MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
+                        else:
+                            # Inscrit les informations de toutes les rondes en DB
+                            if numero_de_ronde_active >= 1:
+                                self.recuperation_ronde_db(ronde, instance_de_tournoi, tournaments_table, players_table,
+                                                           numero_de_ronde_active)
+                            Vue.enregistrement_de_tournoi_ok(self.vue_instance)
+                            MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
+                            numero_de_ronde_active = 0
+                            instance_de_tournoi = []
+                            ronde = []
                     # Ajoute un joueur dans la base des joueurs
                     elif choix_utilisateur == 5:
                         # Ajout d'un joueur

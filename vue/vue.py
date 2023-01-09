@@ -57,6 +57,10 @@ class Vue:
                   " | Sexe : " + str(liste_duplicate[i].sexe) +
                   " | Classement elo : " + str(liste_duplicate[i].classement_elo) + "\n")
 
+    def enregistrement_de_tournoi_ok(self):
+        """ Affiche un message indiquant l'enregistrement du tournoi """
+        print("Le tournoi a bien été enregistré...")
+
     def message_de_sortie_1(self):
         """ Affiche un message de sortie """
         print("Merci d'avoir utilisé le logiciel de gestion de tournoi d'échec.\n")
