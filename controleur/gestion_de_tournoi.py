@@ -38,7 +38,7 @@ class GestionDeTournoi:
             try:
                 # Tant que l'utilisateur ne signale pas vouloir sortir du programme en saisissant 6 quand le menu
                 # s'affiche, reste dans la boucle du menu principal du tournoi.
-                while choix_utilisateur != 6:
+                while choix_utilisateur != 8:
                     # Appel la vue proposant les choix disponibles dans le menu principal et récupère le choix
                     # utilisateur.
                     choix_utilisateur = int(SaisieDeDonnees.menu(self.vue_saisie_de_donnees))
@@ -50,8 +50,11 @@ class GestionDeTournoi:
                             recuperation_choix_type_tournoi(self.vue_saisie_de_donnees)
                         # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
                         instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
+                    # Chargement d'un tournoi
+                    if choix_utilisateur == 2:
+                        input("chargement tournoi en construction")
                     # Lancement de la ronde suivante
-                    elif choix_utilisateur == 2:
+                    elif choix_utilisateur == 3:
                         # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire
                         if not isinstance(instance_de_tournoi, Tournoi):
                             MessageDErreur.message_d_erreur_tournoi_n_existe_pas(self.vue_message_d_erreur)
@@ -63,13 +66,16 @@ class GestionDeTournoi:
                                                               players_table, choix_type_tournoi, tournaments_table)
                             # Ajout les informations de la ronde à l'instance de tournoi en cours
                             instance_de_tournoi.rondes.append(ronde)
+                    # Enregistre le tournoi en cours
+                    elif choix_utilisateur == 4:
+                        input("Enregistrement de tournoi en construction")
                     # Ajoute un joueur dans la base des joueurs
-                    elif choix_utilisateur == 3:
+                    elif choix_utilisateur == 5:
                         # Ajout d'un joueur
                         joueur_a_ajouter = GestionDeJoueur.creation_d_un_joueur(self.objet_gestion_joueur, "")
                         GestionDeJoueur.ajout_joueur_db(self.objet_gestion_joueur, joueur_a_ajouter, players_table)
                     # Modifie un paramètre d'un joueur ou d'un participant
-                    elif choix_utilisateur == 4:
+                    elif choix_utilisateur == 6:
                         # Demande à l'utilisateur de sélectionner si c'est un joueur de la base joueur ou un
                         # participant du tournoi à modifier
                         base_a_modifier = int(SaisieDeDonnees.selection_base_a_modifier(self.vue_saisie_de_donnees))
@@ -81,7 +87,7 @@ class GestionDeTournoi:
                             instance_de_tournoi = self.modification_du_participant_dans_instance_tournoi(
                                 instance_de_tournoi)
                     # Affichage rapports joueurs, participants, tournoi, tours d'un tournoi, matchs d'un tournoi
-                    elif choix_utilisateur == 5:
+                    elif choix_utilisateur == 7:
                         # Vérifie si un tournoi est en cours et affiche un menu des rapports disponibles réduit
                         # (sans la liste des participants) si ce n'est pas le cas
                         if not isinstance(instance_de_tournoi, Tournoi):
@@ -89,7 +95,7 @@ class GestionDeTournoi:
                         else:
                             self.menu_rapport(players_table, tournaments_table, instance_de_tournoi)
                     # Sortie du programme
-                    elif choix_utilisateur == 6:
+                    elif choix_utilisateur == 8:
                         # Affiche un message de sortie
                         Vue.message_de_sortie_1(self.vue_instance)
                     else:
