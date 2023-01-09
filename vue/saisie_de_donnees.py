@@ -83,17 +83,23 @@ class SaisieDeDonnees:
             separateur = ""
             creation_tournoi = "[1] Selection des joueurs participants au tournoi puis création et lancement du " \
                                "tournoi"
-            lancement_ronde = "[2] Lancement de la ronde suivante                                                     "
-            ajout_joueur = "[3] Ajout d'un joueur dans la liste des joueurs                                        "
-            modification_joueur = "[4] Modification d'un joueur ou d'un participant                                " \
+            chargement_tournoi = "[2] Chargement d'un tournoi non terminé                                          " \
+                                 "      "
+            lancement_ronde = "[3] Lancement de la ronde suivante                                                     "
+            enregistrement_tournoi = "[4] Enregistre le tournoi en cours                                            " \
+                                     "         "
+            ajout_joueur = "[5] Ajout d'un joueur dans la liste des joueurs                                        "
+            modification_joueur = "[6] Modification d'un joueur ou d'un participant                                " \
                                   "       "
-            rapport = "[5] Rapport                                                                            "
-            sortie_programme = "[6] Sortie du Programme                                                            " \
+            rapport = "[7] Rapport                                                                            "
+            sortie_programme = "[8] Sortie du Programme                                                            " \
                                "    "
             print(entete.center(119) + "\n" +
                   separateur.center(119, "_") + "\n" +
                   creation_tournoi.center(119) + "\n" +
+                  chargement_tournoi.center(119) + "\n" +
                   lancement_ronde.center(119) + "\n" +
+                  enregistrement_tournoi.center(119) + "\n" +
                   ajout_joueur.center(119) + "\n" +
                   modification_joueur.center(119) + "\n" +
                   rapport.center(119) + "\n" +
