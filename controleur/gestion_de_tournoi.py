@@ -401,7 +401,7 @@ class GestionDeTournoi:
         # Lancement de la ronde suivante
         # Vérifie si la dernière ronde a été jouée et renvoi un message indiquant que le tournoi est terminé si c'est
         # le cas
-        if int(numero_de_ronde_active) <= int(instance_de_tournoi.nombre_de_tour_du_tournoi):
+        if instance_de_tournoi.completion == 0:
             # Défini les appairages de match et les stocks dans la variable ronde
             ronde_actuelle = self.appairage_match_d_une_ronde(numero_de_ronde_active, instance_de_tournoi,
                                                               choix_type_tournoi)
@@ -411,6 +411,8 @@ class GestionDeTournoi:
             ronde_actuelle = self.fin_d_une_ronde(ronde_actuelle)
             # Gère le cas ou la ronde est la dernière du tournoi
             if int(numero_de_ronde_active == int(instance_de_tournoi.nombre_de_tour_du_tournoi)):
+                # Passe la complétion du tournoi à 1 indiquant qu'il est terminé
+                instance_de_tournoi.completion = 1
                 # Inscrit les informations de toutes les rondes en DB
                 self.recuperation_ronde_db(ronde_actuelle, instance_de_tournoi, tournaments_table, players_table,
                                            numero_de_ronde_active)
