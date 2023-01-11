@@ -53,6 +53,8 @@ class GestionDeTournoi:
                     # Chargement d'un tournoi
                     if choix_utilisateur == 2:
                         input("chargement tournoi en construction")
+                        Vue.affichage_liste_de_tournoi_non_termine(self.vue_instance, tournaments_table)
+                        input()
                     # Lancement de la ronde suivante
                     elif choix_utilisateur == 3:
                         # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire

@@ -92,6 +92,21 @@ class Vue:
             except (ValueError, TypeError):
                 MessageDErreur.message_d_erreur(self.objet_message_erreur)
 
+    def affichage_liste_de_tournoi_non_termine(self, tournaments_table):
+        """ Affiche la liste des tournois non terminés"""
+        for tournament in tournaments_table:
+            if str(tournament["completion"]) == "Non":
+                try:
+                    print("ID : " + str(tournament.doc_id) +
+                          " Nom du Tournoi [" + str(tournament["nom"]) + "] Lieu : " + str(tournament["lieu"]) +
+                          " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
+                          " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
+                          " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
+                          " Commentaires : " + str(tournament["commentaire"])
+                          )
+                except (ValueError, TypeError):
+                    MessageDErreur.message_d_erreur(self.objet_message_erreur)
+
     def affichage_classement_final_tournoi(self, instance_de_tournoi):
         """ Affiche le classement final """
         self.clean_screen()
