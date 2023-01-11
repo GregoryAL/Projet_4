@@ -86,7 +86,9 @@ class Vue:
                       " Date du Tournoi : " + str(tournament["dates_du_tournoi"]) +
                       " Type de controle du temps : " + str(tournament["type_controle_de_temps"]) +
                       " Nombre de participant : " + str(tournament["nombre_de_participants"]) +
-                      " Commentaires : " + str(tournament["commentaire"]))
+                      " Commentaires : " + str(tournament["commentaire"]) +
+                      " Tournoi terminé : " + str(tournament["completion"])
+                      )
             except (ValueError, TypeError):
                 MessageDErreur.message_d_erreur(self.objet_message_erreur)
 

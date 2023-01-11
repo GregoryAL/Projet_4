@@ -11,7 +11,7 @@ class Tournoi:
         self.type_de_controle_du_temps = type_de_controle_du_temps
         self.nombre_de_participants = nombre_de_participants
         self.commentaire = commentaire
-        self.completion = 0
+        self.completion = "Non"
         self.participants = []
         self.rondes = []
 
