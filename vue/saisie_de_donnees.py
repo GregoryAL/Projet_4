@@ -112,6 +112,11 @@ class SaisieDeDonnees:
             print("Choix non reconnu...\n")
             return 0
 
+    def recuperation_tournoi_a_terminer(self, tournaments_table):
+        Vue.affichage_liste_de_tournoi_non_termine(self.vue, tournaments_table)
+        tournoi_a_terminer = input("\nMerci de saisir l'ID du tournoi à terminer\n  :  ")
+        return tournoi_a_terminer
+
     def recuperation_choix_type_tournoi(self):
         """ Récupération du choix de type de tournoi """
         test_de_choix_valide = False

@@ -52,9 +52,9 @@ class GestionDeTournoi:
                         instance_de_tournoi = self.initialisation_tournoi(players_table, tournaments_table)
                     # Chargement d'un tournoi
                     if choix_utilisateur == 2:
-                        input("chargement tournoi en construction")
-                        Vue.affichage_liste_de_tournoi_non_termine(self.vue_instance, tournaments_table)
-                        input()
+                        id_tournoi_a_reprendre = SaisieDeDonnees.\
+                            recuperation_tournoi_a_terminer(self.vue_saisie_de_donnees, tournaments_table)
+                        input("\n Le tournoi à reprendre est le : " + str(id_tournoi_a_reprendre))
                     # Lancement de la ronde suivante
                     elif choix_utilisateur == 3:
                         # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire
