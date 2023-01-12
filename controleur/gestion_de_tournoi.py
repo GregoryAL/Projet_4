@@ -55,6 +55,8 @@ class GestionDeTournoi:
                         id_tournoi_a_reprendre = SaisieDeDonnees.\
                             recuperation_tournoi_a_terminer(self.vue_saisie_de_donnees, tournaments_table)
                         input("\n Le tournoi à reprendre est le : " + str(id_tournoi_a_reprendre))
+                        instance_de_tournoi = self.instanciation_tournoi_db(id_tournoi_a_reprendre, tournaments_table)
+                        numero_de_ronde_active = len(instance_de_tournoi.rondes)
                     # Lancement de la ronde suivante
                     elif choix_utilisateur == 3:
                         # Test si un tournoi est en cours et renvoi un message d'erreur le cas contraire
@@ -292,6 +294,48 @@ class GestionDeTournoi:
                                       info_tournoi["nombre_de_participant"],
                                       info_tournoi["nombre_de_tour"],
                                       info_tournoi["commentaires"])
+        return instance_de_tournoi
+
+    def instanciation_tournoi_db(self, id_tournoi, tournaments_table):
+        """ Recupère un tournoi en utilisant les paramètres mis en paramètres """
+        # Recupère les informations du tournoi à récupérer dans une variable
+        info_tournoi_recuperees = tournaments_table.get(doc_id=int(id_tournoi))
+        # Création du dictionnaire mettant en forme les informations du tournoi pour pouvoir les instancier
+        info_tournoi_a_charger = {}
+        info_tournoi_a_charger["nom_du_tournoi"] = info_tournoi_recuperees["nom"]
+        info_tournoi_a_charger["lieu_du_tournoi"] = info_tournoi_recuperees["lieu"]
+        info_tournoi_a_charger["date_de_tournoi"] = info_tournoi_recuperees["dates_du_tournoi"]
+        info_tournoi_a_charger["type_de_controle_du_temps"] = info_tournoi_recuperees["type_controle_de_temps"]
+        info_tournoi_a_charger["nombre_de_participant"] = info_tournoi_recuperees["nombre_de_participants"]
+        info_tournoi_a_charger["nombre_de_tour"] = info_tournoi_recuperees["nombre_de_tour"]
+        info_tournoi_a_charger["commentaires"] = info_tournoi_recuperees["commentaire"]
+        instance_de_tournoi = self.creation_du_tournoi(info_tournoi_a_charger)
+        instance_de_tournoi.completion = info_tournoi_recuperees["completion"]
+        instance_de_tournoi.rondes = info_tournoi_recuperees["rondes"]
+        instance_de_tournoi.participants = []
+        i = 0
+
+        """liste_participants.append([Joueur(participant["nom"], participant["prenom"],
+                                          participant["date_de_naissance"], participant["sexe"],
+                                          participant["classement_elo"]), 0])"""
+
+        while i < len(info_tournoi_recuperees["participants"]):
+            print(info_tournoi_recuperees["participants"][i]["nom"])
+            instance_de_tournoi.participants.append([Joueur(info_tournoi_recuperees["participants"][i]["nom"],
+                                                     info_tournoi_recuperees["participants"][i]["prenom"],
+                                                     info_tournoi_recuperees["participants"][i]["date_de_naissance"],
+                                                     info_tournoi_recuperees["participants"][i]["sexe"],
+                                                     info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
+            i += 1
+        print(len(instance_de_tournoi.participants))
+        print(instance_de_tournoi.participants)
+        print(len(instance_de_tournoi.rondes))
+        print(instance_de_tournoi.completion)
+        print(str(info_tournoi_recuperees))
+        print(str(info_tournoi_a_charger))
+        print(str(instance_de_tournoi.rondes))
+        print(str(instance_de_tournoi.participants))
+        input()
         return instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
