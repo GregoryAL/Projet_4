@@ -313,20 +313,8 @@ class GestionDeTournoi:
         instance_de_tournoi.completion = info_tournoi_recuperees["completion"]
         instance_de_tournoi.rondes = info_tournoi_recuperees["rondes"]
         instance_de_tournoi.participants = []
-        i = 0
+        self.ajout_joueur_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
 
-        """liste_participants.append([Joueur(participant["nom"], participant["prenom"],
-                                          participant["date_de_naissance"], participant["sexe"],
-                                          participant["classement_elo"]), 0])"""
-
-        while i < len(info_tournoi_recuperees["participants"]):
-            print(info_tournoi_recuperees["participants"][i]["nom"])
-            instance_de_tournoi.participants.append([Joueur(info_tournoi_recuperees["participants"][i]["nom"],
-                                                     info_tournoi_recuperees["participants"][i]["prenom"],
-                                                     info_tournoi_recuperees["participants"][i]["date_de_naissance"],
-                                                     info_tournoi_recuperees["participants"][i]["sexe"],
-                                                     info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
-            i += 1
         print(len(instance_de_tournoi.participants))
         print(instance_de_tournoi.participants)
         print(len(instance_de_tournoi.rondes))
@@ -337,6 +325,17 @@ class GestionDeTournoi:
         print(str(instance_de_tournoi.participants))
         input()
         return instance_de_tournoi
+
+    def ajout_joueur_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
+        i=0
+        while i < len(info_tournoi_recuperees["participants"]):
+            print(info_tournoi_recuperees["participants"][i]["nom"])
+            instance_de_tournoi.participants.append([Joueur(info_tournoi_recuperees["participants"][i]["nom"],
+                                                     info_tournoi_recuperees["participants"][i]["prenom"],
+                                                     info_tournoi_recuperees["participants"][i]["date_de_naissance"],
+                                                     info_tournoi_recuperees["participants"][i]["sexe"],
+                                                     info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
+            i += 1
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
