@@ -33,6 +33,10 @@ class MessageDErreur:
         """ Affiche un message d'erreur, car l'utilisateur n'a pas entré un chiffre """
         input(" L'entrée n'était pas un nombre. Merci d'entrer un nombre")
 
+    def message_d_erreur_d_input_chiffre_pair(self):
+        """ Affiche un message d'erreur, car l'utilisateur n'a pas entré un chiffre """
+        input(" L'entrée n'était pas un nombre pair. Merci d'entrer un nombre pair")
+
     def message_d_erreur_d_input(self):
         """ Affiche un message d'erreur, car l'utilisateur a entré un chiffre en dehors des options proposées """
         print("Merci de taper un chiffre entre 1 et 6 à l'affichage du menu")

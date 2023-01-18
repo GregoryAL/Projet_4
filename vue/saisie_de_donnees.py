@@ -202,6 +202,20 @@ class SaisieDeDonnees:
         """ Récupère le nombre de joueurs participants au tournoi """
         return self.verification_champs_est_nombre("Merci de saisir le nombre de participants au tournoi. \n")
 
+    def verification_champs_est_nombre_pair(self, type_valeur_recherchee):
+        """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle
+        jusqu'à ce que la valeur entree soit un chiffre pair """
+        test_si_valeur_est_nombre = False
+        valeur_recherchee = ""
+        while test_si_valeur_est_nombre is False:
+            valeur_recherchee = input(type_valeur_recherchee)
+            test_si_valeur_est_nombre = self.test_si_variable_un_nombre_pair(valeur_recherchee)
+            if test_si_valeur_est_nombre is False:
+                MessageDErreur.message_d_erreur_d_input_chiffre_pair(self.message_d_erreur)
+                Vue.clean_screen(self.vue)
+        else:
+            return int(valeur_recherchee)
+
     def recuperation_id_tournoi(self, attribut):
         """ Récupère l'ID du tournoi choisi """
         return self.verification_champs_est_nombre("_______________________________________________________________"
@@ -254,6 +268,18 @@ class SaisieDeDonnees:
         try:
             int(variable)
             return True
+        except (TypeError, ValueError):
+            return False
+
+    def test_si_variable_un_nombre_pair(self, variable):
+        """ Test si une variable est un nombre pair et renvoie true / false """
+        try:
+            estpair = int(variable)/2
+            int(estpair)
+            if int(estpair) == float(estpair):
+                return True
+            else:
+                return False
         except (TypeError, ValueError):
             return False
 

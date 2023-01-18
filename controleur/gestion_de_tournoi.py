@@ -311,23 +311,22 @@ class GestionDeTournoi:
         info_tournoi_a_charger["commentaires"] = info_tournoi_recuperees["commentaire"]
         instance_de_tournoi = self.creation_du_tournoi(info_tournoi_a_charger)
         instance_de_tournoi.completion = info_tournoi_recuperees["completion"]
-        instance_de_tournoi.rondes = info_tournoi_recuperees["rondes"]
         instance_de_tournoi.participants = []
-        self.ajout_joueur_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
+        instance_de_tournoi = self.ajout_joueur_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
+        instance_de_tournoi.rondes = []
+        instance_de_tournoi = self.ajout_ronde_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
 
         print(len(instance_de_tournoi.participants))
         print(instance_de_tournoi.participants)
         print(len(instance_de_tournoi.rondes))
-        print(instance_de_tournoi.completion)
-        print(str(info_tournoi_recuperees))
-        print(str(info_tournoi_a_charger))
         print(str(instance_de_tournoi.rondes))
         print(str(instance_de_tournoi.participants))
         input()
         return instance_de_tournoi
 
     def ajout_joueur_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
-        i=0
+        """ Ajout les joueurs avec les informations recupérées dans l'instance de tournoi"""
+        i = 0
         while i < len(info_tournoi_recuperees["participants"]):
             print(info_tournoi_recuperees["participants"][i]["nom"])
             instance_de_tournoi.participants.append([Joueur(info_tournoi_recuperees["participants"][i]["nom"],
@@ -336,6 +335,46 @@ class GestionDeTournoi:
                                                      info_tournoi_recuperees["participants"][i]["sexe"],
                                                      info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
             i += 1
+        return instance_de_tournoi
+
+    def ajout_ronde_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
+        """ Ajout les joueurs avec les informations recupérées dans l'instance de tournoi"""
+        i = 0
+        while i < len(info_tournoi_recuperees["rondes"]):
+            instance_de_tournoi.rondes.append(Ronde(info_tournoi_recuperees["rondes"][i]["nom_de_la_ronde"]))
+            instance_de_tournoi.rondes[i].date_heure_debut_de_ronde = (info_tournoi_recuperees["rondes"][i]
+                                                                    ["date_heure_debut_ronde"])
+            instance_de_tournoi.rondes[i].date_heure_fin_de_ronde = (info_tournoi_recuperees["rondes"][i]
+                                                                  ["date_heure_fin_ronde"])
+            instance_de_tournoi = self.ajout_match_instance_ronde(info_tournoi_recuperees, instance_de_tournoi, i)
+            print(instance_de_tournoi.rondes[i].liste_matchs[0].joueur1)
+            print(instance_de_tournoi.rondes[i].liste_matchs[0].resultat_joueur1)
+            print(instance_de_tournoi.rondes[i].liste_matchs[0].joueur2)
+            print(instance_de_tournoi.rondes[i].liste_matchs[0].resultat_joueur2)
+            i += 1
+        return instance_de_tournoi
+
+    def ajout_match_instance_ronde(self, info_tournoi_recuperees, instance_de_tournoi, numero_de_ronde):
+        """ Ajout les matchs avec les informations récupérées dans l'instance de ronde inclus dans l'instance de
+        tournoi """
+        j = 0
+        print(info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["joueur1"])
+        while j < len(info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"]):
+            instance_de_tournoi.rondes[numero_de_ronde].liste_matchs.append(Match(info_tournoi_recuperees["rondes"]
+                                                                                  [numero_de_ronde]["liste_match"][j]
+                                                                                  ["joueur1"],
+                                                                                  info_tournoi_recuperees["rondes"]
+                                                                                  [numero_de_ronde]["liste_match"][j]
+                                                                                  ["joueur2"]))
+            print(instance_de_tournoi.rondes[numero_de_ronde].liste_matchs)
+            instance_de_tournoi.rondes[numero_de_ronde].liste_matchs[j].\
+                resultat_joueur1 = \
+                info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur1"]
+            instance_de_tournoi.rondes[numero_de_ronde].liste_matchs[j]. \
+                resultat_joueur2 = \
+                info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur2"]
+            j += 1
+        return instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
         """ Mécanisme de fonctionnement d'une ronde"""
@@ -404,9 +443,9 @@ class GestionDeTournoi:
     def initialisation_tournoi(self, players_table, tournaments_table):
         """ Récupère les informations nécessaires et crée le tournoi. """
         # Recuperation des infos participants / tournoi, lancement du tournoi, déroulement du tournoi
-        nombre_de_participants = SaisieDeDonnees.verification_champs_est_nombre(self.vue_saisie_de_donnees,
-                                                                                "Veuillez entrez le nombre "
-                                                                                "de participants : \n")
+        nombre_de_participants = SaisieDeDonnees.verification_champs_est_nombre_pair(self.vue_saisie_de_donnees,
+                                                                                     "Veuillez entrez le nombre "
+                                                                                     "de participants : \n")
         # Récupère la liste des participants
         liste_participants_tournoi = self.selection_des_participants_db(players_table, nombre_de_participants)
         # Gère le cas où un problème serait arrivé dans la sélection de la liste des participants
