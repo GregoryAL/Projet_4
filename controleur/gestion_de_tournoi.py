@@ -32,7 +32,7 @@ class GestionDeTournoi:
         instance_de_tournoi = "Aucun"
         numero_de_ronde_active = 0
         choix_utilisateur = 0
-        choix_type_tournoi = ""
+        choix_type_tournoi = "MethodeSuisse"
         # Lance la boucle gérant le menu principal du tournoi
         while sortie_tournoi == "Non":
             try:
@@ -56,6 +56,8 @@ class GestionDeTournoi:
                             recuperation_tournoi_a_terminer(self.vue_saisie_de_donnees, tournaments_table)
                         input("\n Le tournoi à reprendre est le : " + str(id_tournoi_a_reprendre))
                         instance_de_tournoi = self.instanciation_tournoi_db(id_tournoi_a_reprendre, tournaments_table)
+                        print(str(instance_de_tournoi.nom_du_tournoi))
+                        input()
                         numero_de_ronde_active = len(instance_de_tournoi.rondes)
                     # Lancement de la ronde suivante
                     elif choix_utilisateur == 3:
@@ -315,12 +317,7 @@ class GestionDeTournoi:
         instance_de_tournoi = self.ajout_joueur_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
         instance_de_tournoi.rondes = []
         instance_de_tournoi = self.ajout_ronde_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
-
-        print(len(instance_de_tournoi.participants))
-        print(instance_de_tournoi.participants)
-        print(len(instance_de_tournoi.rondes))
-        print(str(instance_de_tournoi.rondes))
-        print(str(instance_de_tournoi.participants))
+        print(str(instance_de_tournoi.nom_du_tournoi))
         input()
         return instance_de_tournoi
 
@@ -335,6 +332,8 @@ class GestionDeTournoi:
                                                      info_tournoi_recuperees["participants"][i]["sexe"],
                                                      info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
             i += 1
+        print(str(instance_de_tournoi.nom_du_tournoi))
+        input()
         return instance_de_tournoi
 
     def ajout_ronde_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
@@ -347,11 +346,9 @@ class GestionDeTournoi:
             instance_de_tournoi.rondes[i].date_heure_fin_de_ronde = (info_tournoi_recuperees["rondes"][i]
                                                                   ["date_heure_fin_ronde"])
             instance_de_tournoi = self.ajout_match_instance_ronde(info_tournoi_recuperees, instance_de_tournoi, i)
-            print(instance_de_tournoi.rondes[i].liste_matchs[0].joueur1)
-            print(instance_de_tournoi.rondes[i].liste_matchs[0].resultat_joueur1)
-            print(instance_de_tournoi.rondes[i].liste_matchs[0].joueur2)
-            print(instance_de_tournoi.rondes[i].liste_matchs[0].resultat_joueur2)
             i += 1
+        print(str(instance_de_tournoi.nom_du_tournoi))
+        input()
         return instance_de_tournoi
 
     def ajout_match_instance_ronde(self, info_tournoi_recuperees, instance_de_tournoi, numero_de_ronde):
@@ -374,6 +371,8 @@ class GestionDeTournoi:
                 resultat_joueur2 = \
                 info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur2"]
             j += 1
+        print(str(instance_de_tournoi.nom_du_tournoi))
+        input()
         return instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
