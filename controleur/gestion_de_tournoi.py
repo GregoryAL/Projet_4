@@ -55,7 +55,8 @@ class GestionDeTournoi:
                         id_tournoi_a_reprendre = SaisieDeDonnees.\
                             recuperation_tournoi_a_terminer(self.vue_saisie_de_donnees, tournaments_table)
                         input("\n Le tournoi à reprendre est le : " + str(id_tournoi_a_reprendre))
-                        instance_de_tournoi = self.instanciation_tournoi_db(id_tournoi_a_reprendre, tournaments_table)
+                        instance_de_tournoi = self.instanciation_tournoi_db(id_tournoi_a_reprendre, tournaments_table,
+                                                                            players_table)
                         print(str(instance_de_tournoi.nom_du_tournoi))
                         input()
                         numero_de_ronde_active = len(instance_de_tournoi.rondes)
@@ -298,7 +299,7 @@ class GestionDeTournoi:
                                       info_tournoi["commentaires"])
         return instance_de_tournoi
 
-    def instanciation_tournoi_db(self, id_tournoi, tournaments_table):
+    def instanciation_tournoi_db(self, id_tournoi, tournaments_table, players_table):
         """ Recupère un tournoi en utilisant les paramètres mis en paramètres """
         # Recupère les informations du tournoi à récupérer dans une variable
         info_tournoi_recuperees = tournaments_table.get(doc_id=int(id_tournoi))
@@ -316,27 +317,23 @@ class GestionDeTournoi:
         instance_de_tournoi.participants = []
         instance_de_tournoi = self.ajout_joueur_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
         instance_de_tournoi.rondes = []
-        instance_de_tournoi = self.ajout_ronde_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi)
-        print(str(instance_de_tournoi.nom_du_tournoi))
-        input()
+        instance_de_tournoi = self.ajout_ronde_instance_tournoi(info_tournoi_recuperees, instance_de_tournoi,
+                                                                players_table)
         return instance_de_tournoi
 
     def ajout_joueur_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
         """ Ajout les joueurs avec les informations recupérées dans l'instance de tournoi"""
         i = 0
         while i < len(info_tournoi_recuperees["participants"]):
-            print(info_tournoi_recuperees["participants"][i]["nom"])
             instance_de_tournoi.participants.append([Joueur(info_tournoi_recuperees["participants"][i]["nom"],
                                                      info_tournoi_recuperees["participants"][i]["prenom"],
                                                      info_tournoi_recuperees["participants"][i]["date_de_naissance"],
                                                      info_tournoi_recuperees["participants"][i]["sexe"],
                                                      info_tournoi_recuperees["participants"][i]["classement_elo"]), 0])
             i += 1
-        print(str(instance_de_tournoi.nom_du_tournoi))
-        input()
         return instance_de_tournoi
 
-    def ajout_ronde_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi):
+    def ajout_ronde_instance_tournoi(self, info_tournoi_recuperees, instance_de_tournoi, players_table):
         """ Ajout les joueurs avec les informations recupérées dans l'instance de tournoi"""
         i = 0
         while i < len(info_tournoi_recuperees["rondes"]):
@@ -345,25 +342,43 @@ class GestionDeTournoi:
                                                                     ["date_heure_debut_ronde"])
             instance_de_tournoi.rondes[i].date_heure_fin_de_ronde = (info_tournoi_recuperees["rondes"][i]
                                                                   ["date_heure_fin_ronde"])
-            instance_de_tournoi = self.ajout_match_instance_ronde(info_tournoi_recuperees, instance_de_tournoi, i)
+            instance_de_tournoi = self.ajout_match_instance_ronde(info_tournoi_recuperees, instance_de_tournoi, i,
+                                                                  players_table)
             i += 1
-        print(str(instance_de_tournoi.nom_du_tournoi))
-        input()
         return instance_de_tournoi
 
-    def ajout_match_instance_ronde(self, info_tournoi_recuperees, instance_de_tournoi, numero_de_ronde):
+    def recuperation_joueur_db_par_id(self, id_joueur, players_table):
+        """ Récupère les informations d'un joueur dans la DB en fonction de l'ID """
+        return players_table.get(doc_id=int(id_joueur))
+
+    def recuperation_indice_participant_pour_match(self, id_joueur, players_table, instance_de_tournoi):
+        """ formate les informations recupérées dans la DB via l'ID d'un joueur"""
+        information_joueur = self.recuperation_joueur_db_par_id(id_joueur, players_table)
+        h = 0
+        matching_name = False
+        while matching_name is False:
+            if instance_de_tournoi.participants[h][0].nom == (information_joueur.get("nom")):
+                matching_name = True
+            else:
+                h += 1
+        return h
+
+
+    def ajout_match_instance_ronde(self, info_tournoi_recuperees, instance_de_tournoi, numero_de_ronde, players_table):
         """ Ajout les matchs avec les informations récupérées dans l'instance de ronde inclus dans l'instance de
         tournoi """
         j = 0
-        print(info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["joueur1"])
         while j < len(info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"]):
-            instance_de_tournoi.rondes[numero_de_ronde].liste_matchs.append(Match(info_tournoi_recuperees["rondes"]
-                                                                                  [numero_de_ronde]["liste_match"][j]
-                                                                                  ["joueur1"],
-                                                                                  info_tournoi_recuperees["rondes"]
-                                                                                  [numero_de_ronde]["liste_match"][j]
-                                                                                  ["joueur2"]))
-            print(instance_de_tournoi.rondes[numero_de_ronde].liste_matchs)
+            joueur1 = self.recuperation_indice_participant_pour_match(info_tournoi_recuperees["rondes"]
+                                                                      [numero_de_ronde]["liste_match"][j]["joueur1"],
+                                                                      players_table, instance_de_tournoi)
+            joueur2 = self.recuperation_indice_participant_pour_match(info_tournoi_recuperees["rondes"]
+                                                                      [numero_de_ronde]["liste_match"][j]["joueur2"],
+                                                                      players_table, instance_de_tournoi)
+            instance_de_tournoi.rondes[numero_de_ronde].liste_matchs.append(Match(instance_de_tournoi.
+                                                                                  participants[joueur1],
+                                                                                  instance_de_tournoi.
+                                                                                  participants[joueur2]))
             instance_de_tournoi.rondes[numero_de_ronde].liste_matchs[j].\
                 resultat_joueur1 = \
                 info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur1"]
@@ -371,8 +386,6 @@ class GestionDeTournoi:
                 resultat_joueur2 = \
                 info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur2"]
             j += 1
-        print(str(instance_de_tournoi.nom_du_tournoi))
-        input()
         return instance_de_tournoi
 
     def appairage_match_d_une_ronde(self, numero_de_ronde, instance_de_tournoi, type_de_tournoi):
