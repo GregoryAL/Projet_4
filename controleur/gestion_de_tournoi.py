@@ -382,9 +382,13 @@ class GestionDeTournoi:
             instance_de_tournoi.rondes[numero_de_ronde].liste_matchs[j].\
                 resultat_joueur1 = \
                 info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur1"]
+            instance_de_tournoi.participants[joueur1][1] += int(info_tournoi_recuperees["rondes"][numero_de_ronde]
+                                                                ["liste_match"][j]["resultat_joueur1"])
             instance_de_tournoi.rondes[numero_de_ronde].liste_matchs[j]. \
                 resultat_joueur2 = \
                 info_tournoi_recuperees["rondes"][numero_de_ronde]["liste_match"][j]["resultat_joueur2"]
+            instance_de_tournoi.participants[joueur2][1] += int(info_tournoi_recuperees["rondes"][numero_de_ronde]
+                                                                ["liste_match"][j]["resultat_joueur2"])
             j += 1
         return instance_de_tournoi
 

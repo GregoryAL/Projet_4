@@ -8,8 +8,8 @@ class Match:
         le joueur 2, le score du joueur 2 """
         self.joueur1 = joueur1
         self.joueur2 = joueur2
-        self.resultat_joueur1 = ""
-        self.resultat_joueur2 = ""
+        self.resultat_joueur1 = float(0)
+        self.resultat_joueur2 = float(0)
         self.tuple_match = ([self.joueur1, self.resultat_joueur1], [self.joueur2, self.resultat_joueur2])
 
     def __str__(self):
