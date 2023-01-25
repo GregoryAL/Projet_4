@@ -114,7 +114,7 @@ class SaisieDeDonnees:
 
     def recuperation_tournoi_a_terminer(self, tournaments_table):
         Vue.affichage_liste_de_tournoi_non_termine(self.vue, tournaments_table)
-        tournoi_a_terminer = input("\nMerci de saisir l'ID du tournoi à terminer\n  :  ")
+        tournoi_a_terminer = self.verification_champs_est_nombre("Merci de saisir l'ID du tournoi à terminer\n  :  ")
         return tournoi_a_terminer
 
     def recuperation_choix_type_tournoi(self):
@@ -305,6 +305,24 @@ class SaisieDeDonnees:
                 MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
         return float(valeur_recherchee)
 
+    def verification_champs_nombre_tour(self, type_valeur_recherchee):
+        """ Prompt un message demandant la valeur du descriptif en argument puis teste si la valeur est nulle, si
+        non, elle lance la fonction testant si la valeur est un nombre """
+        test_si_valeur_est_nombre = False
+        valeur_recherchee = ""
+        while test_si_valeur_est_nombre is False:
+            valeur_recherchee = input(type_valeur_recherchee)
+            if valeur_recherchee == "":
+                valeur_recherchee = 4
+                test_si_valeur_est_nombre = True
+            else:
+                test_si_valeur_est_nombre = self.test_si_variable_un_nombre(valeur_recherchee)
+            if test_si_valeur_est_nombre is False:
+                MessageDErreur.message_d_erreur_d_input_chiffre(self.message_d_erreur)
+                Vue.clean_screen(self.vue)
+        else:
+            return int(valeur_recherchee)
+
     def verification_champs_est_nombre(self, type_valeur_recherchee):
         """ Prompt un message demandant la valeur du descriptif en argument puis teste la valeur et boucle
         jusqu'à ce que la valeur entree soit un chiffre """
@@ -339,7 +357,7 @@ class SaisieDeDonnees:
             date_de_tournoi = [date_de_debut, date_de_fin]
         informations_de_tournoi["date_de_tournoi"] = date_de_tournoi
         # Demande le nombre de tours du tournoi
-        nombre_de_tour = self.verification_champs_est_nombre(
+        nombre_de_tour = self.verification_champs_nombre_tour(
             "Entrez le nombre de tour du tournoi à créer (Si aucun nombre entré, 4 par défaut): \n")
         if nombre_de_tour != "":
             informations_de_tournoi["nombre_de_tour"] = int(nombre_de_tour)

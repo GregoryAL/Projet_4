@@ -54,11 +54,8 @@ class GestionDeTournoi:
                     if choix_utilisateur == 2:
                         id_tournoi_a_reprendre = SaisieDeDonnees.\
                             recuperation_tournoi_a_terminer(self.vue_saisie_de_donnees, tournaments_table)
-                        input("\n Le tournoi à reprendre est le : " + str(id_tournoi_a_reprendre))
                         instance_de_tournoi = self.instanciation_tournoi_db(id_tournoi_a_reprendre, tournaments_table,
                                                                             players_table)
-                        print(str(instance_de_tournoi.nom_du_tournoi))
-                        input()
                         numero_de_ronde_active = len(instance_de_tournoi.rondes)
                     # Lancement de la ronde suivante
                     elif choix_utilisateur == 3:
@@ -81,8 +78,8 @@ class GestionDeTournoi:
                         else:
                             # Inscrit les informations de toutes les rondes en DB
                             if numero_de_ronde_active >= 1:
-                                self.recuperation_ronde_db(ronde, instance_de_tournoi, tournaments_table, players_table,
-                                                           numero_de_ronde_active)
+                                self.recuperation_ronde_db(ronde, instance_de_tournoi, tournaments_table,
+                                                           players_table, numero_de_ronde_active)
                             Vue.enregistrement_de_tournoi_ok(self.vue_instance)
                             MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
                             numero_de_ronde_active = 0
@@ -194,7 +191,6 @@ class GestionDeTournoi:
             elif choix_rapport == 2:
                 # Affiche la liste des tournois
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
-                input()
             elif choix_rapport == 3:
                 # Affiche la liste des tours d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
@@ -339,9 +335,9 @@ class GestionDeTournoi:
         while i < len(info_tournoi_recuperees["rondes"]):
             instance_de_tournoi.rondes.append(Ronde(info_tournoi_recuperees["rondes"][i]["nom_de_la_ronde"]))
             instance_de_tournoi.rondes[i].date_heure_debut_de_ronde = (info_tournoi_recuperees["rondes"][i]
-                                                                    ["date_heure_debut_ronde"])
+                                                                       ["date_heure_debut_ronde"])
             instance_de_tournoi.rondes[i].date_heure_fin_de_ronde = (info_tournoi_recuperees["rondes"][i]
-                                                                  ["date_heure_fin_ronde"])
+                                                                     ["date_heure_fin_ronde"])
             instance_de_tournoi = self.ajout_match_instance_ronde(info_tournoi_recuperees, instance_de_tournoi, i,
                                                                   players_table)
             i += 1
@@ -362,7 +358,6 @@ class GestionDeTournoi:
             else:
                 h += 1
         return h
-
 
     def ajout_match_instance_ronde(self, info_tournoi_recuperees, instance_de_tournoi, numero_de_ronde, players_table):
         """ Ajout les matchs avec les informations récupérées dans l'instance de ronde inclus dans l'instance de
