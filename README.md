@@ -8,7 +8,7 @@
 Le programme permet de gérer des tournois d'échecs.
 Il permet de :
   - Gérer une liste de joueur pouvant participer à un tournoi
-    - Ajouter / Supprimer des joueurs à cette liste
+    - Ajouter/Modifier des joueurs à cette liste
     - Consulter la liste de ces joueurs
     - Utiliser ces joueurs dans la création d'un tournoi d'échec
   - Créer un tournoi en renseignant :
