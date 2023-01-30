@@ -191,6 +191,7 @@ class GestionDeTournoi:
             elif choix_rapport == 2:
                 # Affiche la liste des tournois
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
+                MessageDErreur.appuyer_sur_entrer_pour_continuer(self.vue_message_d_erreur)
             elif choix_rapport == 3:
                 # Affiche la liste des tours d'un tournoi
                 Vue.affichage_liste_de_tournoi(self.vue_instance, tournaments_table)
