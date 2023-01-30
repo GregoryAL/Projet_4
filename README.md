@@ -76,7 +76,7 @@ Il permet de :
     
     `pip install -r requirements.txt`
 
-### Lancer notre script de récupération d'informations  
+### Lancer notre programme de gestion de tournoi d'échec  
 
 - #### En ligne de commande, toujours en étant dans *chemin/vers_le/repertoire_desire*, saisir :
 
@@ -93,3 +93,21 @@ Il permet de :
 - Le programme va créer un fichier db.json à son premier lancement.
 
 - Il va ensuite afficher un menu qui donnera accès à toutes les options disponibles.
+
+### Générer un rapport flake-8
+
+- #### En ligne de commande, toujours en étant dans *chemin/vers_le/repertoire_desire*, saisir :
+
+  - sous Windows, saisir :
+       
+  `python .\flake8 --format=html --htmldir=flake-report`
+       
+  - sous Linux, saisir : 
+      
+  `python3 flake8 --format=html --htmldir=flake-report`  
+  
+  "flake-report" étant le nom du répertoire dans lequel vous souhaitez stocker le rapport
+    
+## Résultat attendu :  
+
+- Le script va créer un rapport HTML dans le répertoire choisi
